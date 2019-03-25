@@ -12,40 +12,27 @@ import UIKit
 
 class TabBarController: UITabBarController {
 	
-	public let favController = ViewController()
-	public let searchNavController = UINavigationController(rootViewController: ViewController())
-	public let downloadNavController = UINavigationController(rootViewController: ViewController())
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.backgroundColor = .green
+		UINavigationBar.appearance().prefersLargeTitles = true
 		setupTabs()
 	}
 	
-	
-	
-
-	
-	
-	
-	
 	private func setupTabs(){
-		favController.tabBarItem.title = "Любимые"
-		favController.tabBarItem.image = #imageLiteral(resourceName: "favorites")
-		
-		searchNavController.tabBarItem.title = "Поиск"
-		searchNavController.tabBarItem.image = #imageLiteral(resourceName: "search")
-		
-		downloadNavController.tabBarItem.title = "Загрузки"
-		downloadNavController.tabBarItem.image = #imageLiteral(resourceName: "downloads")
-		
 		viewControllers = [
-			favController,
-			searchNavController,
-			downloadNavController
+			createNavController(rootVC: ViewController(), title: "Любимые", img: #imageLiteral(resourceName: "favorites")),
+			createNavController(rootVC: ViewController(), title: "Поиск", img: #imageLiteral(resourceName: "search")),
+			createNavController(rootVC: ViewController(), title: "Загрузки", img: #imageLiteral(resourceName: "downloads")),
 		]
-		
-		
+	}
+	
+	
+	private func createNavController(rootVC: UIViewController, title: String, img: UIImage) -> UIViewController {
+		let navVC = UINavigationController(rootViewController: rootVC)
+		navVC.tabBarItem.title = title
+		navVC.tabBarItem.image = img
+		rootVC.navigationItem.title = title // title on top of VC
+		return navVC
 	}
 	
 	
