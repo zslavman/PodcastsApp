@@ -20,8 +20,8 @@ class TabBarController: UITabBarController {
 	
 	private func setupTabs(){
 		viewControllers = [
+			createNavController(rootVC: PodcastsSearchController(), title: "Поиск", img: #imageLiteral(resourceName: "search")),
 			createNavController(rootVC: ViewController(), title: "Любимые", img: #imageLiteral(resourceName: "favorites")),
-			createNavController(rootVC: ViewController(), title: "Поиск", img: #imageLiteral(resourceName: "search")),
 			createNavController(rootVC: ViewController(), title: "Загрузки", img: #imageLiteral(resourceName: "downloads")),
 		]
 	}
