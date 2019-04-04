@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Alamofire
+// https://affiliate.itunes.apple.com/resources/documentation/itunes-store-web-service-search-api/
 
 class PodcastsSearchController: UITableViewController {
 	
@@ -53,8 +55,17 @@ class PodcastsSearchController: UITableViewController {
 extension PodcastsSearchController: UISearchBarDelegate {
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		print(searchText)
-		//TODO: implement Alamofire for search iTunes API
+		let url = "https://itunes.apple.com/search?term=\(searchText))"
+		Alamofire.request(url).responseData {
+			(dataResponse) in
+			if let error = dataResponse.error {
+				print("Error: \(error.localizedDescription)")
+				return
+			}
+			guard let data = dataResponse.data else { return }
+			let str = String(data: data, encoding: .utf8)!
+			print(str)
+		}
 	}
 	
 }
