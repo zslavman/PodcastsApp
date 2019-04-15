@@ -55,24 +55,34 @@ class PodcastsSearchController: UITableViewController {
 extension PodcastsSearchController: UISearchBarDelegate {
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		let url = "https://itunes.apple.com/search?term=\(searchText))"
-		Alamofire.request(url).responseData {
-			(dataResponse) in
-			if let error = dataResponse.error {
-				print("Error: \(error.localizedDescription)")
-				return
+		let url = "https://itunes.apple.com/search"
+		let params = [
+			"term": searchText,
+			"media": "podcast" // media filter (see API)
+		]
+		Alamofire.request(url,
+						  method: .get,
+						  parameters: params,
+						  encoding: URLEncoding.default, // turn spaces into "%20"
+						  headers: nil)
+			.responseData {
+				(dataResponse) in
+				if let error = dataResponse.error {
+					print("Error: \(error.localizedDescription)")
+					return
+				}
+				guard let data = dataResponse.data else { return }
+				do {
+					let decoded = try JSONDecoder().decode(SearchResult.self, from: data)
+					self.podcasts = decoded.results
+					self.tableView.reloadData()
+				}
+				catch let err {
+					print("Failed to parse", err.localizedDescription)
+				}
 			}
-			guard let data = dataResponse.data else { return }
-			do {
-				let decoded = try JSONDecoder().decode(SearchResult.self, from: data)
-				self.podcasts = decoded.results
-				self.tableView.reloadData()
-			}
-			catch let err {
-				print("Failed to parse", err.localizedDescription)
-			}
-		}
 	}
+	
 	
 }
 
