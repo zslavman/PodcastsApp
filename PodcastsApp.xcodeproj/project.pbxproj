@@ -14,6 +14,7 @@
 		56DB88FD224966E8000F7D3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56DB88FC224966E8000F7D3C /* Assets.xcassets */; };
 		56DB8900224966E8000F7D3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56DB88FE224966E8000F7D3C /* LaunchScreen.storyboard */; };
 		56DB89082249674F000F7D3C /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DB89072249674F000F7D3C /* TabBarController.swift */; };
+		56FC323E22651B3E008E5DD7 /* SUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FC323D22651B3E008E5DD7 /* SUtils.swift */; };
 		AACD116CAFC13F12A38FA032 /* Pods_PodcastsApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D629AF9AC10498D8C87924D2 /* Pods_PodcastsApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		56DB88FF224966E8000F7D3C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		56DB8901224966E8000F7D3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56DB89072249674F000F7D3C /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		56FC323D22651B3E008E5DD7 /* SUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SUtils.swift; sourceTree = "<group>"; };
 		5D4D50EEF55E1512ECB06F22 /* Pods-PodcastsApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodcastsApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-PodcastsApp/Pods-PodcastsApp.release.xcconfig"; sourceTree = "<group>"; };
 		6223AC8F1ABBDE582E35BB40 /* Pods-PodcastsApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodcastsApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PodcastsApp/Pods-PodcastsApp.debug.xcconfig"; sourceTree = "<group>"; };
 		D629AF9AC10498D8C87924D2 /* Pods_PodcastsApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PodcastsApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -81,6 +83,7 @@
 		56DB88F4224966E6000F7D3C /* PodcastsApp */ = {
 			isa = PBXGroup;
 			children = (
+				56FC323C22651AF0008E5DD7 /* Helpers */,
 				562E7EE622515E6200D576F8 /* Models */,
 				562E7EE322515D0C00D576F8 /* Controllers */,
 				56DB89072249674F000F7D3C /* TabBarController.swift */,
@@ -99,6 +102,14 @@
 				56DB8901224966E8000F7D3C /* Info.plist */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		56FC323C22651AF0008E5DD7 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				56FC323D22651B3E008E5DD7 /* SUtils.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		97109C52D9140AF7C2DB1E22 /* Frameworks */ = {
@@ -238,6 +249,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				562E7EE522515D4700D576F8 /* PodcastsSearchController.swift in Sources */,
+				56FC323E22651B3E008E5DD7 /* SUtils.swift in Sources */,
 				56DB89082249674F000F7D3C /* TabBarController.swift in Sources */,
 				56DB88F8224966E6000F7D3C /* ViewController.swift in Sources */,
 				56DB88F6224966E6000F7D3C /* AppDelegate.swift in Sources */,

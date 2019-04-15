@@ -12,10 +12,10 @@ import Alamofire
 
 class PodcastsSearchController: UITableViewController {
 	
-	private let podcasts = [
-		Podcast(name: "Музыка", artistName: "Michael Jackson"),
-		Podcast(name: "Фонограмма", artistName: "Лорди"),
-		Podcast(name: "Рассказ", artistName: "Жуки")
+	private var podcasts = [
+		Podcast(trackName: "Музыка", artistName: "Michael Jackson"),
+		Podcast(trackName: "Фонограмма", artistName: "Лорди"),
+		Podcast(trackName: "Рассказ", artistName: "Жуки")
 	]
 	private let cellID = "cellID"
 	private let searchController = UISearchController(searchResultsController: nil)
@@ -43,7 +43,7 @@ class PodcastsSearchController: UITableViewController {
 		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
 		
 		let podcast = podcasts[indexPath.row]
-		cell.textLabel?.text = "\(podcast.name)\n\(podcast.artistName)"
+		cell.textLabel?.text = "\(podcast.trackName ?? "")\n\(podcast.artistName ?? "")"
 		cell.textLabel?.numberOfLines = -1 // trix - multilines
 		cell.imageView?.image = #imageLiteral(resourceName: "appicon")
 		
@@ -63,9 +63,21 @@ extension PodcastsSearchController: UISearchBarDelegate {
 				return
 			}
 			guard let data = dataResponse.data else { return }
-			let str = String(data: data, encoding: .utf8)!
-			print(str)
+			do {
+				let decoded = try JSONDecoder().decode(SearchResult.self, from: data)
+				self.podcasts = decoded.results
+				self.tableView.reloadData()
+			}
+			catch let err {
+				print("Failed to parse", err.localizedDescription)
+			}
 		}
 	}
 	
+}
+
+
+struct SearchResult: Decodable {
+	let resultCount: Int
+	let results: [Podcast]
 }
