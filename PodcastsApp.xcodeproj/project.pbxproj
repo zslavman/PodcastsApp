@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		562E7EE522515D4700D576F8 /* PodcastsSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562E7EE422515D4700D576F8 /* PodcastsSearchController.swift */; };
 		562E7EE822515E7500D576F8 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562E7EE722515E7500D576F8 /* Podcast.swift */; };
+		5648056922667F3E008CAD73 /* AlamofireService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5648056822667F3E008CAD73 /* AlamofireService.swift */; };
+		5648056C226683BA008CAD73 /* PodcastCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5648056B226683BA008CAD73 /* PodcastCell.xib */; };
+		5648056E22668723008CAD73 /* PodcastCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5648056D22668723008CAD73 /* PodcastCell.swift */; };
 		56DB88F6224966E6000F7D3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DB88F5224966E6000F7D3C /* AppDelegate.swift */; };
 		56DB88F8224966E6000F7D3C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DB88F7224966E6000F7D3C /* ViewController.swift */; };
 		56DB88FD224966E8000F7D3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56DB88FC224966E8000F7D3C /* Assets.xcassets */; };
@@ -21,6 +24,9 @@
 /* Begin PBXFileReference section */
 		562E7EE422515D4700D576F8 /* PodcastsSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsSearchController.swift; sourceTree = "<group>"; };
 		562E7EE722515E7500D576F8 /* Podcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
+		5648056822667F3E008CAD73 /* AlamofireService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireService.swift; sourceTree = "<group>"; };
+		5648056B226683BA008CAD73 /* PodcastCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastCell.xib; sourceTree = "<group>"; };
+		5648056D22668723008CAD73 /* PodcastCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastCell.swift; sourceTree = "<group>"; };
 		56DB88F2224966E6000F7D3C /* PodcastsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PodcastsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56DB88F5224966E6000F7D3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		56DB88F7224966E6000F7D3C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -62,6 +68,23 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		5648056722667EF8008CAD73 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				5648056822667F3E008CAD73 /* AlamofireService.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		5648056A22668365008CAD73 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5648056B226683BA008CAD73 /* PodcastCell.xib */,
+				5648056D22668723008CAD73 /* PodcastCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		56DB88E9224966E6000F7D3C = {
 			isa = PBXGroup;
 			children = (
@@ -84,7 +107,9 @@
 			isa = PBXGroup;
 			children = (
 				56FC323C22651AF0008E5DD7 /* Helpers */,
+				5648056722667EF8008CAD73 /* API */,
 				562E7EE622515E6200D576F8 /* Models */,
+				5648056A22668365008CAD73 /* Views */,
 				562E7EE322515D0C00D576F8 /* Controllers */,
 				56DB89072249674F000F7D3C /* TabBarController.swift */,
 				56DB88F7224966E6000F7D3C /* ViewController.swift */,
@@ -191,6 +216,7 @@
 			files = (
 				56DB8900224966E8000F7D3C /* LaunchScreen.storyboard in Resources */,
 				56DB88FD224966E8000F7D3C /* Assets.xcassets in Resources */,
+				5648056C226683BA008CAD73 /* PodcastCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -250,8 +276,10 @@
 			files = (
 				562E7EE522515D4700D576F8 /* PodcastsSearchController.swift in Sources */,
 				56FC323E22651B3E008E5DD7 /* SUtils.swift in Sources */,
+				5648056E22668723008CAD73 /* PodcastCell.swift in Sources */,
 				56DB89082249674F000F7D3C /* TabBarController.swift in Sources */,
 				56DB88F8224966E6000F7D3C /* ViewController.swift in Sources */,
+				5648056922667F3E008CAD73 /* AlamofireService.swift in Sources */,
 				56DB88F6224966E6000F7D3C /* AppDelegate.swift in Sources */,
 				562E7EE822515E7500D576F8 /* Podcast.swift in Sources */,
 			);
