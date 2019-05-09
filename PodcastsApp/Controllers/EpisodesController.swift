@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FeedKit
 
 class EpisodesController: UITableViewController {
 	
@@ -14,7 +15,7 @@ class EpisodesController: UITableViewController {
 		didSet {
 			guard let safePodcast = podcast else { return }
 			navigationItem.title = safePodcast.trackName
-			print("feedURL = \(safePodcast.feedUrl ?? "")")
+			fetchEpisodes()
 		}
 	}
 	private struct Episode {
@@ -36,6 +37,22 @@ class EpisodesController: UITableViewController {
 	private func setupTableView() {
 		tableView.register(PodcastCell.self, forCellReuseIdentifier: PodcastCell.cellID)
 		tableView.tableFooterView = UIView()
+	}
+	
+	private func fetchEpisodes() {
+		guard let url = podcast?.feedUrl, let feedUrl = URL(string: url) else { return }
+		let parser = FeedParser(URL: feedUrl)
+		parser.parseAsync {
+			(result) in
+			print("sucess = ", result.isSuccess)
+			
+			switch result {
+			case let .atom(feed):       // Atom Syndication Format Feed Model
+			case let .rss(feed):        // Really Simple Syndication Feed Model
+			case let .json(feed):       // JSON Feed Model
+			case let .failure(error):
+			}
+		}
 	}
 	
 	

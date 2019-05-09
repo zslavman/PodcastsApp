@@ -8,5 +8,6 @@ target 'PodcastsApp' do
   # Pods for PodcastsApp
   pod 'Alamofire', '~> 4.7.3'
   pod 'SDWebImage', '~> 5.0'
+  pod 'FeedKit', '~> 8.0'
 
 end
