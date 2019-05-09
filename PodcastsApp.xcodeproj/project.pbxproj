@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		562E7EE522515D4700D576F8 /* PodcastsSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562E7EE422515D4700D576F8 /* PodcastsSearchController.swift */; };
 		562E7EE822515E7500D576F8 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562E7EE722515E7500D576F8 /* Podcast.swift */; };
+		563D8EA8228460E300F2A6CA /* EpisodesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8EA7228460E300F2A6CA /* EpisodesController.swift */; };
 		5648056922667F3E008CAD73 /* AlamofireService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5648056822667F3E008CAD73 /* AlamofireService.swift */; };
 		5648056C226683BA008CAD73 /* PodcastCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5648056B226683BA008CAD73 /* PodcastCell.xib */; };
 		5648056E22668723008CAD73 /* PodcastCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5648056D22668723008CAD73 /* PodcastCell.swift */; };
@@ -24,6 +25,7 @@
 /* Begin PBXFileReference section */
 		562E7EE422515D4700D576F8 /* PodcastsSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsSearchController.swift; sourceTree = "<group>"; };
 		562E7EE722515E7500D576F8 /* Podcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
+		563D8EA7228460E300F2A6CA /* EpisodesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesController.swift; sourceTree = "<group>"; };
 		5648056822667F3E008CAD73 /* AlamofireService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireService.swift; sourceTree = "<group>"; };
 		5648056B226683BA008CAD73 /* PodcastCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastCell.xib; sourceTree = "<group>"; };
 		5648056D22668723008CAD73 /* PodcastCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastCell.swift; sourceTree = "<group>"; };
@@ -56,6 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				562E7EE422515D4700D576F8 /* PodcastsSearchController.swift */,
+				563D8EA7228460E300F2A6CA /* EpisodesController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -233,12 +236,14 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-PodcastsApp/Pods-PodcastsApp-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -282,6 +287,7 @@
 				5648056922667F3E008CAD73 /* AlamofireService.swift in Sources */,
 				56DB88F6224966E6000F7D3C /* AppDelegate.swift in Sources */,
 				562E7EE822515E7500D576F8 /* Podcast.swift in Sources */,
+				563D8EA8228460E300F2A6CA /* EpisodesController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

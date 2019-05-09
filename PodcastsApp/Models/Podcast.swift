@@ -11,4 +11,7 @@ import Foundation
 struct Podcast: Decodable {
 	var trackName: String?
 	var artistName: String?
+	var artworkUrl600: String?
+	var trackCount: Int?
+	var feedUrl: String? // feeds.soundcloud.com/users/soundcloud:users:114798578/sounds.rss
 }
