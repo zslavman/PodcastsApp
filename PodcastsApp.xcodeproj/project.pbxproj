@@ -10,6 +10,9 @@
 		562E7EE522515D4700D576F8 /* PodcastsSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562E7EE422515D4700D576F8 /* PodcastsSearchController.swift */; };
 		562E7EE822515E7500D576F8 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562E7EE722515E7500D576F8 /* Podcast.swift */; };
 		563D8EA8228460E300F2A6CA /* EpisodesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8EA7228460E300F2A6CA /* EpisodesController.swift */; };
+		563DE3FC2286021B002AAB8A /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DE3FB2286021B002AAB8A /* Episode.swift */; };
+		563DE3FF2286035E002AAB8A /* EpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DE3FD2286035E002AAB8A /* EpisodeCell.swift */; };
+		563DE4002286035E002AAB8A /* EpisodeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 563DE3FE2286035E002AAB8A /* EpisodeCell.xib */; };
 		5648056922667F3E008CAD73 /* AlamofireService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5648056822667F3E008CAD73 /* AlamofireService.swift */; };
 		5648056C226683BA008CAD73 /* PodcastCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5648056B226683BA008CAD73 /* PodcastCell.xib */; };
 		5648056E22668723008CAD73 /* PodcastCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5648056D22668723008CAD73 /* PodcastCell.swift */; };
@@ -26,6 +29,9 @@
 		562E7EE422515D4700D576F8 /* PodcastsSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastsSearchController.swift; sourceTree = "<group>"; };
 		562E7EE722515E7500D576F8 /* Podcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
 		563D8EA7228460E300F2A6CA /* EpisodesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesController.swift; sourceTree = "<group>"; };
+		563DE3FB2286021B002AAB8A /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
+		563DE3FD2286035E002AAB8A /* EpisodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeCell.swift; sourceTree = "<group>"; };
+		563DE3FE2286035E002AAB8A /* EpisodeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EpisodeCell.xib; sourceTree = "<group>"; };
 		5648056822667F3E008CAD73 /* AlamofireService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlamofireService.swift; sourceTree = "<group>"; };
 		5648056B226683BA008CAD73 /* PodcastCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastCell.xib; sourceTree = "<group>"; };
 		5648056D22668723008CAD73 /* PodcastCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastCell.swift; sourceTree = "<group>"; };
@@ -67,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				562E7EE722515E7500D576F8 /* Podcast.swift */,
+				563DE3FB2286021B002AAB8A /* Episode.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -82,8 +89,10 @@
 		5648056A22668365008CAD73 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5648056B226683BA008CAD73 /* PodcastCell.xib */,
 				5648056D22668723008CAD73 /* PodcastCell.swift */,
+				563DE3FD2286035E002AAB8A /* EpisodeCell.swift */,
+				5648056B226683BA008CAD73 /* PodcastCell.xib */,
+				563DE3FE2286035E002AAB8A /* EpisodeCell.xib */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -218,6 +227,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				56DB8900224966E8000F7D3C /* LaunchScreen.storyboard in Resources */,
+				563DE4002286035E002AAB8A /* EpisodeCell.xib in Resources */,
 				56DB88FD224966E8000F7D3C /* Assets.xcassets in Resources */,
 				5648056C226683BA008CAD73 /* PodcastCell.xib in Resources */,
 			);
@@ -284,6 +294,8 @@
 				562E7EE522515D4700D576F8 /* PodcastsSearchController.swift in Sources */,
 				56FC323E22651B3E008E5DD7 /* SUtils.swift in Sources */,
 				5648056E22668723008CAD73 /* PodcastCell.swift in Sources */,
+				563DE3FF2286035E002AAB8A /* EpisodeCell.swift in Sources */,
+				563DE3FC2286021B002AAB8A /* Episode.swift in Sources */,
 				56DB89082249674F000F7D3C /* TabBarController.swift in Sources */,
 				56DB88F8224966E6000F7D3C /* ViewController.swift in Sources */,
 				5648056922667F3E008CAD73 /* AlamofireService.swift in Sources */,

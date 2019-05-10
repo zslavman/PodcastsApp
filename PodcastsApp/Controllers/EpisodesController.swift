@@ -5,7 +5,6 @@
 //  Created by Zinko Viacheslav on 09.05.2019.
 //  Copyright © 2019 Zinko Viacheslav. All rights reserved.
 //
-
 import UIKit
 import FeedKit
 
@@ -18,9 +17,6 @@ class EpisodesController: UITableViewController {
 			fetchEpisodes()
 		}
 	}
-	private struct Episode {
-		let title: String
-	}
 	private var episodes = [Episode]()
 	
 	
@@ -31,7 +27,8 @@ class EpisodesController: UITableViewController {
 	
 	
 	private func setupTableView() {
-		tableView.register(PodcastCell.self, forCellReuseIdentifier: PodcastCell.cellID)
+		let nib = UINib(nibName: "EpisodeCell", bundle: nil)
+		tableView.register(nib, forCellReuseIdentifier: PodcastCell.cellID)
 		tableView.tableFooterView = UIView()
 	}
 	
@@ -63,7 +60,7 @@ class EpisodesController: UITableViewController {
 			case .rss(let feed):		// Really Simple Syndication Feed Model
 				feed.items?.forEach({
 					(feedItem) in
-					let episode = Episode(title: feedItem.title ?? "")
+					let episode = Episode(feedItem: feedItem)
 					self.episodes.append(episode)
 				})
 				DispatchQueue.main.async {
@@ -83,10 +80,13 @@ class EpisodesController: UITableViewController {
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: PodcastCell.cellID, for: indexPath) as! PodcastCell
-		cell.textLabel?.text = episodes[indexPath.row].title
+		let cell = tableView.dequeueReusableCell(withIdentifier: PodcastCell.cellID, for: indexPath) as! EpisodeCell
+		cell.episode = episodes[indexPath.row]
 		return cell
 	}
 	
+	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		return 134
+	}
 	
 }

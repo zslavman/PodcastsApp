@@ -21,7 +21,7 @@ struct SUtils {
 	
 	
 	/// преобразует секунды в формат ММ:СС
-	static func convertTime(seconds:Double) -> String{
+	static func convertTime(seconds: Double) -> String{
 		let intValue = Int(seconds)
 		// let hou = intValue / 3600
 		let min = intValue / 60
@@ -30,6 +30,20 @@ struct SUtils {
 		
 		time.removeFirst()
 		return time
+	}
+	
+	public static func convertDate(date: Date) -> String {
+		let dateFormater = DateFormatter()
+		dateFormater.locale = Locale(identifier: "RU")
+		dateFormater.dateFormat = "dd"
+		let numDay = dateFormater.string(from: date)
+		var month = dateFormater.shortMonthSymbols[Calendar.current.component(.month, from: date) - 1]
+		if month.last == "." {
+			month = String(month.dropLast())
+		}
+		dateFormater.dateFormat = "yyyy"
+		let year = dateFormater.string(from: date)
+		return "\(numDay) \(month) \(year)"
 	}
 	
 	
