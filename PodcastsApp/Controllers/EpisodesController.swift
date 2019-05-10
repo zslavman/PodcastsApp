@@ -21,11 +21,7 @@ class EpisodesController: UITableViewController {
 	private struct Episode {
 		let title: String
 	}
-	private var episodes = [
-		Episode(title: "01111"),
-		Episode(title: "222"),
-		Episode(title: "333"),
-	]
+	private var episodes = [Episode]()
 	
 	
 	override func viewDidLoad() {
@@ -40,17 +36,41 @@ class EpisodesController: UITableViewController {
 	}
 	
 	private func fetchEpisodes() {
-		guard let url = podcast?.feedUrl, let feedUrl = URL(string: url) else { return }
+		guard let url = podcast?.feedUrl else { return }
+		
+		// add secure for link (http -> https)
+		let secureFeedString: String
+		if url.contains("https") {
+			secureFeedString = url
+		}
+		else {
+			secureFeedString = url.replacingOccurrences(of: "http", with: "https")
+		}
+		guard let feedUrl = URL(string: secureFeedString) else { return }
+		
 		let parser = FeedParser(URL: feedUrl)
 		parser.parseAsync {
 			(result) in
-			print("sucess = ", result.isSuccess)
+			// How to access a Swift enum associated value outside of a switch statement:
+			// variant 1
+			//if case .rss(let value) = result { }
 			
+			// variant 2
+			// associative enum value
 			switch result {
-			case let .atom(feed):       // Atom Syndication Format Feed Model
-			case let .rss(feed):        // Really Simple Syndication Feed Model
-			case let .json(feed):       // JSON Feed Model
-			case let .failure(error):
+			case .failure(let error):
+				print("Error retrieving data:", error.localizedDescription)
+			case .rss(let feed):		// Really Simple Syndication Feed Model
+				feed.items?.forEach({
+					(feedItem) in
+					let episode = Episode(title: feedItem.title ?? "")
+					self.episodes.append(episode)
+				})
+				DispatchQueue.main.async {
+					self.tableView.reloadData()
+				}
+			default:
+				print("Found a feed, use another enum value!")
 			}
 		}
 	}
