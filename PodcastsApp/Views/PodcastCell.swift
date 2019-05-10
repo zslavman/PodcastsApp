@@ -25,7 +25,7 @@ class PodcastCell: UITableViewCell {
 			episodeName.text = "\(podcast.trackCount ?? 0) Эпизод."
 			
 			guard let url = URL(string: podcast.artworkUrl600 ?? "") else { return }
-			podcastImageView.sd_setImage(with: url, completed: nil)
+			podcastImageView.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [], context: nil)
 		}
 	}
 	

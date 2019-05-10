@@ -190,12 +190,18 @@ struct SUtils {
 		return components
 	}
 	
-	
-	
-	
 }
 
 
+
+
+extension String {
+	
+	public func toSecureHTTPS() -> String {
+		return self.contains("https") ? self : self.replacingOccurrences(of: "http", with: "https")
+	}
+	
+}
 
 
 

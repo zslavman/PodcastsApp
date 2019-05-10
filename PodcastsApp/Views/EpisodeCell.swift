@@ -34,6 +34,9 @@ class EpisodeCell: UITableViewCell {
 		titleLabel.text 		= episode.title
 		descriptionLabel.text 	= episode.description
 		pubDateLabel.text 		= SUtils.convertDate(date: episode.pubDate)
+		if let url = URL(string: episode.imageLink) {
+			episodeImageView.sd_setImage(with: url, completed: nil)
+		}
 	}
 	
 	override func awakeFromNib() {

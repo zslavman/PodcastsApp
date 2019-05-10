@@ -8,11 +8,11 @@
 
 import Foundation
 import Alamofire
+import FeedKit
 
-
-class AlamofireService {
+class APIServices {
 	
-	public static let shared = AlamofireService()
+	public static let shared = APIServices()
 	
 	
 	public func fetchPodcasts(searchText: String, callback: @escaping ([Podcast]) -> Void) {
@@ -43,6 +43,32 @@ class AlamofireService {
 		}
 	}
 	
+	
+	public func fetchEpisodes(urlString: String, completionHandler: @escaping ([Episode]) ->()) {
+		let secureFeedString = urlString.toSecureHTTPS()
+		guard let feedUrl = URL(string: secureFeedString) else { return }
+		
+		let parser = FeedParser(URL: feedUrl)
+		parser.parseAsync {
+			(result) in
+			var episodes = [Episode]()
+			// How to access a Swift enum associated value outside of a switch statement:
+			// variant 1
+			//if case .rss(let value) = result { }
+			
+			// variant 2
+			// associative enum value
+			switch result {
+			case .failure(let error):
+				print("Error retrieving data:", error.localizedDescription)
+			case .rss(let feed):		// Really Simple Syndication Feed Model
+				episodes = feed.toEpisodes()
+				completionHandler(episodes)
+			default:
+				print("Found a feed, use another enum value!")
+			}
+		}
+	}
 	
 	
 }

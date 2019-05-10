@@ -81,7 +81,7 @@ class PodcastsSearchController: UITableViewController {
 extension PodcastsSearchController: UISearchBarDelegate {
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		AlamofireService.shared.fetchPodcasts(searchText: searchText) {
+		APIServices.shared.fetchPodcasts(searchText: searchText) {
 			[weak self] (podcasts) in
 			guard let strongSelf = self else { return }
 			strongSelf.podcasts = podcasts
