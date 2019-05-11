@@ -45,7 +45,7 @@ class APIServices {
 	
 	
 	public func fetchEpisodes(urlString: String, completionHandler: @escaping ([Episode]) ->()) {
-		let secureFeedString = urlString.toSecureHTTPS()
+		let secureFeedString = urlString//.toSecureHTTPS()
 		guard let feedUrl = URL(string: secureFeedString) else { return }
 		
 		let parser = FeedParser(URL: feedUrl)
