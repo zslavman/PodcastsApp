@@ -13,7 +13,7 @@ class PodcastsSearchController: UITableViewController {
 	
 	private var podcasts = [Podcast]()
 	private let searchController = UISearchController(searchResultsController: nil)
-	
+	private var timer: Timer?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -82,15 +82,21 @@ class PodcastsSearchController: UITableViewController {
 extension PodcastsSearchController: UISearchBarDelegate {
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		APIServices.shared.fetchPodcasts(searchText: searchText) {
-			[weak self] (podcasts) in
-			guard let strongSelf = self else { return }
-			strongSelf.podcasts = podcasts
-			DispatchQueue.main.async {
-				strongSelf.tableView.reloadData()
+		// fix flickering results on each letter inputs
+		timer?.invalidate()
+		timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: {
+			(_) in
+			APIServices.shared.fetchPodcasts(searchText: searchText) {
+				[weak self] (podcasts) in
+				guard let strongSelf = self else { return }
+				strongSelf.podcasts = podcasts
+				DispatchQueue.main.async {
+					strongSelf.tableView.reloadData()
+				}
 			}
-		}
+		})
 	}
+	
 	
 }
 

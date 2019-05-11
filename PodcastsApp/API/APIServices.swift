@@ -48,26 +48,32 @@ class APIServices {
 		let secureFeedString = urlString//.toSecureHTTPS()
 		guard let feedUrl = URL(string: secureFeedString) else { return }
 		
-		let parser = FeedParser(URL: feedUrl)
-		parser.parseAsync {
-			(result) in
-			var episodes = [Episode]()
-			// How to access a Swift enum associated value outside of a switch statement:
-			// variant 1
-			//if case .rss(let value) = result { }
+		// fix small delay on clicking a cell
+		DispatchQueue.global(qos: .background).async {
+			let parser = FeedParser(URL: feedUrl)
 			
-			// variant 2
-			// associative enum value
-			switch result {
-			case .failure(let error):
-				print("Error retrieving data:", error.localizedDescription)
-			case .rss(let feed):		// Really Simple Syndication Feed Model
-				episodes = feed.toEpisodes()
-				completionHandler(episodes)
-			default:
-				print("Found a feed, use another enum value!")
+			parser.parseAsync {
+				(result) in
+				var episodes = [Episode]()
+				// How to access a Swift enum associated value outside of a switch statement:
+				// variant 1
+				//if case .rss(let value) = result { }
+				
+				// variant 2
+				// associative enum value
+				switch result {
+				case .failure(let error):
+					print("Error retrieving data:", error.localizedDescription)
+				case .rss(let feed):		// Really Simple Syndication Feed Model
+					episodes = feed.toEpisodes()
+					completionHandler(episodes)
+				default:
+					print("Found a feed, use another enum value!")
+				}
 			}
 		}
+		
+		
 	}
 	
 	

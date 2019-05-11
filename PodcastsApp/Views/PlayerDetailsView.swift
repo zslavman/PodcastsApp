@@ -69,12 +69,13 @@ class PlayerDetailsView: UIView {
 		
 		let interval = CMTimeMake(value: 1, timescale: 2) // timer for update durations
 		player.addPeriodicTimeObserver(forInterval: interval, queue: .main) {
-			(time) in
+			[weak self] (time) in
+			guard let strongSelf = self else { return }
 			let totalSeconds = CMTimeGetSeconds(time)
-			self.timeBeginLabel.text = SUtils.convertTime(seconds: totalSeconds)
-			if let duration = self.player.currentItem?.duration.seconds {
-				self.timeEndLabel.text = SUtils.convertTime(seconds: duration, needHours: true)
-				self.updateTimeSlider()
+			strongSelf.timeBeginLabel.text = SUtils.convertTime(seconds: totalSeconds)
+			if let duration = strongSelf.player.currentItem?.duration.seconds, !duration.isNaN {
+				strongSelf.timeEndLabel.text = SUtils.convertTime(seconds: duration, needHours: true)
+				strongSelf.updateTimeSlider()
 			}
 		}
 	}
@@ -102,9 +103,39 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
+	@IBAction func onTimelineScrubbing(_ sender: Any) {
+		let percentage = currentTimeSlider.value
+		guard let duration = player.currentItem?.duration.seconds else { return }
+		let seekTime = Double(percentage) * duration
+		// 1000 instead 1 - fix error "very low timescale"
+		let cmTime = CMTime(seconds: seekTime, preferredTimescale: 1000)
+		player.seek(to: cmTime)
+	}
+	
+	
+	@IBAction func onVolumeScrubbing(_ sender: UISlider) {
+		player.volume = sender.value
+	}
+	
+	
+	@IBAction func onRewindClick(_ sender: Any) {
+		timelineJump(seconds: -15)
+	}
+	
+	
+	@IBAction func onForwardClick(_ sender: Any) {
+		timelineJump(seconds: 15)
+	}
+	
+	
 	@IBAction func onDismissClick(_ sender: Any) {
-		player.pause()
 		self.removeFromSuperview()
+	}
+	
+	private func timelineJump(seconds: Int) {
+		let fifteenSeconds = CMTime(seconds: Double(seconds), preferredTimescale: 1)
+		let seekTime = CMTimeAdd(player.currentTime(), fifteenSeconds)
+		player.seek(to: seekTime)
 	}
 	
 	

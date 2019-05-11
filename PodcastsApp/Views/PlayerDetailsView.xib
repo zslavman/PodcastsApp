@@ -43,6 +43,9 @@
                             <constraints>
                                 <constraint firstAttribute="height" constant="40" id="P3y-8S-8Og"/>
                             </constraints>
+                            <connections>
+                                <action selector="onTimelineScrubbing:" destination="swc-Ce-Tw5" eventType="valueChanged" id="KPU-ON-QS8"/>
+                            </connections>
                         </slider>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="fNT-dz-M8C" userLabel="Stack View Time">
                             <rect key="frame" x="0.0" y="426" width="327" height="22"/>
@@ -100,6 +103,9 @@
                                     </constraints>
                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <state key="normal" title="Button" image="rewind15"/>
+                                    <connections>
+                                        <action selector="onRewindClick:" destination="swc-Ce-Tw5" eventType="touchUpInside" id="oGg-sq-ai4"/>
+                                    </connections>
                                 </button>
                                 <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pih-qK-jaR">
                                     <rect key="frame" x="93" y="0.0" width="48.5" height="81"/>
@@ -123,7 +129,10 @@
                                         <constraint firstAttribute="width" constant="44" id="y34-MA-F4G"/>
                                     </constraints>
                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <state key="normal" title="Button" image="fastforward15"/>
+                                    <state key="normal" title="55" image="fastforward15"/>
+                                    <connections>
+                                        <action selector="onForwardClick:" destination="swc-Ce-Tw5" eventType="touchUpInside" id="LoZ-IF-aKp"/>
+                                    </connections>
                                 </button>
                                 <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="uzg-rV-KOb">
                                     <rect key="frame" x="278.5" y="0.0" width="48.5" height="81"/>
@@ -140,8 +149,11 @@
                                         <constraint firstAttribute="width" constant="34" id="mlQ-Ux-hNF"/>
                                     </constraints>
                                 </imageView>
-                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="0II-u5-fvh">
+                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.80000000000000004" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="0II-u5-fvh">
                                     <rect key="frame" x="32" y="0.0" width="263" height="35"/>
+                                    <connections>
+                                        <action selector="onVolumeScrubbing:" destination="swc-Ce-Tw5" eventType="valueChanged" id="zaH-vj-L5L"/>
+                                    </connections>
                                 </slider>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="max_volume" translatesAutoresizingMaskIntoConstraints="NO" id="Zxt-qQ-4Ft">
                                     <rect key="frame" x="293" y="0.0" width="34" height="34"/>
