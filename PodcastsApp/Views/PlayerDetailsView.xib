@@ -38,29 +38,29 @@
                                 <constraint firstAttribute="width" secondItem="YQD-pU-dwg" secondAttribute="height" id="LQ8-c4-PrY"/>
                             </constraints>
                         </imageView>
-                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="yAq-85-y7H">
+                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="yAq-85-y7H">
                             <rect key="frame" x="-2" y="381" width="331" height="41"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="40" id="P3y-8S-8Og"/>
                             </constraints>
                         </slider>
-                        <stackView opaque="NO" contentMode="scaleToFill" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="fNT-dz-M8C" userLabel="Stack View Time">
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="fNT-dz-M8C" userLabel="Stack View Time">
                             <rect key="frame" x="0.0" y="426" width="327" height="22"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YQo-Uc-HkG">
-                                    <rect key="frame" x="0.0" y="0.0" width="71.5" height="20.5"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YQo-Uc-HkG">
+                                    <rect key="frame" x="0.0" y="0.0" width="41.5" height="18"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tc9-te-96V">
-                                    <rect key="frame" x="71.5" y="0.0" width="184" height="22"/>
+                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tc9-te-96V">
+                                    <rect key="frame" x="143.5" y="0.0" width="50" height="22"/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </view>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:00:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P1f-bz-vGr">
-                                    <rect key="frame" x="255.5" y="0.0" width="71.5" height="20.5"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="--:--" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P1f-bz-vGr">
+                                    <rect key="frame" x="295" y="0.0" width="32" height="18"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
@@ -167,7 +167,10 @@
             <viewLayoutGuide key="safeArea" id="bbg-3z-tcy"/>
             <connections>
                 <outlet property="authorLabel" destination="HEJ-lI-aH2" id="TnJ-Dt-Sqi"/>
+                <outlet property="currentTimeSlider" destination="yAq-85-y7H" id="rhF-Nh-Dnw"/>
                 <outlet property="playPauseBttn" destination="3fB-bQ-qgn" id="7Ii-0m-Bn3"/>
+                <outlet property="timeBeginLabel" destination="YQo-Uc-HkG" id="TAA-xN-U1N"/>
+                <outlet property="timeEndLabel" destination="P1f-bz-vGr" id="1qN-Gn-ypG"/>
                 <outlet property="titleImage" destination="YQD-pU-dwg" id="9AO-Cr-Sd6"/>
                 <outlet property="titleLabel" destination="FaJ-EI-IRE" id="2Xg-XO-Hdg"/>
             </connections>

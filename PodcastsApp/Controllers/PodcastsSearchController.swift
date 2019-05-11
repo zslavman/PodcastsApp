@@ -19,6 +19,7 @@ class PodcastsSearchController: UITableViewController {
 		super.viewDidLoad()
 		setupTable()
 		setupSearchBar()
+		searchBar(searchController.searchBar, textDidChange: "Voong") // set default search phrase
 	}
 	
 	private func setupTable() {

@@ -21,14 +21,15 @@ struct SUtils {
 	
 	
 	/// преобразует секунды в формат ММ:СС
-	static func convertTime(seconds: Double) -> String{
+	static func convertTime(seconds: Double, needHours: Bool = false) -> String {
 		let intValue = Int(seconds)
-		// let hou = intValue / 3600
+		let hou = intValue / 3600
 		let min = intValue / 60
 		let sec = intValue % 60
-		var time = String(format:"%2i:%02i", min, sec)
-		
-		time.removeFirst()
+		var time = String(format:"%02i:%02i", min, sec)
+		if needHours && hou > 0 {
+			time = String(format:"%02i:%02i:%02i", hou, min, sec)
+		}
 		return time
 	}
 	
