@@ -35,7 +35,7 @@ class EpisodeCell: UITableViewCell {
 		descriptionLabel.text 	= episode.description
 		pubDateLabel.text 		= SUtils.convertDate(date: episode.pubDate)
 		if let url = URL(string: episode.imageLink) {
-			episodeImageView.sd_setImage(with: url, completed: nil)
+			episodeImageView.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
 		}
 	}
 	
