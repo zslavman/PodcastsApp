@@ -14,6 +14,15 @@ class PlayerDetailsView: UIView {
 	@IBOutlet weak var timeBeginLabel: UILabel!
 	@IBOutlet weak var timeEndLabel: UILabel!
 	@IBOutlet weak var currentTimeSlider: UISlider!
+	@IBOutlet weak var currentVolumeSlider: UISlider!
+	@IBOutlet weak var maximizedStackView: UIStackView!
+	
+	@IBOutlet weak var minimizedStackView: UIStackView!
+	@IBOutlet weak var miniTitleImage: UIImageView!
+	@IBOutlet weak var miniLabel: UILabel!
+	@IBOutlet weak var miniPlayPauseBttn: UIButton!
+	
+	
 	@IBOutlet weak var titleImage: UIImageView! {
 		didSet {
 			titleImage.layer.cornerRadius = 8
@@ -33,11 +42,13 @@ class PlayerDetailsView: UIView {
 	}
 	public var episode: Episode! {
 		didSet {
+			miniLabel.text = episode.title
 			titleLabel.text = episode.title
 			authorLabel.text = episode.author
 			playEpisode()
 			guard let url = URL(string: episode.imageLink) else { return }
 			titleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
+			miniTitleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
 		}
 	}
 	private let player: AVPlayer = {
@@ -58,9 +69,10 @@ class PlayerDetailsView: UIView {
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		currentVolumeSlider.value = playerVolume
 		addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
 		observeCurrentPlayerTime()
-		let time = CMTimeMake(value: 1, timescale: 3) // delayed dispatcher for start animation
+		let time = CMTimeMake(value: 1, timescale: 3) // dispatcher animation after 1 second of playing
 		let times = [NSValue(time: time)]
 		player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
 			[weak self] in
@@ -105,11 +117,13 @@ class PlayerDetailsView: UIView {
 		if player.timeControlStatus == .paused {
 			player.play()
 			playPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+			miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
 			enlargeTitleImage()
 		}
 		else {
 			player.pause()
 			playPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+			miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
 			shrinkTitleImage()
 		}
 	}
@@ -126,7 +140,7 @@ class PlayerDetailsView: UIView {
 	
 	
 	@IBAction func onVolumeScrubbing(_ sender: UISlider) {
-		player.volume = sender.value
+		playerVolume = sender.value
 	}
 	
 	
@@ -171,7 +185,30 @@ class PlayerDetailsView: UIView {
 		guard let url = URL(string: episode.strimLink) else { return }
 		let playerItem = AVPlayerItem(url: url)
 		player.replaceCurrentItem(with: playerItem)
+		player.volume = playerVolume
 		player.play()
+	}
+	
+	private var playerVolume: Float {
+		get {
+			guard let generalVolume = UserDefaults.standard.object(forKey: "generalVolume") as? Float
+			else { return 1 }
+			return generalVolume
+		}
+		set {
+			UserDefaults.standard.set(newValue, forKey: "generalVolume")
+			player.volume = newValue
+		}
+	}
+	
+	
+	@IBAction func onMiniPlayPauseClick(_ sender: UIButton) {
+		onPlayPauseClick()
+	}
+	
+	
+	@IBAction func onMiniForwardClick(_ sender: UIButton) {
+		timelineJump(seconds: 15)
 	}
 	
 	

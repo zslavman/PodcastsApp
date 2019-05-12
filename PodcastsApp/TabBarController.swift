@@ -53,8 +53,10 @@ class TabBarController: UITabBarController {
 		minimizedTopAnchorConstraint.isActive = true
 		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 			self.view.layoutIfNeeded()
-			self.tabBar.transform = .identity
+			self.playerDetailsView.maximizedStackView.alpha = 0
+			self.playerDetailsView.minimizedStackView.alpha = 1
 		})
+		self.tabBar.transform = .identity
 	}
 	
 	
@@ -69,8 +71,10 @@ class TabBarController: UITabBarController {
 	
 		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 			self.view.layoutIfNeeded()
+			self.playerDetailsView.maximizedStackView.alpha = 1
+			self.playerDetailsView.minimizedStackView.alpha = 0
 		})
-		tabBar.transform = CGAffineTransform(translationX: 0, y: 100)
+		self.tabBar.transform = CGAffineTransform(translationX: 0, y: 100) // hide tabBar
 	}
 	
 	
