@@ -12,11 +12,67 @@ import UIKit
 
 class TabBarController: UITabBarController {
 	
+	
+	private var maximizedTopAnchorConstraint: NSLayoutConstraint!
+	private var minimizedTopAnchorConstraint: NSLayoutConstraint!
+	private let playerDetailsView = PlayerDetailsView.initFromNib()
+	
+	
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		UINavigationBar.appearance().prefersLargeTitles = true
 		setupTabs()
+		setupPlayerDetailsView()
 	}
+	
+	
+	
+	private func setupPlayerDetailsView() {
+		view.insertSubview(playerDetailsView, belowSubview: tabBar)
+		
+		maximizedTopAnchorConstraint =
+			playerDetailsView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height)
+		maximizedTopAnchorConstraint.isActive = true
+		
+		minimizedTopAnchorConstraint =
+			playerDetailsView.topAnchor.constraint(equalTo: tabBar.topAnchor, constant: -64)
+		//minimizedTopAnchorConstraint.isActive = true
+		
+		playerDetailsView.translatesAutoresizingMaskIntoConstraints = false
+		NSLayoutConstraint.activate([
+			playerDetailsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+			playerDetailsView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+			playerDetailsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+		])
+	}
+	
+	
+	@objc public func minimizePlayer() {
+		maximizedTopAnchorConstraint.isActive = false
+		minimizedTopAnchorConstraint.isActive = true
+		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+			self.view.layoutIfNeeded()
+			self.tabBar.transform = .identity
+		})
+	}
+	
+	
+	public func maximizePlayer(episode: Episode?) {
+		minimizedTopAnchorConstraint.isActive = false
+		maximizedTopAnchorConstraint.constant = 0
+		maximizedTopAnchorConstraint.isActive = true
+		
+		if episode != nil {
+			playerDetailsView.episode = episode
+		}
+	
+		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+			self.view.layoutIfNeeded()
+		})
+		tabBar.transform = CGAffineTransform(translationX: 0, y: 100)
+	}
+	
 	
 	private func setupTabs(){
 		viewControllers = [

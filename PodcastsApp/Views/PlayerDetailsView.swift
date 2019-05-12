@@ -50,16 +50,28 @@ class PlayerDetailsView: UIView {
 	
 	//MARK:- Class methods
 	
+	public static func initFromNib() -> PlayerDetailsView {
+		let playerDetailView = Bundle.main.loadNibNamed("PlayerDetailsView", owner: self, options: nil)?.first as! PlayerDetailsView
+		return playerDetailView
+	}
+	
+	
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
 		observeCurrentPlayerTime()
-		
 		let time = CMTimeMake(value: 1, timescale: 3) // delayed dispatcher for start animation
 		let times = [NSValue(time: time)]
 		player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
 			[weak self] in
 			self?.enlargeTitleImage()
 		}
+	}
+	
+	
+	@objc private func onThisViewClick() {
+		let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? TabBarController
+		tabBarVC?.maximizePlayer(episode: nil)
 	}
 	
 	
@@ -129,7 +141,9 @@ class PlayerDetailsView: UIView {
 	
 	
 	@IBAction func onDismissClick(_ sender: Any) {
-		self.removeFromSuperview()
+		//self.removeFromSuperview()
+		let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? TabBarController
+		tabBarVC?.minimizePlayer()
 	}
 	
 	private func timelineJump(seconds: Int) {
