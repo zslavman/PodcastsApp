@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -240,8 +236,8 @@
                 <outlet property="maximizedStackView" destination="z0g-7C-KyH" id="2zp-5V-srw"/>
                 <outlet property="miniLabel" destination="vQC-18-5wd" id="3ll-2l-7hh"/>
                 <outlet property="miniPlayPauseBttn" destination="lF0-DY-Nmh" id="aBh-vQ-loe"/>
+                <outlet property="miniPlayerView" destination="FXP-b6-61r" id="9IQ-5j-5Yh"/>
                 <outlet property="miniTitleImage" destination="ceu-o0-kGx" id="T4r-Ya-YLc"/>
-                <outlet property="minimizedStackView" destination="FXP-b6-61r" id="9IQ-5j-5Yh"/>
                 <outlet property="playPauseBttn" destination="3fB-bQ-qgn" id="7Ii-0m-Bn3"/>
                 <outlet property="timeBeginLabel" destination="YQo-Uc-HkG" id="TAA-xN-U1N"/>
                 <outlet property="timeEndLabel" destination="P1f-bz-vGr" id="1qN-Gn-ypG"/>

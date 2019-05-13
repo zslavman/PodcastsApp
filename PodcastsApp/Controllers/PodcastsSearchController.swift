@@ -59,10 +59,6 @@ class PodcastsSearchController: UITableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: PodcastCell.cellID, for: indexPath) as! PodcastCell
 		cell.podcast = podcasts[indexPath.row]
-		//let podcast = podcasts[indexPath.row]
-		//cell.textLabel?.text = "\(podcast.trackName ?? "")\n\(podcast.artistName ?? "")"
-		//cell.textLabel?.numberOfLines = -1 // trix - multilines
-		//cell.imageView?.image = #imageLiteral(resourceName: "appicon")
 		return cell
 	}
 	

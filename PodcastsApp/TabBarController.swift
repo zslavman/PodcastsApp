@@ -30,6 +30,11 @@ class TabBarController: UITabBarController {
 	
 	private func setupPlayerDetailsView() {
 		view.insertSubview(playerDetailsView, belowSubview: tabBar)
+		playerDetailsView.layer.shadowColor = UIColor.black.cgColor
+		playerDetailsView.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+		playerDetailsView.layer.shadowRadius = 4
+		playerDetailsView.layer.shadowOpacity = 0.6
+		playerDetailsView.layer.masksToBounds = false
 		
 		maximizedTopAnchorConstraint =
 			playerDetailsView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height)
@@ -37,7 +42,6 @@ class TabBarController: UITabBarController {
 		
 		minimizedTopAnchorConstraint =
 			playerDetailsView.topAnchor.constraint(equalTo: tabBar.topAnchor, constant: -64)
-		//minimizedTopAnchorConstraint.isActive = true
 		
 		playerDetailsView.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
@@ -46,7 +50,7 @@ class TabBarController: UITabBarController {
 			playerDetailsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 		])
 	}
-	
+
 	
 	@objc public func minimizePlayer() {
 		maximizedTopAnchorConstraint.isActive = false
@@ -54,7 +58,7 @@ class TabBarController: UITabBarController {
 		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 			self.view.layoutIfNeeded()
 			self.playerDetailsView.maximizedStackView.alpha = 0
-			self.playerDetailsView.minimizedStackView.alpha = 1
+			self.playerDetailsView.miniPlayerView.alpha = 1
 		})
 		self.tabBar.transform = .identity
 	}
@@ -72,7 +76,7 @@ class TabBarController: UITabBarController {
 		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 			self.view.layoutIfNeeded()
 			self.playerDetailsView.maximizedStackView.alpha = 1
-			self.playerDetailsView.minimizedStackView.alpha = 0
+			self.playerDetailsView.miniPlayerView.alpha = 0
 		})
 		self.tabBar.transform = CGAffineTransform(translationX: 0, y: 100) // hide tabBar
 	}

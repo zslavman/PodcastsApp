@@ -11,18 +11,16 @@ import AVKit
 
 class PlayerDetailsView: UIView {
 	
-	@IBOutlet weak var timeBeginLabel: UILabel!
-	@IBOutlet weak var timeEndLabel: UILabel!
-	@IBOutlet weak var currentTimeSlider: UISlider!
-	@IBOutlet weak var currentVolumeSlider: UISlider!
-	@IBOutlet weak var maximizedStackView: UIStackView!
-	
-	@IBOutlet weak var minimizedStackView: UIStackView!
+	@IBOutlet weak var miniPlayerView: UIStackView! // stack container
 	@IBOutlet weak var miniTitleImage: UIImageView!
 	@IBOutlet weak var miniLabel: UILabel!
 	@IBOutlet weak var miniPlayPauseBttn: UIButton!
 	
-	
+	@IBOutlet weak var maximizedStackView: UIStackView!
+	@IBOutlet weak var timeBeginLabel: UILabel!
+	@IBOutlet weak var timeEndLabel: UILabel!
+	@IBOutlet weak var currentTimeSlider: UISlider!
+	@IBOutlet weak var currentVolumeSlider: UISlider!
 	@IBOutlet weak var titleImage: UIImageView! {
 		didSet {
 			titleImage.layer.cornerRadius = 8
@@ -69,8 +67,10 @@ class PlayerDetailsView: UIView {
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
-		currentVolumeSlider.value = playerVolume
 		addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
+		addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:))))
+		
+		currentVolumeSlider.value = playerVolume
 		observeCurrentPlayerTime()
 		let time = CMTimeMake(value: 1, timescale: 3) // dispatcher animation after 1 second of playing
 		let times = [NSValue(time: time)]
@@ -125,6 +125,26 @@ class PlayerDetailsView: UIView {
 			playPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
 			miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
 			shrinkTitleImage()
+		}
+	}
+	
+	
+	@objc public func onPan(gesture: UIPanGestureRecognizer) {
+		if gesture.state == .began {
+			print("began")
+		}
+		else if gesture.state == .changed {
+			let translation = gesture.translation(in: self.superview)
+			transform = CGAffineTransform(translationX: 0, y: translation.y)
+			self.miniPlayerView.alpha = 1 + translation.y / 200
+			self.maximizedStackView.alpha = -translation.y / 200
+		}
+		else if gesture.state == .ended {
+			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+				self.transform = .identity
+				self.miniPlayerView.alpha = 1
+				self.maximizedStackView.alpha = 0
+			})
 		}
 	}
 	

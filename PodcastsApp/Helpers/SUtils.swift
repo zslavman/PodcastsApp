@@ -24,7 +24,7 @@ struct SUtils {
 	static func convertTime(seconds: Double, needHours: Bool = false) -> String {
 		let intValue = Int(seconds)
 		let hou = intValue / 3600
-		let min = intValue / 60
+		let min = (intValue / 60) % 60
 		let sec = intValue % 60
 		var time = String(format:"%02i:%02i", min, sec)
 		if needHours && hou > 0 {
