@@ -54,6 +54,9 @@ class PlayerDetailsView: UIView {
 		avp.automaticallyWaitsToMinimizeStalling = false // remove delay on begin of autoplay
 		return avp
 	}()
+	private var tabBarVC: TabBarController? {
+		return UIApplication.shared.keyWindow?.rootViewController as? TabBarController
+	}
 	
 	
 	
@@ -82,8 +85,8 @@ class PlayerDetailsView: UIView {
 	
 	
 	@objc private func onThisViewClick() {
-		let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? TabBarController
-		tabBarVC?.maximizePlayer(episode: nil)
+		let tabVC = tabBarVC
+		tabVC?.maximizePlayer(episode: nil)
 	}
 	
 	
@@ -140,10 +143,18 @@ class PlayerDetailsView: UIView {
 			self.maximizedStackView.alpha = -translation.y / 200
 		}
 		else if gesture.state == .ended {
+			let translation = gesture.translation(in: self.superview)
 			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 				self.transform = .identity
-				self.miniPlayerView.alpha = 1
-				self.maximizedStackView.alpha = 0
+				
+				if translation.y < 200 {
+					let minTabVC = self.tabBarVC
+					minTabVC?.maximizePlayer(episode: nil)
+				}
+				else {
+					self.miniPlayerView.alpha = 1
+					self.maximizedStackView.alpha = 0
+				}
 			})
 		}
 	}
@@ -176,8 +187,8 @@ class PlayerDetailsView: UIView {
 	
 	@IBAction func onDismissClick(_ sender: Any) {
 		//self.removeFromSuperview()
-		let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? TabBarController
-		tabBarVC?.minimizePlayer()
+		let tabVC = tabBarVC
+		tabVC?.minimizePlayer()
 	}
 	
 	private func timelineJump(seconds: Int) {
