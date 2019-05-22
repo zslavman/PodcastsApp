@@ -57,7 +57,7 @@ class PlayerDetailsView: UIView {
 	private var tabBarVC: TabBarController? {
 		return UIApplication.shared.keyWindow?.rootViewController as? TabBarController
 	}
-	
+	private var panGesture: UIPanGestureRecognizer!
 	
 	
 	//MARK:- Class methods
@@ -71,7 +71,8 @@ class PlayerDetailsView: UIView {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
-		addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:))))
+		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
+		addGestureRecognizer(panGesture)
 		
 		currentVolumeSlider.value = playerVolume
 		observeCurrentPlayerTime()
@@ -87,6 +88,7 @@ class PlayerDetailsView: UIView {
 	@objc private func onThisViewClick() {
 		let tabVC = tabBarVC
 		tabVC?.maximizePlayer(episode: nil)
+		panGesture.isEnabled = false
 	}
 	
 	
@@ -137,26 +139,37 @@ class PlayerDetailsView: UIView {
 			print("began")
 		}
 		else if gesture.state == .changed {
-			let translation = gesture.translation(in: self.superview)
-			transform = CGAffineTransform(translationX: 0, y: translation.y)
-			self.miniPlayerView.alpha = 1 + translation.y / 200
-			self.maximizedStackView.alpha = -translation.y / 200
+			panChanged(gesture: gesture)
 		}
 		else if gesture.state == .ended {
-			let translation = gesture.translation(in: self.superview)
-			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
-				self.transform = .identity
-				
-				if translation.y < 200 {
-					let minTabVC = self.tabBarVC
-					minTabVC?.maximizePlayer(episode: nil)
-				}
-				else {
-					self.miniPlayerView.alpha = 1
-					self.maximizedStackView.alpha = 0
-				}
-			})
+			panEnded(gesture: gesture)
 		}
+	}
+	
+	
+	private func panChanged(gesture: UIPanGestureRecognizer) {
+		let translation = gesture.translation(in: self.superview)
+		transform = CGAffineTransform(translationX: 0, y: translation.y)
+		self.miniPlayerView.alpha = 1 + translation.y / 200
+		self.maximizedStackView.alpha = -translation.y / 200
+	}
+	
+	private func panEnded(gesture: UIPanGestureRecognizer) {
+		let translation = gesture.translation(in: self.superview)
+		let velocity = gesture.velocity(in: self.superview)
+		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+			self.transform = .identity
+			
+			if translation.y < -200 || velocity.y < -500 {
+				let minTabVC = self.tabBarVC
+				minTabVC?.maximizePlayer(episode: nil)
+				gesture.isEnabled = false
+			}
+			else {
+				self.miniPlayerView.alpha = 1
+				self.maximizedStackView.alpha = 0
+			}
+		})
 	}
 	
 	
@@ -189,6 +202,7 @@ class PlayerDetailsView: UIView {
 		//self.removeFromSuperview()
 		let tabVC = tabBarVC
 		tabVC?.minimizePlayer()
+		panGesture.isEnabled = true
 	}
 	
 	private func timelineJump(seconds: Int) {

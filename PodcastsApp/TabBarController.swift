@@ -15,6 +15,7 @@ class TabBarController: UITabBarController {
 	
 	private var maximizedTopAnchorConstraint: NSLayoutConstraint!
 	private var minimizedTopAnchorConstraint: NSLayoutConstraint!
+	private var bottomAnchorConstraint: NSLayoutConstraint!
 	private let playerDetailsView = PlayerDetailsView.initFromNib()
 	
 	
@@ -35,18 +36,19 @@ class TabBarController: UITabBarController {
 		playerDetailsView.layer.shadowRadius = 4
 		playerDetailsView.layer.shadowOpacity = 0.6
 		playerDetailsView.layer.masksToBounds = false
+		playerDetailsView.translatesAutoresizingMaskIntoConstraints = false
 		
 		maximizedTopAnchorConstraint =
 			playerDetailsView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height)
 		maximizedTopAnchorConstraint.isActive = true
 		
-		minimizedTopAnchorConstraint =
-			playerDetailsView.topAnchor.constraint(equalTo: tabBar.topAnchor, constant: -64)
+		bottomAnchorConstraint = playerDetailsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
+		bottomAnchorConstraint.isActive = true
 		
-		playerDetailsView.translatesAutoresizingMaskIntoConstraints = false
+		minimizedTopAnchorConstraint = playerDetailsView.topAnchor.constraint(equalTo: tabBar.topAnchor, constant: -64)
+		
 		NSLayoutConstraint.activate([
 			playerDetailsView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-			playerDetailsView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 			playerDetailsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 		])
 	}
@@ -54,6 +56,7 @@ class TabBarController: UITabBarController {
 	
 	@objc public func minimizePlayer() {
 		maximizedTopAnchorConstraint.isActive = false
+		bottomAnchorConstraint.constant = view.frame.height
 		minimizedTopAnchorConstraint.isActive = true
 		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 			self.view.layoutIfNeeded()
@@ -69,6 +72,8 @@ class TabBarController: UITabBarController {
 		maximizedTopAnchorConstraint.constant = 0
 		maximizedTopAnchorConstraint.isActive = true
 		
+		bottomAnchorConstraint.constant = 0
+		
 		if episode != nil {
 			playerDetailsView.episode = episode
 		}
@@ -82,7 +87,7 @@ class TabBarController: UITabBarController {
 	}
 	
 	
-	private func setupTabs(){
+	private func setupTabs() {
 		viewControllers = [
 			createNavController(rootVC: PodcastsSearchController(), title: "Поиск", img: #imageLiteral(resourceName: "search")),
 			createNavController(rootVC: ViewController(), title: "Любимые", img: #imageLiteral(resourceName: "favorites")),
