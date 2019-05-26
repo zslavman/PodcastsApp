@@ -28,7 +28,6 @@ class TabBarController: UITabBarController {
 	}
 	
 	
-	
 	private func setupPlayerDetailsView() {
 		view.insertSubview(playerDetailsView, belowSubview: tabBar)
 		playerDetailsView.layer.shadowColor = UIColor.black.cgColor
@@ -69,15 +68,14 @@ class TabBarController: UITabBarController {
 	
 	public func maximizePlayer(episode: Episode?) {
 		minimizedTopAnchorConstraint.isActive = false
-		maximizedTopAnchorConstraint.constant = 0
 		maximizedTopAnchorConstraint.isActive = true
+		maximizedTopAnchorConstraint.constant = 0
 		
 		bottomAnchorConstraint.constant = 0
 		
 		if episode != nil {
 			playerDetailsView.episode = episode
 		}
-	
 		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 			self.view.layoutIfNeeded()
 			self.playerDetailsView.maximizedStackView.alpha = 1
@@ -103,7 +101,5 @@ class TabBarController: UITabBarController {
 		rootVC.navigationItem.title = title // title on top of VC
 		return navVC
 	}
-	
-	
 	
 }

@@ -68,12 +68,10 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
+	
 	override func awakeFromNib() {
 		super.awakeFromNib()
-		addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
-		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
-		addGestureRecognizer(panGesture)
-		
+		setupGestures()
 		currentVolumeSlider.value = playerVolume
 		observeCurrentPlayerTime()
 		let time = CMTimeMake(value: 1, timescale: 3) // dispatcher animation after 1 second of playing
@@ -85,10 +83,46 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
+	private func setupGestures() {
+		addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
+		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
+		miniPlayerView.addGestureRecognizer(panGesture)
+		maximizedStackView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(dragToDismiss)))
+	}
+	
+	
+	
+	@objc private func dragToDismiss(gesture: UIPanGestureRecognizer) {
+		//print("positionY = \(gesture.translation(in: self).y)")
+		let translation = gesture.translation(in: superview)
+		if gesture.state == .changed {
+			maximizedStackView.transform = CGAffineTransform(translationX: 0, y: translation.y)
+		}
+		else if gesture.state == .ended {
+			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
+				self.maximizedStackView.transform = .identity
+				if translation.y > 200 {
+					self.tabBarVC?.minimizePlayer()
+				}
+			})
+		}
+		
+	}
+	
+	
+	/// maximize
 	@objc private func onThisViewClick() {
 		let tabVC = tabBarVC
 		tabVC?.maximizePlayer(episode: nil)
-		panGesture.isEnabled = false
+		//panGesture.isEnabled = false
+	}
+	
+	
+	/// minimize
+	@IBAction func onDismissClick(_ sender: Any) {
+		let tabVC = tabBarVC
+		tabVC?.minimizePlayer()
+		//panGesture.isEnabled = true
 	}
 	
 	
@@ -161,9 +195,7 @@ class PlayerDetailsView: UIView {
 			self.transform = .identity
 			
 			if translation.y < -200 || velocity.y < -500 {
-				let minTabVC = self.tabBarVC
-				minTabVC?.maximizePlayer(episode: nil)
-				gesture.isEnabled = false
+				self.tabBarVC?.maximizePlayer(episode: nil)
 			}
 			else {
 				self.miniPlayerView.alpha = 1
@@ -195,14 +227,6 @@ class PlayerDetailsView: UIView {
 	
 	@IBAction func onForwardClick(_ sender: Any) {
 		timelineJump(seconds: 15)
-	}
-	
-	
-	@IBAction func onDismissClick(_ sender: Any) {
-		//self.removeFromSuperview()
-		let tabVC = tabBarVC
-		tabVC?.minimizePlayer()
-		panGesture.isEnabled = true
 	}
 	
 	private func timelineJump(seconds: Int) {
