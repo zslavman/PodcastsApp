@@ -8,6 +8,7 @@
 
 import UIKit
 import AVKit
+import MediaPlayer
 
 class PlayerDetailsView: UIView {
 	
@@ -71,6 +72,7 @@ class PlayerDetailsView: UIView {
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		setupBackgroundMode()
 		setupGestures()
 		currentVolumeSlider.value = playerVolume
 		observeCurrentPlayerTime()
@@ -83,13 +85,50 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
+	/// allow play podcasts on locked screen (or in background)
+	private func setupBackgroundMode() {
+		// setupAudioSesion
+		do {
+			try AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback, options: [])
+			try AVAudioSession.sharedInstance().setActive(true, options: [])
+		}
+		catch let err {
+			print("Failed to activate session: ", err.localizedDescription)
+		}
+		// setupRemoteControl
+		UIApplication.shared.beginReceivingRemoteControlEvents()
+		let commandCenter = MPRemoteCommandCenter.shared()
+		commandCenter.playCommand.isEnabled = true
+		commandCenter.playCommand.addTarget {
+			(_) -> MPRemoteCommandHandlerStatus in
+			self.player.play()
+			self.playPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+			self.miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+			return .success
+		}
+		commandCenter.pauseCommand.isEnabled = true
+		commandCenter.pauseCommand.addTarget {
+			(_) -> MPRemoteCommandHandlerStatus in
+			self.player.pause()
+			self.playPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+			self.miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+			return .success
+		}
+		commandCenter.togglePlayPauseCommand.isEnabled = true // for headphones button
+		commandCenter.togglePlayPauseCommand.addTarget {
+			(_) -> MPRemoteCommandHandlerStatus in
+			self.onPlayPauseClick()
+			return .success
+		}
+	}
+	
+	
 	private func setupGestures() {
 		addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
 		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
 		miniPlayerView.addGestureRecognizer(panGesture)
 		maximizedStackView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(dragToDismiss)))
 	}
-	
 	
 	
 	@objc private func dragToDismiss(gesture: UIPanGestureRecognizer) {
@@ -99,9 +138,10 @@ class PlayerDetailsView: UIView {
 			maximizedStackView.transform = CGAffineTransform(translationX: 0, y: translation.y)
 		}
 		else if gesture.state == .ended {
+			let velocity = gesture.velocity(in: superview)
 			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 				self.maximizedStackView.transform = .identity
-				if translation.y > 200 {
+				if translation.y > 100 || velocity.y > 500 {
 					self.tabBarVC?.minimizePlayer()
 				}
 			})
@@ -122,7 +162,6 @@ class PlayerDetailsView: UIView {
 	@IBAction func onDismissClick(_ sender: Any) {
 		let tabVC = tabBarVC
 		tabVC?.minimizePlayer()
-		//panGesture.isEnabled = true
 	}
 	
 	
@@ -167,7 +206,7 @@ class PlayerDetailsView: UIView {
 		}
 	}
 	
-	
+	/// drag to maximize
 	@objc public func onPan(gesture: UIPanGestureRecognizer) {
 		if gesture.state == .began {
 			print("began")
