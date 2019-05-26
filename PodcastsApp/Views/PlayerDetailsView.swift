@@ -44,10 +44,15 @@ class PlayerDetailsView: UIView {
 			miniLabel.text = episode.title
 			titleLabel.text = episode.title
 			authorLabel.text = episode.author
+			setupLockScreenPlayingInfo()
 			playEpisode()
 			guard let url = URL(string: episode.imageLink) else { return }
 			titleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
-			miniTitleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
+			miniTitleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: []) {
+				(image, _, _, _) in
+				guard let image = image else { return }
+				self.setupLockScreenPlayingArtwork(image: image)
+			}
 		}
 	}
 	private let player: AVPlayer = {
@@ -68,20 +73,58 @@ class PlayerDetailsView: UIView {
 		return playerDetailView
 	}
 	
-	
-	
+
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		setupBackgroundMode()
 		setupGestures()
 		currentVolumeSlider.value = playerVolume
 		observeCurrentPlayerTime()
+		observeBoundaryTime()
+	}
+	
+	
+	
+	private func observeBoundaryTime() {
 		let time = CMTimeMake(value: 1, timescale: 3) // dispatcher animation after 1 second of playing
 		let times = [NSValue(time: time)]
 		player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
-			[weak self] in
+			[weak self] in // episode start playing
 			self?.enlargeTitleImage()
+			self?.setupLockScreenPlayingCurrentTime(needEditDuration: true)
 		}
+	}
+	
+	
+	/// lockscreen Author + title setup
+	private func setupLockScreenPlayingInfo() {
+		var nowPlayingInfo = [String: Any]()
+		nowPlayingInfo[MPMediaItemPropertyArtist] = episode.author
+		nowPlayingInfo[MPMediaItemPropertyTitle] = episode.title
+		MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+	}
+	
+	
+	/// lockscreen Album artwork setup
+	private func setupLockScreenPlayingArtwork(image: UIImage) {
+		var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo
+		let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: {
+			(_) -> UIImage in
+			return image
+		})
+		nowPlayingInfo?[MPMediaItemPropertyArtwork] = artwork
+		MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+	}
+	
+	
+	/// lockscreen current time + duration setup
+	private func setupLockScreenPlayingCurrentTime(needEditDuration: Bool) {
+		if needEditDuration, let duration = player.currentItem?.duration.seconds {
+			MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = duration
+		}
+		// if not set elapsedTime you will have a bug after pause click
+		let elapsedTime = player.currentTime().seconds
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = elapsedTime
 	}
 	
 	
@@ -104,6 +147,7 @@ class PlayerDetailsView: UIView {
 			self.player.play()
 			self.playPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
 			self.miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+			self.setupLockScreenPlayingCurrentTime(needEditDuration: false)
 			return .success
 		}
 		commandCenter.pauseCommand.isEnabled = true
@@ -112,6 +156,7 @@ class PlayerDetailsView: UIView {
 			self.player.pause()
 			self.playPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
 			self.miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+			self.setupLockScreenPlayingCurrentTime(needEditDuration: false)
 			return .success
 		}
 		commandCenter.togglePlayPauseCommand.isEnabled = true // for headphones button
@@ -172,7 +217,7 @@ class PlayerDetailsView: UIView {
 		let interval = CMTimeMake(value: 1, timescale: 2) // timer for update durations
 		player.addPeriodicTimeObserver(forInterval: interval, queue: .main) {
 			[weak self] (time) in
-			guard let strongSelf = self else { return }
+			guard let strongSelf = self else { return } // fix retain cycle
 			let totalSeconds = CMTimeGetSeconds(time)
 			strongSelf.timeBeginLabel.text = SUtils.convertTime(seconds: totalSeconds)
 			if let duration = strongSelf.player.currentItem?.duration.seconds, !duration.isNaN {
