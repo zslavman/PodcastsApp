@@ -57,7 +57,7 @@ class PlayerDetailsView: UIView {
 	}
 	private let player: AVPlayer = {
 		let avp = AVPlayer()
-		avp.automaticallyWaitsToMinimizeStalling = false // remove delay on begin of autoplay
+		avp.automaticallyWaitsToMinimizeStalling = false // remove delay on begining of autoplay
 		return avp
 	}()
 	private var tabBarVC: TabBarController? {
@@ -132,30 +132,28 @@ class PlayerDetailsView: UIView {
 	private func setupBackgroundMode() {
 		// setupAudioSesion
 		do {
-			try AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback, options: [])
+			try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
 			try AVAudioSession.sharedInstance().setActive(true, options: [])
 		}
 		catch let err {
 			print("Failed to activate session: ", err.localizedDescription)
 		}
 		// setupRemoteControl
-		UIApplication.shared.beginReceivingRemoteControlEvents()
+		//UIApplication.shared.beginReceivingRemoteControlEvents()
 		let commandCenter = MPRemoteCommandCenter.shared()
 		commandCenter.playCommand.isEnabled = true
 		commandCenter.playCommand.addTarget {
 			(_) -> MPRemoteCommandHandlerStatus in
-			self.player.play()
-			self.playPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
-			self.miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+			self.onPlayPauseClick()
 			self.setupLockScreenPlayingCurrentTime(needEditDuration: false)
+			//MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 1
 			return .success
 		}
 		commandCenter.pauseCommand.isEnabled = true
 		commandCenter.pauseCommand.addTarget {
 			(_) -> MPRemoteCommandHandlerStatus in
-			self.player.pause()
-			self.playPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
-			self.miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+			self.onPlayPauseClick()
+			//MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 0
 			self.setupLockScreenPlayingCurrentTime(needEditDuration: false)
 			return .success
 		}
@@ -177,7 +175,6 @@ class PlayerDetailsView: UIView {
 	
 	
 	@objc private func dragToDismiss(gesture: UIPanGestureRecognizer) {
-		//print("positionY = \(gesture.translation(in: self).y)")
 		let translation = gesture.translation(in: superview)
 		if gesture.state == .changed {
 			maximizedStackView.transform = CGAffineTransform(translationX: 0, y: translation.y)
@@ -295,6 +292,9 @@ class PlayerDetailsView: UIView {
 		let seekTime = Double(percentage) * duration
 		// 1000 instead 1 - fix error "very low timescale"
 		let cmTime = CMTime(seconds: seekTime, preferredTimescale: 1000)
+		// fix for background
+		let seconds = cmTime.seconds
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = seconds
 		player.seek(to: cmTime)
 	}
 	
