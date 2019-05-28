@@ -64,6 +64,10 @@ class PlayerDetailsView: UIView {
 		return UIApplication.shared.keyWindow?.rootViewController as? TabBarController
 	}
 	private var panGesture: UIPanGestureRecognizer!
+	public var playlist = [Episode]()
+	
+	
+	
 	
 	
 	//MARK:- Class methods
@@ -98,22 +102,19 @@ class PlayerDetailsView: UIView {
 	
 	/// lockscreen Author + title setup
 	private func setupLockScreenPlayingInfo() {
-		var nowPlayingInfo = [String: Any]()
-		nowPlayingInfo[MPMediaItemPropertyArtist] = episode.author
-		nowPlayingInfo[MPMediaItemPropertyTitle] = episode.title
-		MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+		MPNowPlayingInfoCenter.default().nowPlayingInfo = [String:Any]()
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtist] = episode.author
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyTitle] = episode.title
 	}
 	
 	
 	/// lockscreen Album artwork setup
 	private func setupLockScreenPlayingArtwork(image: UIImage) {
-		var nowPlayingInfo = MPNowPlayingInfoCenter.default().nowPlayingInfo
 		let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: {
 			(_) -> UIImage in
 			return image
 		})
-		nowPlayingInfo?[MPMediaItemPropertyArtwork] = artwork
-		MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = artwork
 	}
 	
 	
@@ -163,6 +164,18 @@ class PlayerDetailsView: UIView {
 			self.onPlayPauseClick()
 			return .success
 		}
+		commandCenter.nextTrackCommand.addTarget(self, action: #selector(onNextTrack))
+	}
+	
+	
+	@objc private func onNextTrack() {
+		guard !playlist.isEmpty else { return }
+		let currentIndex = playlist.firstIndex {
+			(ep) -> Bool in
+			return self.episode.author == ep.author && self.episode.title == ep.title
+		}
+		let nextEpisode = playlist[currentIndex + 1]
+		episode = nextEpisode
 	}
 	
 	

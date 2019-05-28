@@ -61,15 +61,9 @@ class EpisodesController: UITableViewController {
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//		let window = UIApplication.shared.keyWindow
-//		let playerDetailView = PlayerDetailsView.initFromNib()
-//		playerDetailView.episode = episodes[indexPath.row]
-//		playerDetailView.frame = self.view.frame
-//		window?.addSubview(playerDetailView)
 		let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? TabBarController
-		tabBarVC?.maximizePlayer(episode: episodes[indexPath.row])
+		tabBarVC?.maximizePlayer(episode: episodes[indexPath.row], playlist: episodes)
 	}
-	
 	
 	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
 		let activityIndicatorView = UIActivityIndicatorView(style: .whiteLarge)
@@ -77,7 +71,6 @@ class EpisodesController: UITableViewController {
 		activityIndicatorView.startAnimating()
 		return activityIndicatorView
 	}
-	
 	
 	override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
 		return episodes.isEmpty ? 200 : 0
