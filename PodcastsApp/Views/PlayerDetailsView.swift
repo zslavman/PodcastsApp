@@ -102,9 +102,10 @@ class PlayerDetailsView: UIView {
 	
 	/// lockscreen Author + title setup
 	private func setupLockScreenPlayingInfo() {
-		MPNowPlayingInfoCenter.default().nowPlayingInfo = [String:Any]()
-		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtist] = episode.author
-		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyTitle] = episode.title
+		var mediaDict = [String:Any]()
+		mediaDict[MPMediaItemPropertyArtist] = episode.author
+		mediaDict[MPMediaItemPropertyTitle] = episode.title
+		MPNowPlayingInfoCenter.default().nowPlayingInfo = mediaDict
 	}
 	
 	
@@ -165,17 +166,45 @@ class PlayerDetailsView: UIView {
 			return .success
 		}
 		commandCenter.nextTrackCommand.addTarget(self, action: #selector(onNextTrack))
+		commandCenter.previousTrackCommand.addTarget(self, action: #selector(onPrevTrack))
+		
 	}
 	
 	
+	
+	@objc private func onPrevTrack() {
+		changeTrack(arg: -1)
+	}
+	
 	@objc private func onNextTrack() {
+		changeTrack(arg: 1)
+	}
+	
+	@objc private func changeTrack(arg: Int) {
 		guard !playlist.isEmpty else { return }
 		let currentIndex = playlist.firstIndex {
 			(ep) -> Bool in
 			return self.episode.author == ep.author && self.episode.title == ep.title
 		}
-		let nextEpisode = playlist[currentIndex + 1]
-		episode = nextEpisode
+		guard var index = currentIndex else { return }
+		if arg > 0 { // next track
+			if index == playlist.count - 1 {
+				index = 0
+			}
+			else {
+				index += 1
+			}
+		}
+		else { // prev track
+			if index == 0 {
+				index = playlist.count - 1
+			}
+			else {
+				index -= 1
+			}
+		}
+		let nextEpisode = playlist[index]
+		episode = nextEpisode // this line switch current played track!
 	}
 	
 	
