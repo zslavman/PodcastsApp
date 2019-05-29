@@ -9,6 +9,7 @@
 import UIKit
 import AVKit
 import MediaPlayer
+import AVKit
 
 class PlayerDetailsView: UIView {
 	
@@ -45,6 +46,7 @@ class PlayerDetailsView: UIView {
 			titleLabel.text = episode.title
 			authorLabel.text = episode.author
 			setupLockScreenPlayingInfo()
+			setupAudiosessionBackgroundMode()
 			playEpisode()
 			guard let url = URL(string: episode.imageLink) else { return }
 			titleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
@@ -64,7 +66,11 @@ class PlayerDetailsView: UIView {
 		return UIApplication.shared.keyWindow?.rootViewController as? TabBarController
 	}
 	private var panGesture: UIPanGestureRecognizer!
-	public var playlist = [Episode]()
+	public var playlist = [Episode]() {
+		didSet {
+			print("settted")
+		}
+	}
 	
 	
 	
@@ -80,13 +86,36 @@ class PlayerDetailsView: UIView {
 
 	override func awakeFromNib() {
 		super.awakeFromNib()
-		setupBackgroundMode()
+		setupBackgroundControls()
 		setupGestures()
 		currentVolumeSlider.value = playerVolume
+		setupInteruptionObserver()
 		observeCurrentPlayerTime()
 		observeBoundaryTime()
 	}
 	
+	
+	@objc private func setupInteruptionObserver() {
+		NotificationCenter.default.addObserver(self, selector: #selector(handleInterruption), name: AVAudioSession.interruptionNotification, object: nil)
+	}
+	
+	
+	@objc private func handleInterruption(notification: Notification) {
+		guard let userInfo = notification.userInfo else { return }
+		guard let type = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt else { return }
+		if type == AVAudioSession.InterruptionType.began.rawValue {
+			print("Interruption began")
+			playPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+			miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+		}
+		else {
+			print("Interruption ended")
+			guard let options = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+			if options == AVAudioSession.InterruptionOptions.shouldResume.rawValue {
+				onPlayPauseClick()
+			}
+		}
+	}
 	
 	
 	private func observeBoundaryTime() {
@@ -131,32 +160,31 @@ class PlayerDetailsView: UIView {
 	
 	
 	/// allow play podcasts on locked screen (or in background)
-	private func setupBackgroundMode() {
-		// setupAudioSesion
+	private func setupAudiosessionBackgroundMode() {
 		do {
 			try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
-			try AVAudioSession.sharedInstance().setActive(true, options: [])
+			try AVAudioSession.sharedInstance().setActive(true)
 		}
 		catch let err {
 			print("Failed to activate session: ", err.localizedDescription)
 		}
-		// setupRemoteControl
-		//UIApplication.shared.beginReceivingRemoteControlEvents()
+	}
+	
+	
+	/// setupRemoteControl in background
+	private func setupBackgroundControls() {
+		UIApplication.shared.beginReceivingRemoteControlEvents()
 		let commandCenter = MPRemoteCommandCenter.shared()
 		commandCenter.playCommand.isEnabled = true
 		commandCenter.playCommand.addTarget {
 			(_) -> MPRemoteCommandHandlerStatus in
 			self.onPlayPauseClick()
-			self.setupLockScreenPlayingCurrentTime(needEditDuration: false)
-			//MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 1
 			return .success
 		}
 		commandCenter.pauseCommand.isEnabled = true
 		commandCenter.pauseCommand.addTarget {
 			(_) -> MPRemoteCommandHandlerStatus in
 			self.onPlayPauseClick()
-			//MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 0
-			self.setupLockScreenPlayingCurrentTime(needEditDuration: false)
 			return .success
 		}
 		commandCenter.togglePlayPauseCommand.isEnabled = true // for headphones button
@@ -167,7 +195,6 @@ class PlayerDetailsView: UIView {
 		}
 		commandCenter.nextTrackCommand.addTarget(self, action: #selector(onNextTrack))
 		commandCenter.previousTrackCommand.addTarget(self, action: #selector(onPrevTrack))
-		
 	}
 	
 	
@@ -281,13 +308,16 @@ class PlayerDetailsView: UIView {
 			playPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
 			miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
 			enlargeTitleImage()
+			MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 1
 		}
 		else {
 			player.pause()
 			playPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
 			miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
 			shrinkTitleImage()
+			MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 0
 		}
+		setupLockScreenPlayingCurrentTime(needEditDuration: false)
 	}
 	
 	/// drag to maximize
