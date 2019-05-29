@@ -17,9 +17,10 @@ class PodcastsSearchController: UITableViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		tableView.keyboardDismissMode = .interactive
 		setupTable()
 		setupSearchBar()
-		searchBar(searchController.searchBar, textDidChange: "Voong") // set default search phrase
+		searchBar(searchController.searchBar, textDidChange: "Deep Dish") // set default search phrase
 	}
 	
 	private func setupTable() {
@@ -34,6 +35,25 @@ class PodcastsSearchController: UITableViewController {
 		navigationItem.hidesSearchBarWhenScrolling = false
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.searchBar.delegate = self
+	}
+	
+	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
+			changeTabBar(hidden: true, animated: true)
+		}
+		else {
+			changeTabBar(hidden: false, animated: true)
+		}
+	}
+	
+	private func changeTabBar(hidden: Bool, animated: Bool) {
+		guard let tabBar = tabBarController?.tabBar else { return }
+		let offset = hidden ? UIScreen.main.bounds.size.height : UIScreen.main.bounds.size.height - tabBar.frame.size.height
+		if offset == tabBar.frame.origin.y { return }
+		let duration: TimeInterval = animated ? 0.5 : 0.0
+		UIView.animate(withDuration: duration, animations: {
+			tabBar.frame.origin.y = offset
+		})
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

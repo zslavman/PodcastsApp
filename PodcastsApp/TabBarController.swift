@@ -16,7 +16,7 @@ class TabBarController: UITabBarController {
 	private var maximizedTopAnchorConstraint: NSLayoutConstraint!
 	private var minimizedTopAnchorConstraint: NSLayoutConstraint!
 	private var bottomAnchorConstraint: NSLayoutConstraint!
-	private let playerDetailsView = PlayerDetailsView.initFromNib()
+	public let playerDetailsView = PlayerDetailsView.initFromNib()
 	
 	
 	
@@ -66,13 +66,11 @@ class TabBarController: UITabBarController {
 	}
 	
 	
-	public func maximizePlayer(episode: Episode?, playlist: [Episode] = []) {
+	public func maximizePlayer(episode: Episode?) {
 		minimizedTopAnchorConstraint.isActive = false
 		maximizedTopAnchorConstraint.isActive = true
 		maximizedTopAnchorConstraint.constant = 0
 		bottomAnchorConstraint.constant = 0
-		
-		playerDetailsView.playlist = playlist
 		
 		if episode != nil {
 			playerDetailsView.episode = episode

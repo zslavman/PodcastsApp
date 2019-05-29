@@ -68,7 +68,7 @@ class PlayerDetailsView: UIView {
 	private var panGesture: UIPanGestureRecognizer!
 	public var playlist = [Episode]() {
 		didSet {
-			print("settted")
+			print("playlist.count = ", playlist.count)
 		}
 	}
 	
@@ -163,7 +163,7 @@ class PlayerDetailsView: UIView {
 	private func setupAudiosessionBackgroundMode() {
 		do {
 			try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
-			try AVAudioSession.sharedInstance().setActive(true)
+			try AVAudioSession.sharedInstance().setActive(true, options: [.notifyOthersOnDeactivation])
 		}
 		catch let err {
 			print("Failed to activate session: ", err.localizedDescription)
@@ -236,8 +236,8 @@ class PlayerDetailsView: UIView {
 	
 	
 	private func setupGestures() {
-		addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
 		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
+		miniPlayerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
 		miniPlayerView.addGestureRecognizer(panGesture)
 		maximizedStackView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(dragToDismiss)))
 	}
