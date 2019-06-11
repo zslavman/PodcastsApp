@@ -19,9 +19,9 @@ class FavoritesController: UICollectionViewController  {
 	
 	
 	private func setupCollectionView() {
-		collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cellId")
+		collectionView.register(FavoritePodcastCell.self, forCellWithReuseIdentifier: FavoritePodcastCell.favCellIdentifier)
 		collectionView.alwaysBounceVertical = true
-		collectionView.backgroundColor = .lightGray
+		collectionView.backgroundColor = .white
 	}
 	
 	
@@ -31,8 +31,7 @@ class FavoritesController: UICollectionViewController  {
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellId", for: indexPath)
-		cell.backgroundColor = UIColor.red.withAlphaComponent(0.3)
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoritePodcastCell.favCellIdentifier, for: indexPath) as! FavoritePodcastCell
 		return cell
 	}
 	
@@ -45,7 +44,7 @@ extension FavoritesController: UICollectionViewDelegateFlowLayout {
 	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 		let needWidth = (view.frame.width - 3 * 16) / 2
-		return CGSize(width: needWidth, height: needWidth)
+		return CGSize(width: needWidth, height: needWidth + 40)// 40 - footer height for labels
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
