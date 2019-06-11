@@ -12,7 +12,6 @@ import UIKit
 
 class TabBarController: UITabBarController {
 	
-	
 	private var maximizedTopAnchorConstraint: NSLayoutConstraint!
 	private var minimizedTopAnchorConstraint: NSLayoutConstraint!
 	private var bottomAnchorConstraint: NSLayoutConstraint!
@@ -85,10 +84,11 @@ class TabBarController: UITabBarController {
 	
 	
 	private func setupTabs() {
+		let favVC = FavoritesController(collectionViewLayout: UICollectionViewFlowLayout())
 		viewControllers = [
+			createNavController(rootVC: favVC, title: "Любимые", img: #imageLiteral(resourceName: "favorites")),
 			createNavController(rootVC: PodcastsSearchController(), title: "Поиск", img: #imageLiteral(resourceName: "search")),
-			createNavController(rootVC: ViewController(), title: "Любимые", img: #imageLiteral(resourceName: "favorites")),
-			createNavController(rootVC: ViewController(), title: "Загрузки", img: #imageLiteral(resourceName: "downloads")),
+			createNavController(rootVC: UIViewController(), title: "Загрузки", img: #imageLiteral(resourceName: "downloads")),
 		]
 	}
 	

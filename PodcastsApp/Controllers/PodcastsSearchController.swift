@@ -46,6 +46,7 @@ class PodcastsSearchController: UITableViewController {
 		}
 	}
 	
+	/// hise/show tabbar
 	private func changeTabBar(hidden: Bool, animated: Bool) {
 		guard let tabBar = tabBarController?.tabBar else { return }
 		let offset = hidden ? UIScreen.main.bounds.size.height : UIScreen.main.bounds.size.height - tabBar.frame.size.height
