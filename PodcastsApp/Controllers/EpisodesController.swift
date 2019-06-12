@@ -15,15 +15,37 @@ class EpisodesController: UITableViewController {
 			guard let safePodcast = podcast else { return }
 			navigationItem.title = safePodcast.trackName
 			fetchEpisodes()
+			podcastsArray = UserDefaults.standard.fetchFavorites()
 		}
 	}
 	private var episodes = [Episode]()
+	private var podcastsArray = [Podcast]()
 	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupTableView()
+		setupNavBar()
 	}
+	
+	
+	private func setupNavBar() {
+		navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "heart"), style: .plain, target: self, action: #selector(onLikeClick))
+	}
+	
+	
+	/// save favorite into persistance storage
+	@objc private func onLikeClick() {
+		guard let podcast = podcast else { return }
+		if podcastsArray.contains(podcast) { return }
+		podcastsArray.append(podcast)
+		// transform podcast into Data
+		let data = NSKeyedArchiver.archivedData(withRootObject: podcastsArray)
+		UserDefaults.standard.set(data, forKey: "favPodKey")
+	}
+	
+	
+
 	
 	
 	private func setupTableView() {

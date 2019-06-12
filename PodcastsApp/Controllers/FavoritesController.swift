@@ -11,6 +11,9 @@ import UIKit
 
 class FavoritesController: UICollectionViewController  {
 	
+	private var favPodcastsArr = UserDefaults.standard.fetchFavorites()
+	
+	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -26,12 +29,13 @@ class FavoritesController: UICollectionViewController  {
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		return 5
+		return favPodcastsArr.count
 	}
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoritePodcastCell.favCellIdentifier, for: indexPath) as! FavoritePodcastCell
+		cell.configure(passedPodcast: favPodcastsArr[indexPath.row])
 		return cell
 	}
 	

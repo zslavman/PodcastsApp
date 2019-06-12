@@ -25,7 +25,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 		label.textColor = .lightGray
 		return label
 	}()
-	
+	public var podcast: Podcast!
 	
 	
 	override init(frame: CGRect) {
@@ -50,8 +50,17 @@ class FavoritePodcastCell: UICollectionViewCell {
 			stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
 			stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
 		])
-		
 	}
+	
+	public func configure(passedPodcast: Podcast) {
+		podcast = passedPodcast
+		nameLabel.text = podcast.trackName
+		artistNameLabel.text = podcast.artistName
+		if let url = URL(string: podcast.artworkUrl600!) {
+			imageView.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
+		}
+	}
+	
 	
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")

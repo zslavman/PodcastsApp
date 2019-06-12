@@ -194,14 +194,24 @@ struct SUtils {
 }
 
 
-
-
 extension String {
 	
 	public func toSecureHTTPS() -> String {
 		return self.contains("https") ? self : self.replacingOccurrences(of: "http", with: "https")
 	}
 	
+}
+
+extension UserDefaults {
+	
+	/// load favorites from persistance storage
+	func fetchFavorites() -> [Podcast] {
+		guard let data = UserDefaults.standard.data(forKey: "favPodKey") else { return [] }
+		guard let extractedData = NSKeyedUnarchiver.unarchiveObject(with: data) as? [Podcast] else { return [] }
+		print(extractedData.last?.trackName ?? "nil")
+		return extractedData
+	}
+
 }
 
 
