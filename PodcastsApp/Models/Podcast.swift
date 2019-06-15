@@ -14,6 +14,23 @@ import Foundation
 */
 class Podcast: NSObject, Decodable, NSCoding {
 	
+	// Equatable doesn't work with NSObject
+//	public static func == (lhs: Podcast, rhs: Podcast) -> Bool {
+//		return lhs.trackName == rhs.trackName &&
+//		lhs.artistName == rhs.artistName
+//	}
+	
+	override func isEqual(_ object: Any?) -> Bool {
+		if let equatablePodcast = object as? Podcast {
+			if equatablePodcast.artistName == artistName &&
+				equatablePodcast.trackName == trackName { //&&
+				//equatablePodcast.feedUrl == feedUrl {
+				return true
+			}
+		}
+		return false
+	}
+	
 	var trackName: String?
 	var artistName: String?
 	var artworkUrl600: String?
@@ -29,6 +46,8 @@ class Podcast: NSObject, Decodable, NSCoding {
 		aCoder.encode(trackName ?? "", forKey: "trackNameKey")
 		aCoder.encode(artistName ?? "", forKey: "artistNameKey")
 		aCoder.encode(artworkUrl600 ?? "", forKey: "artworkUrl600Key")
+		aCoder.encode(feedUrl ?? "", forKey: "feedUrlKey")
+		aCoder.encode(trackCount ?? "", forKey: "trackCountKey")
 	}
 	
 	// Try to return Data into Podcast
@@ -36,6 +55,8 @@ class Podcast: NSObject, Decodable, NSCoding {
 		trackName = aDecoder.decodeObject(forKey: "trackNameKey") as? String
 		artistName = aDecoder.decodeObject(forKey: "artistNameKey") as? String
 		artworkUrl600 = aDecoder.decodeObject(forKey: "artworkUrl600Key") as? String
+		feedUrl = aDecoder.decodeObject(forKey: "feedUrlKey") as? String
+		trackCount = aDecoder.decodeObject(forKey: "trackCountKey") as? Int
 	}
 
 }

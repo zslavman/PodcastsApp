@@ -62,9 +62,6 @@ class PlayerDetailsView: UIView {
 		avp.automaticallyWaitsToMinimizeStalling = false // remove delay on begining of autoplay
 		return avp
 	}()
-	private var tabBarVC: TabBarController? {
-		return UIApplication.shared.keyWindow?.rootViewController as? TabBarController
-	}
 	private var panGesture: UIPanGestureRecognizer!
 	public var playlist = [Episode]() {
 		didSet {
@@ -253,7 +250,7 @@ class PlayerDetailsView: UIView {
 			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 				self.maximizedStackView.transform = .identity
 				if translation.y > 100 || velocity.y > 500 {
-					self.tabBarVC?.minimizePlayer()
+					UIApplication.tabBarVC()?.minimizePlayer()
 				}
 			})
 		}
@@ -263,16 +260,14 @@ class PlayerDetailsView: UIView {
 	
 	/// maximize
 	@objc private func onThisViewClick() {
-		let tabVC = tabBarVC
-		tabVC?.maximizePlayer(episode: nil)
+		UIApplication.tabBarVC()?.maximizePlayer(episode: nil)
 		//panGesture.isEnabled = false
 	}
 	
 	
 	/// minimize
 	@IBAction func onDismissClick(_ sender: Any) {
-		let tabVC = tabBarVC
-		tabVC?.minimizePlayer()
+		UIApplication.tabBarVC()?.minimizePlayer()
 	}
 	
 	
@@ -348,7 +343,7 @@ class PlayerDetailsView: UIView {
 			self.transform = .identity
 			
 			if translation.y < -200 || velocity.y < -500 {
-				self.tabBarVC?.maximizePlayer(episode: nil)
+				UIApplication.tabBarVC()?.maximizePlayer(episode: nil)
 			}
 			else {
 				self.miniPlayerView.alpha = 1

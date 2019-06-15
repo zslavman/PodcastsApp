@@ -30,7 +30,15 @@ class EpisodesController: UITableViewController {
 	
 	
 	private func setupNavBar() {
-		navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "heart"), style: .plain, target: self, action: #selector(onLikeClick))
+		let savedPodcasts = UserDefaults.standard.fetchFavorites()
+		guard let podcast = podcast else { return }
+		if savedPodcasts.contains(podcast) {
+			navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "heart"), style: .plain, target: nil, action: nil)
+		}
+		else {
+			navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "heart"), style: .plain, target: self, action: #selector(onLikeClick))
+			navigationItem.rightBarButtonItem?.tintColor = UIColor.clear.withAlphaComponent(0.1)
+		}
 	}
 	
 	
@@ -42,10 +50,15 @@ class EpisodesController: UITableViewController {
 		// transform podcast into Data
 		let data = NSKeyedArchiver.archivedData(withRootObject: podcastsArray)
 		UserDefaults.standard.set(data, forKey: "favPodKey")
+		// update button appearance
+		navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "heart"), style: .plain, target: nil, action: nil)
+		showBageHightlight()
 	}
 	
 	
-
+	private func showBageHightlight() {
+		UIApplication.tabBarVC()?.viewControllers?[1].tabBarItem.badgeValue = "New"
+	}
 	
 	
 	private func setupTableView() {

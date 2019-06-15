@@ -20,6 +20,13 @@ class FavoritesController: UICollectionViewController  {
 		setupCollectionView()
 	}
 	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		favPodcastsArr = UserDefaults.standard.fetchFavorites()
+		collectionView.reloadData()
+		UIApplication.tabBarVC()?.viewControllers?[1].tabBarItem.badgeValue = nil
+	}
+	
 	
 	private func setupCollectionView() {
 		collectionView.register(FavoritePodcastCell.self, forCellWithReuseIdentifier: FavoritePodcastCell.favCellIdentifier)
@@ -65,6 +72,13 @@ class FavoritesController: UICollectionViewController  {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoritePodcastCell.favCellIdentifier, for: indexPath) as! FavoritePodcastCell
 		cell.configure(passedPodcast: favPodcastsArr[indexPath.row])
 		return cell
+	}
+	
+	
+	override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		let episodesVC = EpisodesController()
+		episodesVC.podcast = favPodcastsArr[indexPath.item]
+		navigationController?.pushViewController(episodesVC, animated: true)
 	}
 	
 }

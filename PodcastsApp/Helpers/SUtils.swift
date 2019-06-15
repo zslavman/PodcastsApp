@@ -230,6 +230,13 @@ extension UserDefaults {
 
 }
 
+extension UIApplication {
+	
+	static func tabBarVC() -> TabBarController? {
+		return UIApplication.shared.keyWindow?.rootViewController as? TabBarController
+	}
+	
+}
 
 
 
