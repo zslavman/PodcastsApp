@@ -191,6 +191,22 @@ struct SUtils {
 		return components
 	}
 	
+	
+	/// Play taptic feedback
+	///
+	/// - Parameter state: touch-state for avoid re-triggering
+	public static func tapticFeedback(state: UIGestureRecognizer.State? = nil) {
+		if state != nil {
+			guard state == .began else { return }
+		}
+		let impactFeedbackgenerator = UIImpactFeedbackGenerator(style: .heavy)
+		impactFeedbackgenerator.prepare()
+		impactFeedbackgenerator.impactOccurred()
+		// more sensetive feedback with 3 cases:
+		//let generator = UINotificationFeedbackGenerator()
+		//generator.notificationOccurred(.success)
+	}
+	
 }
 
 

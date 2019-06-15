@@ -25,7 +25,35 @@ class FavoritesController: UICollectionViewController  {
 		collectionView.register(FavoritePodcastCell.self, forCellWithReuseIdentifier: FavoritePodcastCell.favCellIdentifier)
 		collectionView.alwaysBounceVertical = true
 		collectionView.backgroundColor = .white
+		
+		let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress))
+		//longGesture.minimumPressDuration = 0.5
+		collectionView.addGestureRecognizer(longGesture)
 	}
+	
+	
+	@objc private func onLongPress(gesture: UIGestureRecognizer) {
+		guard gesture.state == .began else { return }
+		let touchLocation = gesture.location(in: collectionView)
+		guard let indexPath = collectionView.indexPathForItem(at: touchLocation) else { return }
+		SUtils.tapticFeedback()
+		
+		let actionSheetVC = UIAlertController(title: "Действия с подкастом", message: nil, preferredStyle: .actionSheet)
+		let delAction = UIAlertAction(title: "Удалить", style: .destructive) {
+			(action) in
+			self.favPodcastsArr.remove(at: indexPath.row)
+			self.collectionView.deleteItems(at: [indexPath])
+			//TODO: remove from UserDefaults
+			let data = NSKeyedArchiver.archivedData(withRootObject: self.favPodcastsArr)
+			UserDefaults.standard.set(data, forKey: "favPodKey")
+		}
+		let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+		
+		actionSheetVC.addAction(delAction)
+		actionSheetVC.addAction(cancelAction)
+		present(actionSheetVC, animated: true)
+	}
+	
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
