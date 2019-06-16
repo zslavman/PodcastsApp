@@ -50,7 +50,7 @@ class FavoritesController: UICollectionViewController  {
 			(action) in
 			self.favPodcastsArr.remove(at: indexPath.row)
 			self.collectionView.deleteItems(at: [indexPath])
-			//TODO: remove from UserDefaults
+			// remove from UserDefaults
 			let data = NSKeyedArchiver.archivedData(withRootObject: self.favPodcastsArr)
 			UserDefaults.standard.set(data, forKey: "favPodKey")
 		}
@@ -62,6 +62,7 @@ class FavoritesController: UICollectionViewController  {
 	}
 	
 	
+	//MARK:- UICollectionView methods
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		return favPodcastsArr.count

@@ -220,12 +220,40 @@ extension String {
 
 extension UserDefaults {
 	
+	static let dowloadKey = "dowloadKey"
+	
 	/// load favorites from persistance storage
 	func fetchFavorites() -> [Podcast] {
 		guard let data = UserDefaults.standard.data(forKey: "favPodKey") else { return [] }
 		guard let extractedData = NSKeyedUnarchiver.unarchiveObject(with: data) as? [Podcast] else { return [] }
-		print(extractedData.last?.trackName ?? "nil")
 		return extractedData
+	}
+	
+	/// add 1 episode to saved
+	func downloadEpisode(episode: Episode) {
+		var allDownloadedEpisodes = getDownloadedEpisodes()
+		allDownloadedEpisodes.append(episode)
+		do {
+			let data = try JSONEncoder().encode(allDownloadedEpisodes)
+			UserDefaults.standard.set(data, forKey: UserDefaults.dowloadKey)
+		}
+		catch let error {
+			print("Failed to encode episode", error.localizedDescription)
+		}
+	}
+	
+	/// get all episodes which you saved
+	func getDownloadedEpisodes() -> [Episode] {
+		guard let episodesData = UserDefaults.standard.data(forKey: UserDefaults.dowloadKey) else { return [] }
+		
+		do {
+			let episodesArr = try JSONDecoder().decode([Episode].self, from: episodesData)
+			return episodesArr
+		}
+		catch let err {
+			print("Failed to decode episode", err.localizedDescription)
+			return []
+		}
 	}
 
 }

@@ -10,6 +10,7 @@ import UIKit
 
 class EpisodeCell: UITableViewCell {
 
+	public static let cellID = "cellID"
 	@IBOutlet weak var episodeImageView: UIImageView!
 	@IBOutlet weak var pubDateLabel: UILabel!
 	@IBOutlet weak var titleLabel: UILabel! {

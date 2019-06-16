@@ -11,9 +11,7 @@ import Alamofire
 import FeedKit
 
 class APIServices {
-	
 	public static let shared = APIServices()
-	
 	
 	public func fetchPodcasts(searchText: String, callback: @escaping ([Podcast]) -> Void) {
 		let url = "https://itunes.apple.com/search"
@@ -72,9 +70,14 @@ class APIServices {
 				}
 			}
 		}
-		
-		
 	}
 	
 	
+}
+
+
+
+struct SearchResult: Decodable {
+	let resultCount: Int
+	let results: [Podcast]
 }

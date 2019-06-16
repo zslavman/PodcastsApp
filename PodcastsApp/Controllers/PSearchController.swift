@@ -9,7 +9,7 @@
 
 import UIKit
 
-class PodcastsSearchController: UITableViewController {
+class PSearchController: UITableViewController {
 	
 	private var podcasts = [Podcast]()
 	private let searchController = UISearchController(searchResultsController: nil)
@@ -57,6 +57,8 @@ class PodcastsSearchController: UITableViewController {
 		})
 	}
 	
+	//MARK:- UITableView methods
+	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return podcasts.count
 	}
@@ -90,13 +92,13 @@ class PodcastsSearchController: UITableViewController {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let episodesVC = EpisodesController()
 		episodesVC.podcast = podcasts[indexPath.row]
+		changeTabBar(hidden: false, animated: true)
 		navigationController?.pushViewController(episodesVC, animated: true)
-		
 	}
 }
 
 
-extension PodcastsSearchController: UISearchBarDelegate {
+extension PSearchController: UISearchBarDelegate {
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
 		// fix flickering results on each letter inputs
@@ -118,7 +120,3 @@ extension PodcastsSearchController: UISearchBarDelegate {
 }
 
 
-struct SearchResult: Decodable {
-	let resultCount: Int
-	let results: [Podcast]
-}

@@ -112,5 +112,14 @@ class EpisodesController: UITableViewController {
 		return episodes.isEmpty ? 200 : 0
 	}
 	
+	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+		let downloadAction = UITableViewRowAction(style: .normal, title: "Скачать") {
+			(action, indexPath) in
+			print("Downloading")
+			UserDefaults.standard.downloadEpisode(episode: self.episodes[indexPath.row])
+		}
+		return [downloadAction]
+	}
+	
 	
 }

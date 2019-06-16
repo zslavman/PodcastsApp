@@ -9,7 +9,8 @@
 import Foundation
 import FeedKit
 
-struct Episode {
+// Codable = Decodable + Encodable,  Encodable - for JSONEncoder().encode
+struct Episode: Codable {
 	
 	let title: String
 	let pubDate: Date
