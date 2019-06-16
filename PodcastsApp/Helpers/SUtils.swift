@@ -229,7 +229,7 @@ extension UserDefaults {
 		return extractedData
 	}
 	
-	/// add 1 episode to saved episodes
+	/// add 1 episode to saved episodes (to downloadList)
 	func saveEpisode(episodes: [Episode], addOperation: Bool) {
 		var allDownloadedEpisodes = getDownloadedEpisodes()
 		if episodes.count == 1 && addOperation{

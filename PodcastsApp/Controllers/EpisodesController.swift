@@ -127,7 +127,8 @@ class EpisodesController: UITableViewController {
 			action = UIContextualAction(style: .normal, title: "Скачать", handler: {
 				(act, someView, completionHandler) in
 				UserDefaults.standard.saveEpisode(episodes: [selectedPod], addOperation: true)
-				APIServices.shared.downloadEpisode(episode: selectedPod)
+				APIServices.shared.startDownloadEpisode(episode: selectedPod)
+				UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = "New"
 				completionHandler(true) // perform delete action
 			})
 			action.backgroundColor = #colorLiteral(red: 0.2124915746, green: 0.6660024672, blue: 0.148491782, alpha: 1)

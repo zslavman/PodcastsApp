@@ -12,6 +12,7 @@ import FeedKit
 
 class APIServices {
 	public static let shared = APIServices()
+	typealias EpisodeDownloadCompleteTuple = (fileUrl: String, episodeTitle: String)
 	
 	public func fetchPodcasts(searchText: String, callback: @escaping ([Podcast]) -> Void) {
 		let url = "https://itunes.apple.com/search"
@@ -73,7 +74,7 @@ class APIServices {
 	}
 	
 	/// begin to download episode (mp3-track)
-	public func downloadEpisode(episode: Episode) {
+	public func startDownloadEpisode(episode: Episode) {
 		let downloadRequest = DownloadRequest.suggestedDownloadDestination()
 		Alamofire.download(episode.strimLink, to: downloadRequest).downloadProgress {
 			(progress) in
@@ -83,6 +84,10 @@ class APIServices {
 			])
 			}.response {
 				(resp) in
+				
+				let epLoadCompl = EpisodeDownloadCompleteTuple(fileUrl: resp.destinationURL?.absoluteString ?? "", episode.title)
+				NotificationCenter.default.post(name: .downloadComplete, object: epLoadCompl, userInfo: nil)
+				
 				//update UserDefaults downloaded episode with this temp file
 				var allDownloads = UserDefaults.standard.getDownloadedEpisodes()
 				guard let index = allDownloads.index(where: {$0 == episode}) else { return }
@@ -96,6 +101,7 @@ class APIServices {
 
 extension Notification.Name {
 	static let podLoadingProgress = Notification.Name("podLoadingProgress")
+	static let downloadComplete = Notification.Name("downloadComplete")
 }
 
 

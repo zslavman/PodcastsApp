@@ -42,6 +42,9 @@ class EpisodeCell: UITableViewCell {
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		progressBar.isHidden = true
+		episodeImageView.layer.cornerRadius = 4
+		episodeImageView.layer.masksToBounds = true
 		//progressBar.transform = CGAffineTransform(scaleX: 1, y: 8)
 		// if want use rounded corner - set heightConstraint for progress, then use SmallProgressBar class
 		

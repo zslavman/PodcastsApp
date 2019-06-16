@@ -58,7 +58,15 @@ class FavoritePodcastCell: UICollectionViewCell {
 		artistNameLabel.text = podcast.artistName
 		if let url = URL(string: podcast.artworkUrl600!) {
 			imageView.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
+			imageView.layer.cornerRadius = 8
+			imageView.layer.masksToBounds = true
 		}
+	}
+	
+	override func awakeFromNib() {
+		super.awakeFromNib()
+		imageView.layer.cornerRadius = 8
+		imageView.layer.masksToBounds = true
 	}
 	
 	

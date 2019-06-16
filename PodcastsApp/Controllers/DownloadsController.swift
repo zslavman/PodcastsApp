@@ -23,6 +23,7 @@ class DownloadsController: UITableViewController {
 		super.viewWillAppear(animated)
 		downloadedEpArr = UserDefaults.standard.getDownloadedEpisodes()
 		tableView.reloadData()
+		UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = nil
 	}
 	
 	
@@ -35,6 +36,7 @@ class DownloadsController: UITableViewController {
 	
 	private func setupObservers() {
 		NotificationCenter.default.addObserver(self, selector: #selector(handleNotifProgress), name: .podLoadingProgress, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(handleLoadComplete), name: .downloadComplete, object: nil)
 	}
 	
 	
@@ -42,8 +44,21 @@ class DownloadsController: UITableViewController {
 		guard let userInfo = notif.userInfo as? [String: Any] else { return }
 		guard let progress = userInfo["progress"] as? Double else { return }
 		guard let title = userInfo["title"] as? String else { return }
-		
-		print(progress, title)
+		guard let row = downloadedEpArr.firstIndex(where: {$0.title == title}) else { return }
+		guard let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0)) as? EpisodeCell else { return }
+		cell.progressBar.progress = Float(progress)
+		cell.progressBar.isHidden = false
+		cell.episodeImageView.alpha = 0.25
+	}
+	
+	
+	@objc private func handleLoadComplete(notif: Notification) {
+		guard let epLoadCompl = notif.object as? APIServices.EpisodeDownloadCompleteTuple else { return }
+		guard let index = downloadedEpArr.firstIndex(where: {$0.title == epLoadCompl.episodeTitle}) else { return }
+		downloadedEpArr[index].fileUrl = epLoadCompl.fileUrl
+		guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeCell else { return }
+		cell.progressBar.isHidden = true
+		cell.episodeImageView.alpha = 1
 	}
 	
 	//MARK:- UITableView

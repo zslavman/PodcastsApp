@@ -29,4 +29,10 @@ class PodcastCell: UITableViewCell {
 		}
 	}
 	
+	override func awakeFromNib() {
+		super.awakeFromNib()
+		podcastImageView.layer.cornerRadius = 4
+		podcastImageView.layer.masksToBounds = true
+	}
+	
 }
