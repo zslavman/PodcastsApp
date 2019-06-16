@@ -46,12 +46,12 @@ class PSearchController: UITableViewController {
 		}
 	}
 	
-	/// hise/show tabbar
+	/// hide/show tabbar
 	private func changeTabBar(hidden: Bool, animated: Bool) {
 		guard let tabBar = tabBarController?.tabBar else { return }
 		let offset = hidden ? UIScreen.main.bounds.size.height : UIScreen.main.bounds.size.height - tabBar.frame.size.height
 		if offset == tabBar.frame.origin.y { return }
-		let duration: TimeInterval = animated ? 0.5 : 0.0
+		let duration: TimeInterval = animated ? 0.3 : 0.0
 		UIView.animate(withDuration: duration, animations: {
 			tabBar.frame.origin.y = offset
 		})

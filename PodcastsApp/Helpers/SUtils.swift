@@ -222,17 +222,22 @@ extension UserDefaults {
 	
 	static let dowloadKey = "dowloadKey"
 	
-	/// load favorites from persistance storage
+	/// load favorites (albums) from persistance storage
 	func fetchFavorites() -> [Podcast] {
 		guard let data = UserDefaults.standard.data(forKey: "favPodKey") else { return [] }
 		guard let extractedData = NSKeyedUnarchiver.unarchiveObject(with: data) as? [Podcast] else { return [] }
 		return extractedData
 	}
 	
-	/// add 1 episode to saved
-	func downloadEpisode(episode: Episode) {
+	/// add 1 episode to saved episodes
+	func saveEpisode(episodes: [Episode], addOperation: Bool) {
 		var allDownloadedEpisodes = getDownloadedEpisodes()
-		allDownloadedEpisodes.append(episode)
+		if episodes.count == 1 && addOperation{
+			allDownloadedEpisodes.insert(episodes.first!, at: 0)
+		}
+		else {
+			allDownloadedEpisodes = episodes
+		}
 		do {
 			let data = try JSONEncoder().encode(allDownloadedEpisodes)
 			UserDefaults.standard.set(data, forKey: UserDefaults.dowloadKey)

@@ -12,6 +12,13 @@ import FeedKit
 // Codable = Decodable + Encodable,  Encodable - for JSONEncoder().encode
 struct Episode: Codable {
 	
+	// Equatable doesn't work with NSObject
+	public static func == (lhs: Episode, rhs: Episode) -> Bool {
+		return lhs.strimLink == rhs.strimLink &&
+			lhs.title == rhs.title
+		
+	}
+	
 	let title: String
 	let pubDate: Date
 	let description: String

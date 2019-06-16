@@ -11,6 +11,7 @@ import AVKit
 import MediaPlayer
 import AVKit
 
+// this View init with build TabBar
 class PlayerDetailsView: UIView {
 	
 	@IBOutlet weak var miniPlayerView: UIStackView! // stack container

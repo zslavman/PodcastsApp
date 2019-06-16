@@ -48,5 +48,18 @@ class DownloadsController: UITableViewController {
 		return 134
 	}
 	
+	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+		let delAction = UITableViewRowAction(style: .destructive, title: "Удалить") {
+			(action, indexPath) in
+			self.downloadedEpArr.remove(at: indexPath.row)
+			UserDefaults.standard.saveEpisode(episodes: self.downloadedEpArr, addOperation: false)
+			self.tableView.deleteRows(at: [indexPath], with: .automatic)
+		}
+		return [delAction]
+	}
 	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		UIApplication.tabBarVC()?.maximizePlayer(episode: downloadedEpArr[indexPath.row])
+		
+	}
 }

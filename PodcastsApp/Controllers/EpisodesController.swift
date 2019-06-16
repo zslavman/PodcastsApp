@@ -112,13 +112,37 @@ class EpisodesController: UITableViewController {
 		return episodes.isEmpty ? 200 : 0
 	}
 	
-	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-		let downloadAction = UITableViewRowAction(style: .normal, title: "Скачать") {
-			(action, indexPath) in
-			print("Downloading")
-			UserDefaults.standard.downloadEpisode(episode: self.episodes[indexPath.row])
+	override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+		//check if allready have selected episode in downloads
+		let selectedPod = episodes[indexPath.row]
+		let allSavedPods = UserDefaults.standard.getDownloadedEpisodes()
+		var allowEdit = true
+		allSavedPods.forEach {
+			(episode) in
+			if episode == selectedPod {
+				allowEdit = false
+			}
 		}
-		return [downloadAction]
+		let action: UIContextualAction
+		if allowEdit { // allow download
+			action = UIContextualAction(style: .normal, title: "Скачать", handler: {
+				(act, someView, completionHandler) in
+				UserDefaults.standard.saveEpisode(episodes: [selectedPod], addOperation: true)
+				completionHandler(true) // perform delete action
+			})
+			action.backgroundColor = #colorLiteral(red: 0.2124915746, green: 0.6660024672, blue: 0.148491782, alpha: 1)
+			action.image = #imageLiteral(resourceName: "downloads")
+		}
+		else { // show "Уже скачали"
+			action = UIContextualAction(style: .normal, title: "Скачано", handler: {
+				(_, _, completionHandler) in
+				completionHandler(true)
+			})
+			action.backgroundColor = UIColor.clear
+		}
+		let swipeAction = UISwipeActionsConfiguration(actions: [action])
+		swipeAction.performsFirstActionWithFullSwipe = false // disables full swipe
+		return swipeAction
 	}
 	
 	
