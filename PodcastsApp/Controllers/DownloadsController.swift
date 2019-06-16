@@ -15,6 +15,7 @@ class DownloadsController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupTableView()
+		setupObservers()
 	}
 	
 	
@@ -31,6 +32,19 @@ class DownloadsController: UITableViewController {
 		tableView.register(nib, forCellReuseIdentifier: EpisodeCell.cellID)
 	}
 	
+	
+	private func setupObservers() {
+		NotificationCenter.default.addObserver(self, selector: #selector(handleNotifProgress), name: .podLoadingProgress, object: nil)
+	}
+	
+	
+	@objc private func handleNotifProgress(notif: Notification) {
+		guard let userInfo = notif.userInfo as? [String: Any] else { return }
+		guard let progress = userInfo["progress"] as? Double else { return }
+		guard let title = userInfo["title"] as? String else { return }
+		
+		print(progress, title)
+	}
 	
 	//MARK:- UITableView
 	
@@ -59,7 +73,21 @@ class DownloadsController: UITableViewController {
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		UIApplication.tabBarVC()?.maximizePlayer(episode: downloadedEpArr[indexPath.row])
+		let selected = downloadedEpArr[indexPath.row]
+		if selected.fileUrl == nil {
+			let actionSheetVC = UIAlertController(title: "Ошибка!", message: "Невозможно найти локальный файл. Запустить  онлайн стрим?", preferredStyle: .actionSheet)
+			let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+			let okAction = UIAlertAction(title: "OK", style: .default) {
+				(action) in
+				UIApplication.tabBarVC()?.maximizePlayer(episode: selected, playlist: self.downloadedEpArr)
+			}
+			actionSheetVC.addAction(okAction)
+			actionSheetVC.addAction(cancelAction)
+			present(actionSheetVC, animated: true)
+		}
+		else {
+			UIApplication.tabBarVC()?.maximizePlayer(episode: selected, playlist: downloadedEpArr)
+		}
 		
 	}
 }

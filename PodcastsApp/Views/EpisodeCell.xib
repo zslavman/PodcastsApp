@@ -49,10 +49,19 @@
                             </label>
                         </subviews>
                     </stackView>
+                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.29999999999999999" translatesAutoresizingMaskIntoConstraints="NO" id="6Bk-nJ-uvN" customClass="SmallProgressBar" customModule="PodcastsApp" customModuleProvider="target">
+                        <rect key="frame" x="25" y="115.5" width="90" height="4"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="4" id="Yfx-is-ehZ"/>
+                        </constraints>
+                    </progressView>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="6Bk-nJ-uvN" firstAttribute="bottom" secondItem="ot4-QB-tz3" secondAttribute="bottom" constant="-10" id="CSg-m4-2gh"/>
                     <constraint firstItem="ehX-fj-D97" firstAttribute="leading" secondItem="ot4-QB-tz3" secondAttribute="trailing" constant="16" id="CqM-EB-iZz"/>
                     <constraint firstItem="ot4-QB-tz3" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="F1R-bn-73Q"/>
+                    <constraint firstItem="6Bk-nJ-uvN" firstAttribute="trailing" secondItem="ot4-QB-tz3" secondAttribute="trailing" constant="-5" id="HJT-ua-GXA"/>
+                    <constraint firstItem="6Bk-nJ-uvN" firstAttribute="leading" secondItem="ot4-QB-tz3" secondAttribute="leading" constant="5" id="ZRW-gP-9S9"/>
                     <constraint firstAttribute="trailingMargin" secondItem="ehX-fj-D97" secondAttribute="trailing" id="eNH-tG-L1C"/>
                     <constraint firstItem="ot4-QB-tz3" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="f0F-jE-g0P"/>
                     <constraint firstItem="ehX-fj-D97" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="y5y-Qq-fbn"/>
@@ -62,6 +71,7 @@
             <connections>
                 <outlet property="descriptionLabel" destination="R1F-gS-yx4" id="xHo-Vt-pgf"/>
                 <outlet property="episodeImageView" destination="ot4-QB-tz3" id="95Q-rr-lNk"/>
+                <outlet property="progressBar" destination="6Bk-nJ-uvN" id="syL-72-l1U"/>
                 <outlet property="pubDateLabel" destination="rdf-sl-0bl" id="UUx-8x-9E8"/>
                 <outlet property="titleLabel" destination="Zkp-eh-V5R" id="pTp-iJ-0lG"/>
             </connections>

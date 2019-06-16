@@ -23,7 +23,7 @@ class EpisodeCell: UITableViewCell {
 			descriptionLabel.numberOfLines = 2
 		}
 	}
-	
+	@IBOutlet weak var progressBar: UIProgressView!
 	public var episode: Episode! {
 		didSet {
 			configCell()
@@ -42,6 +42,24 @@ class EpisodeCell: UITableViewCell {
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		//progressBar.transform = CGAffineTransform(scaleX: 1, y: 8)
+		// if want use rounded corner - set heightConstraint for progress, then use SmallProgressBar class
+		
+		//TODO:check if file allready downloaded - set progress hiden
 	}
 	
+}
+
+
+
+class SmallProgressBar: UIProgressView {
+	
+	override func layoutSubviews() {
+		super.layoutSubviews()
+		let maskLayerPath = UIBezierPath(roundedRect: bounds, cornerRadius: 2)
+		let maskLayer = CAShapeLayer()
+		maskLayer.frame = self.bounds
+		maskLayer.path = maskLayerPath.cgPath
+		layer.mask = maskLayer
+	}
 }

@@ -16,7 +16,6 @@ struct Episode: Codable {
 	public static func == (lhs: Episode, rhs: Episode) -> Bool {
 		return lhs.strimLink == rhs.strimLink &&
 			lhs.title == rhs.title
-		
 	}
 	
 	let title: String
@@ -25,6 +24,7 @@ struct Episode: Codable {
 	let imageLink: String
 	let author: String
 	let strimLink: String
+	var fileUrl: String?
 	
 	
 	init(feedItem: RSSFeedItem, parentImageLink: String) {

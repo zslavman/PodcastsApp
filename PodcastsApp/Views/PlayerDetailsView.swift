@@ -403,12 +403,27 @@ class PlayerDetailsView: UIView {
 	
 	
 	private func playEpisode() {
-		guard let url = URL(string: episode.strimLink) else { return }
+		var url: URL
+		if episode.fileUrl != nil { // local file playing
+			// figure out file name for finding variable location
+			guard let fileURL = URL(string: episode.fileUrl ?? "") else { return }
+			let fileName = fileURL.lastPathComponent
+			guard var trueLocation = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+			else { return }
+			trueLocation.appendPathComponent(fileName)
+			url = trueLocation
+		}
+		else {
+			guard let safeURL = URL(string: episode.strimLink) else { return }
+			url = safeURL
+		}
+		
 		let playerItem = AVPlayerItem(url: url)
 		player.replaceCurrentItem(with: playerItem)
 		player.volume = playerVolume
 		player.play()
 	}
+	
 	
 	private var playerVolume: Float {
 		get {

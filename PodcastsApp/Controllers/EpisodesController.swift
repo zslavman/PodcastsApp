@@ -96,9 +96,8 @@ class EpisodesController: UITableViewController {
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? TabBarController
-		tabBarVC?.playerDetailsView.playlist = episodes
-		tabBarVC?.maximizePlayer(episode: episodes[indexPath.row])
+		let tabBarVC = UIApplication.tabBarVC()
+		tabBarVC?.maximizePlayer(episode: episodes[indexPath.row], playlist: episodes)
 	}
 	
 	override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -128,6 +127,7 @@ class EpisodesController: UITableViewController {
 			action = UIContextualAction(style: .normal, title: "Скачать", handler: {
 				(act, someView, completionHandler) in
 				UserDefaults.standard.saveEpisode(episodes: [selectedPod], addOperation: true)
+				APIServices.shared.downloadEpisode(episode: selectedPod)
 				completionHandler(true) // perform delete action
 			})
 			action.backgroundColor = #colorLiteral(red: 0.2124915746, green: 0.6660024672, blue: 0.148491782, alpha: 1)

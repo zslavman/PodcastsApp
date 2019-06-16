@@ -72,9 +72,31 @@ class APIServices {
 		}
 	}
 	
+	/// begin to download episode (mp3-track)
+	public func downloadEpisode(episode: Episode) {
+		let downloadRequest = DownloadRequest.suggestedDownloadDestination()
+		Alamofire.download(episode.strimLink, to: downloadRequest).downloadProgress {
+			(progress) in
+			NotificationCenter.default.post(name: .podLoadingProgress, object: nil, userInfo: [
+				"title"		: episode.title,
+				"progress"	: progress.fractionCompleted
+			])
+			}.response {
+				(resp) in
+				//update UserDefaults downloaded episode with this temp file
+				var allDownloads = UserDefaults.standard.getDownloadedEpisodes()
+				guard let index = allDownloads.index(where: {$0 == episode}) else { return }
+				allDownloads[index].fileUrl = resp.destinationURL?.absoluteString ?? ""
+				UserDefaults.standard.saveEpisode(episodes: allDownloads, addOperation: false)
+				print("Download complete!")
+		}
+	}
 	
 }
 
+extension Notification.Name {
+	static let podLoadingProgress = Notification.Name("podLoadingProgress")
+}
 
 
 struct SearchResult: Decodable {
