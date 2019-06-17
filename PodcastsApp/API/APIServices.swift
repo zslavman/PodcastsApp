@@ -32,6 +32,7 @@ class APIServices {
 					return
 				}
 				guard let data = dataResponse.data else { return }
+				//let pp = String(data: data, encoding: .utf8)
 				do {
 					let decoded = try JSONDecoder().decode(SearchResult.self, from: data)
 					callback(decoded.results)
@@ -102,10 +103,4 @@ class APIServices {
 extension Notification.Name {
 	static let podLoadingProgress = Notification.Name("podLoadingProgress")
 	static let downloadComplete = Notification.Name("downloadComplete")
-}
-
-
-struct SearchResult: Decodable {
-	let resultCount: Int
-	let results: [Podcast]
 }

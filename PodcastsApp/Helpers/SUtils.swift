@@ -207,6 +207,26 @@ struct SUtils {
 		//generator.notificationOccurred(.success)
 	}
 	
+	
+	public static func sizeFromUrl(url: URL?) -> String {
+		guard let filePath = url?.path else {
+			return "0 Mb"
+		}
+		guard let attribute = try? FileManager.default.attributesOfItem(atPath: filePath),
+			let bytes = (attribute[FileAttributeKey.size] as? NSNumber)?.int64Value else { return "0 Mb" }
+		return sizeFromBytes(bytes: bytes)
+	}
+	
+	
+	public static func sizeFromBytes(bytes: Int64) -> String {
+		let formatter = ByteCountFormatter()
+		formatter.allowedUnits 	= ByteCountFormatter.Units.useMB
+		formatter.countStyle 	= ByteCountFormatter.CountStyle.decimal
+		formatter.includesUnit 	= false
+		let sizeInMb = formatter.string(fromByteCount: bytes)
+		return "\(sizeInMb) Mb"
+	}
+	
 }
 
 

@@ -87,6 +87,23 @@ class TabBarController: UITabBarController {
 	}
 	
 	
+	public func hideMiniPlayer() {
+		maximizedTopAnchorConstraint =
+			playerDetailsView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height)
+		maximizedTopAnchorConstraint.isActive = true
+		
+		bottomAnchorConstraint = playerDetailsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
+		bottomAnchorConstraint.isActive = true
+		
+		minimizedTopAnchorConstraint = playerDetailsView.topAnchor.constraint(equalTo: tabBar.topAnchor, constant: -64)
+		
+		UIView.animate(withDuration: 0.3) {
+			self.view.layoutIfNeeded()
+		}
+	}
+	
+	
+	
 	private func setupTabs() {
 		let favVC = FavoritesController(collectionViewLayout: UICollectionViewFlowLayout())
 		viewControllers = [

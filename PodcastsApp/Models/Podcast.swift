@@ -8,6 +8,12 @@
 
 import Foundation
 
+
+struct SearchResult: Decodable {
+	let resultCount: Int
+	let results: [Podcast]
+}
+
 /*
 *  NSCoding - for archive this class to Data
 *  NSObject - fix crach on try to encode

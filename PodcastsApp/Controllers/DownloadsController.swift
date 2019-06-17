@@ -103,6 +103,7 @@ class DownloadsController: UITableViewController {
 		else {
 			UIApplication.tabBarVC()?.maximizePlayer(episode: selected, playlist: downloadedEpArr)
 		}
+		tableView.deselectRow(at: indexPath, animated: true)
 		
 	}
 }

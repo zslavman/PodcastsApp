@@ -4,7 +4,6 @@
 //
 //  Created by Zinko Viacheslav on 10.05.2019.
 //  Copyright © 2019 Zinko Viacheslav. All rights reserved.
-//  Давай 
 
 import Foundation
 import FeedKit
@@ -24,8 +23,8 @@ struct Episode: Codable {
 	let imageLink: String
 	let author: String
 	let strimLink: String
+	let fileSize: String?
 	var fileUrl: String?
-	
 	
 	init(feedItem: RSSFeedItem, parentImageLink: String) {
 		strimLink 			= feedItem.enclosure?.attributes?.url ?? "" // audio-file link
@@ -34,5 +33,7 @@ struct Episode: Codable {
 		self.pubDate 		= feedItem.pubDate ?? Date()
 		self.description 	= feedItem.iTunes?.iTunesSubtitle ?? feedItem.description ?? ""
 		imageLink 			= feedItem.iTunes?.iTunesImage?.attributes?.href ?? parentImageLink
+		let sizeInBytes 	= feedItem.enclosure?.attributes?.length ?? 0
+		fileSize 			= SUtils.sizeFromBytes(bytes: sizeInBytes)
 	}
 }

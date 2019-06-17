@@ -13,6 +13,7 @@ class EpisodeCell: UITableViewCell {
 	public static let cellID = "cellID"
 	@IBOutlet weak var episodeImageView: UIImageView!
 	@IBOutlet weak var pubDateLabel: UILabel!
+	@IBOutlet weak var sizeInMBLabel: UILabel!
 	@IBOutlet weak var titleLabel: UILabel! {
 		didSet {
 			titleLabel.numberOfLines = 2
@@ -38,6 +39,7 @@ class EpisodeCell: UITableViewCell {
 		if let url = URL(string: episode.imageLink) {
 			episodeImageView.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
 		}
+		sizeInMBLabel.text 		= episode.fileSize
 	}
 	
 	override func awakeFromNib() {

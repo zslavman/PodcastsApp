@@ -417,7 +417,6 @@ class PlayerDetailsView: UIView {
 			guard let safeURL = URL(string: episode.strimLink) else { return }
 			url = safeURL
 		}
-		
 		let playerItem = AVPlayerItem(url: url)
 		player.replaceCurrentItem(with: playerItem)
 		player.volume = playerVolume
@@ -443,8 +442,13 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
-	@IBAction func onMiniForwardClick(_ sender: UIButton) {
-		timelineJump(seconds: 15)
+	@IBAction func onMiniCloseClick(_ sender: UIButton) {
+		player.pause()
+		playPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+		miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "play"), for: .normal)
+		shrinkTitleImage()
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 0
+		UIApplication.tabBarVC()?.hideMiniPlayer()
 	}
 	
 	
