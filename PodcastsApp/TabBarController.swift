@@ -50,8 +50,8 @@ class TabBarController: UITabBarController {
 			playerDetailsView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
 		])
 	}
-
 	
+
 	@objc public func minimizePlayer() {
 		maximizedTopAnchorConstraint.isActive = false
 		bottomAnchorConstraint.constant = view.frame.height
@@ -74,9 +74,8 @@ class TabBarController: UITabBarController {
 		if let playlist = playlist {
 			playerDetailsView.playlist = playlist
 		}
-		
 		if episode != nil {
-			playerDetailsView.episode = episode
+			playerDetailsView.episode = episode // start playing
 		}
 		UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 			self.view.layoutIfNeeded()
@@ -88,15 +87,8 @@ class TabBarController: UITabBarController {
 	
 	
 	public func hideMiniPlayer() {
-		maximizedTopAnchorConstraint =
-			playerDetailsView.topAnchor.constraint(equalTo: view.topAnchor, constant: view.frame.height)
+		maximizedTopAnchorConstraint.constant = view.frame.height
 		maximizedTopAnchorConstraint.isActive = true
-		
-		bottomAnchorConstraint = playerDetailsView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
-		bottomAnchorConstraint.isActive = true
-		
-		minimizedTopAnchorConstraint = playerDetailsView.topAnchor.constraint(equalTo: tabBar.topAnchor, constant: -64)
-		
 		UIView.animate(withDuration: 0.3) {
 			self.view.layoutIfNeeded()
 		}
@@ -120,6 +112,38 @@ class TabBarController: UITabBarController {
 		navVC.tabBarItem.image = img
 		rootVC.navigationItem.title = title // title on top of VC
 		return navVC
+	}
+	
+	
+	/// hide/show tabbar
+	func setTabBar(hidden: Bool) {
+		var offset: CGFloat = UIScreen.main.bounds.size.height
+		if hidden {
+			holdOnSafeArea()
+		} else {
+			holdOnTabBar()
+			offset = UIScreen.main.bounds.size.height - tabBar.frame.size.height
+		}
+		if offset == tabBar.frame.origin.y { return }
+		UIView.animate(withDuration: 0.3, animations: {
+			self.tabBar.frame.origin.y = offset
+		})
+	}
+	
+	
+	public func holdOnSafeArea() {
+		minimizedTopAnchorConstraint.isActive = false
+		minimizedTopAnchorConstraint = playerDetailsView.topAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -64)
+		minimizedTopAnchorConstraint.isActive = true
+		UIView.animate(withDuration: 0.3) {
+			self.view.layoutIfNeeded()
+		}
+	}
+	
+	public func holdOnTabBar() {
+		minimizedTopAnchorConstraint.isActive = false
+		minimizedTopAnchorConstraint = playerDetailsView.topAnchor.constraint(equalTo: tabBar.topAnchor, constant: -64)
+		minimizedTopAnchorConstraint.isActive = true
 	}
 	
 }

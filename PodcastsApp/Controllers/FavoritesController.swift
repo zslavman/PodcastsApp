@@ -28,6 +28,15 @@ class FavoritesController: UICollectionViewController  {
 	}
 	
 	
+	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
+			UIApplication.tabBarVC()?.setTabBar(hidden: true)
+		}
+		else {
+			UIApplication.tabBarVC()?.setTabBar(hidden: false)
+		}
+	}
+	
 	private func setupCollectionView() {
 		collectionView.register(FavoritePodcastCell.self, forCellWithReuseIdentifier: FavoritePodcastCell.favCellIdentifier)
 		collectionView.alwaysBounceVertical = true

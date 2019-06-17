@@ -21,6 +21,7 @@ class PSearchController: UITableViewController {
 		setupTable()
 		setupSearchBar()
 		searchBar(searchController.searchBar, textDidChange: "Deep Dish") // set default search phrase
+		//navigationController?.hidesBarsOnSwipe = true
 	}
 	
 	private func setupTable() {
@@ -36,26 +37,18 @@ class PSearchController: UITableViewController {
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.searchBar.delegate = self
 	}
-	
+
 	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
-			changeTabBar(hidden: true, animated: true)
+			UIApplication.tabBarVC()?.setTabBar(hidden: true)
+			self.navigationController?.navigationBar.prefersLargeTitles = false
 		}
 		else {
-			changeTabBar(hidden: false, animated: true)
+			UIApplication.tabBarVC()?.setTabBar(hidden: false)
+			self.navigationController?.navigationBar.prefersLargeTitles = true
 		}
 	}
 	
-	/// hide/show tabbar
-	private func changeTabBar(hidden: Bool, animated: Bool) {
-		guard let tabBar = tabBarController?.tabBar else { return }
-		let offset = hidden ? UIScreen.main.bounds.size.height : UIScreen.main.bounds.size.height - tabBar.frame.size.height
-		if offset == tabBar.frame.origin.y { return }
-		let duration: TimeInterval = animated ? 0.3 : 0.0
-		UIView.animate(withDuration: duration, animations: {
-			tabBar.frame.origin.y = offset
-		})
-	}
 	
 	//MARK:- UITableView methods
 	
@@ -92,7 +85,7 @@ class PSearchController: UITableViewController {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let episodesVC = EpisodesController()
 		episodesVC.podcast = podcasts[indexPath.row]
-		changeTabBar(hidden: false, animated: true)
+		UIApplication.tabBarVC()?.setTabBar(hidden: false)
 		navigationController?.pushViewController(episodesVC, animated: true)
 	}
 }

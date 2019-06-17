@@ -26,6 +26,15 @@ class DownloadsController: UITableViewController {
 		UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = nil
 	}
 	
+	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
+			UIApplication.tabBarVC()?.setTabBar(hidden: true)
+		}
+		else {
+			UIApplication.tabBarVC()?.setTabBar(hidden: false)
+		}
+	}
+	
 	
 	private func setupTableView() {
 		tableView.tableFooterView = UIView()

@@ -28,6 +28,15 @@ class EpisodesController: UITableViewController {
 		setupNavBar()
 	}
 	
+	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
+			UIApplication.tabBarVC()?.setTabBar(hidden: true)
+		}
+		else {
+			UIApplication.tabBarVC()?.setTabBar(hidden: false)
+		}
+	}
+	
 	
 	private func setupNavBar() {
 		let savedPodcasts = UserDefaults.standard.fetchFavorites()

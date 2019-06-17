@@ -93,6 +93,14 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
+	private func setupGestures() {
+		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
+		miniPlayerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
+		miniPlayerView.addGestureRecognizer(panGesture)
+		maximizedStackView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(dragToDismiss)))
+	}
+	
+	
 	@objc private func setupInteruptionObserver() {
 		NotificationCenter.default.addObserver(self, selector: #selector(handleInterruption), name: AVAudioSession.interruptionNotification, object: nil)
 	}
@@ -233,14 +241,6 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
-	private func setupGestures() {
-		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
-		miniPlayerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
-		miniPlayerView.addGestureRecognizer(panGesture)
-		maximizedStackView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(dragToDismiss)))
-	}
-	
-	
 	@objc private func dragToDismiss(gesture: UIPanGestureRecognizer) {
 		let translation = gesture.translation(in: superview)
 		if gesture.state == .changed {
@@ -279,6 +279,7 @@ class PlayerDetailsView: UIView {
 		let interval = CMTimeMake(value: 1, timescale: 2) // timer for update durations
 		player.addPeriodicTimeObserver(forInterval: interval, queue: .main) {
 			[weak self] (time) in
+			print("......")
 			guard let strongSelf = self else { return } // fix retain cycle
 			let totalSeconds = CMTimeGetSeconds(time)
 			strongSelf.timeBeginLabel.text = SUtils.convertTime(seconds: totalSeconds)
@@ -420,7 +421,8 @@ class PlayerDetailsView: UIView {
 		let playerItem = AVPlayerItem(url: url)
 		player.replaceCurrentItem(with: playerItem)
 		player.volume = playerVolume
-		player.play()
+		//player.play()
+		onPlayPauseClick()
 	}
 	
 	
