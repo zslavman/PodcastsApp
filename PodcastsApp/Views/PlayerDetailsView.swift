@@ -48,13 +48,18 @@ class PlayerDetailsView: UIView {
 			authorLabel.text = episode.author
 			setupLockScreenPlayingInfo()
 			setupAudiosessionBackgroundMode()
-			playEpisode()
+			prepareToPlay()
 			guard let url = URL(string: episode.imageLink) else { return }
 			titleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
 			miniTitleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: []) {
-				(image, _, _, _) in
-				guard let image = image else { return }
-				self.setupLockScreenPlayingArtwork(image: image)
+				[weak self] (loadedImage, error, _, _) in
+				if let err = error {
+					print(err.localizedDescription)
+					return
+				}
+				print("---", Thread.current)
+				guard let image = loadedImage else { return }
+				self?.setupLockScreenPlayingArtwork(image: image)
 			}
 		}
 	}
@@ -146,10 +151,13 @@ class PlayerDetailsView: UIView {
 	
 	/// lockscreen Album artwork setup
 	private func setupLockScreenPlayingArtwork(image: UIImage) {
-		let artwork = MPMediaItemArtwork(boundsSize: image.size, requestHandler: {
-			(_) -> UIImage in
+		let picSize = CGSize(width: 300, height: 300)
+		let artwork = MPMediaItemArtwork(boundsSize: picSize, requestHandler: {
+			(siz) -> UIImage in
+			print("Return image")
 			return image
 		})
+//		let artwork = MPMediaItemArtwork(image: image)
 		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = artwork
 	}
 	
@@ -273,13 +281,13 @@ class PlayerDetailsView: UIView {
 	
 	
 	private func observeCurrentPlayerTime() {
-		timeBeginLabel.text = "00:00"
-		timeEndLabel.text = "--:--"
+//		timeBeginLabel.text = "00:00"
+//		timeEndLabel.text = "--:--"
 		
 		let interval = CMTimeMake(value: 1, timescale: 2) // timer for update durations
 		player.addPeriodicTimeObserver(forInterval: interval, queue: .main) {
 			[weak self] (time) in
-			print("......")
+			//print("......")
 			guard let strongSelf = self else { return } // fix retain cycle
 			let totalSeconds = CMTimeGetSeconds(time)
 			strongSelf.timeBeginLabel.text = SUtils.convertTime(seconds: totalSeconds)
@@ -301,11 +309,7 @@ class PlayerDetailsView: UIView {
 	
 	@objc private func onPlayPauseClick() {
 		if player.timeControlStatus == .paused {
-			player.play()
-			playPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
-			miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
-			enlargeTitleImage()
-			MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 1
+			internalPlayFunc()
 		}
 		else {
 			player.pause()
@@ -315,6 +319,14 @@ class PlayerDetailsView: UIView {
 			MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 0
 		}
 		setupLockScreenPlayingCurrentTime(needEditDuration: false)
+	}
+	
+	private func internalPlayFunc() {
+		player.play()
+		playPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+		miniPlayPauseBttn.setImage(#imageLiteral(resourceName: "pause"), for: .normal)
+		enlargeTitleImage()
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 1
 	}
 	
 	/// drag to maximize
@@ -403,7 +415,9 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
-	private func playEpisode() {
+	private func prepareToPlay() {
+		timeBeginLabel.text = "00:00"
+		timeEndLabel.text = "--:--"
 		var url: URL
 		if episode.fileUrl != nil { // local file playing
 			// figure out file name for finding variable location
@@ -422,7 +436,7 @@ class PlayerDetailsView: UIView {
 		player.replaceCurrentItem(with: playerItem)
 		player.volume = playerVolume
 		//player.play()
-		onPlayPauseClick()
+		internalPlayFunc()
 	}
 	
 	

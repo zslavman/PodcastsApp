@@ -21,7 +21,7 @@ class TabBarController: UITabBarController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		UINavigationBar.appearance().prefersLargeTitles = true
+		//UINavigationBar.appearance().prefersLargeTitles = true
 		setupTabs()
 		setupPlayerDetailsView()
 	}
