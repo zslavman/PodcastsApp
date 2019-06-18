@@ -86,7 +86,7 @@ class PlayerDetailsView: UIView {
 		return playerDetailView
 	}
 	
-
+	
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		setupBackgroundControls()
@@ -133,10 +133,42 @@ class PlayerDetailsView: UIView {
 		return // this is serious BUG which doesn't give properly load data for background!!!!
 		let time = CMTimeMake(value: 1, timescale: 3) // dispatcher animation after 1 second of playing
 		let times = [NSValue(time: time)]
-		let observer = player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
+		boundaryTimeObserver = player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
 			[weak self] in // episode start playing
 			self?.setupLockScreenPlayingCurrentTime(needEditDuration: true)
 			print(#function)
+		}
+	}
+	
+	
+	var boundaryTimeObserver: Any?
+	
+	func addBoundaryTimeObserver() {
+		// Divide the asset's duration into quarters.
+		guard let duration = player.currentItem?.duration else {
+			print("Can't get player.currentItem!")
+			return
+		}
+		let interval = CMTimeMultiplyByFloat64(duration, multiplier: 0.25)
+		var currentTime = CMTime.zero
+		var times = [NSValue]()
+		
+		// Calculate boundary times
+		while currentTime < duration {
+			currentTime = currentTime + interval
+			times.append(NSValue(time:currentTime))
+		}
+		boundaryTimeObserver = player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
+			// Update UI
+			print(Date().timeIntervalSinceNow)
+		}
+	}
+	
+	
+	func removeBoundaryTimeObserver() {
+		if let timeObserverToken = boundaryTimeObserver {
+			player.removeTimeObserver(timeObserverToken)
+			boundaryTimeObserver = nil
 		}
 	}
 	
@@ -416,6 +448,7 @@ class PlayerDetailsView: UIView {
 	
 	
 	private func prepareToPlay() {
+		removeBoundaryTimeObserver()
 		timeBeginLabel.text = "00:00"
 		timeEndLabel.text = "--:--"
 		var url: URL
@@ -424,7 +457,7 @@ class PlayerDetailsView: UIView {
 			guard let fileURL = URL(string: episode.fileUrl ?? "") else { return }
 			let fileName = fileURL.lastPathComponent
 			guard var trueLocation = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-			else { return }
+				else { return }
 			trueLocation.appendPathComponent(fileName)
 			url = trueLocation
 		}
@@ -437,13 +470,14 @@ class PlayerDetailsView: UIView {
 		player.volume = playerVolume
 		//player.play()
 		internalPlayFunc()
+		addBoundaryTimeObserver()
 	}
 	
 	
 	private var playerVolume: Float {
 		get {
 			guard let generalVolume = UserDefaults.standard.object(forKey: "generalVolume") as? Float
-			else { return 1 }
+				else { return 1 }
 			return generalVolume
 		}
 		set {
