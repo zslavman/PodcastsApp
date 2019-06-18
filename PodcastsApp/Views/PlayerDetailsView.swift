@@ -78,7 +78,6 @@ class PlayerDetailsView: UIView {
 	
 	
 	
-	
 	//MARK:- Class methods
 	
 	public static func initFromNib() -> PlayerDetailsView {
@@ -94,7 +93,7 @@ class PlayerDetailsView: UIView {
 		currentVolumeSlider.value = playerVolume
 		setupInteruptionObserver()
 		observeCurrentPlayerTime()
-		observeBoundaryTime()
+		//observeBoundaryTime()
 	}
 	
 	
@@ -129,50 +128,6 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
-	private func observeBoundaryTime() {
-		return // this is serious BUG which doesn't give properly load data for background!!!!
-		let time = CMTimeMake(value: 1, timescale: 3) // dispatcher animation after 1 second of playing
-		let times = [NSValue(time: time)]
-		boundaryTimeObserver = player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
-			[weak self] in // episode start playing
-			self?.setupLockScreenPlayingCurrentTime(needEditDuration: true)
-			print(#function)
-		}
-	}
-	
-	
-	var boundaryTimeObserver: Any?
-	
-	func addBoundaryTimeObserver() {
-		// Divide the asset's duration into quarters.
-		guard let duration = player.currentItem?.duration else {
-			print("Can't get player.currentItem!")
-			return
-		}
-		let interval = CMTimeMultiplyByFloat64(duration, multiplier: 0.25)
-		var currentTime = CMTime.zero
-		var times = [NSValue]()
-		
-		// Calculate boundary times
-		while currentTime < duration {
-			currentTime = currentTime + interval
-			times.append(NSValue(time:currentTime))
-		}
-		boundaryTimeObserver = player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
-			// Update UI
-			print(Date().timeIntervalSinceNow)
-		}
-	}
-	
-	
-	func removeBoundaryTimeObserver() {
-		if let timeObserverToken = boundaryTimeObserver {
-			player.removeTimeObserver(timeObserverToken)
-			boundaryTimeObserver = nil
-		}
-	}
-	
-	
 	/// lockscreen Author + title setup
 	private func setupLockScreenPlayingInfo() {
 		var mediaDict = [String:Any]()
@@ -187,24 +142,12 @@ class PlayerDetailsView: UIView {
 	private func setupLockScreenPlayingArtwork(imageLarge: UIImage) {
 		let picSize = CGSize(width: 100, height: 100)
 		let resizedImg = SUtils.resizeImage(imageLarge, toSize: picSize)
-		print("resizedImg.size = \(resizedImg.size)")
 		let artwork = MPMediaItemArtwork(boundsSize: resizedImg.size, requestHandler: {
 			(siz) -> UIImage in
 			print("Return image")
 			return resizedImg
 		})
 		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = artwork
-	}
-	
-	
-	/// lockscreen current time + duration setup
-	private func setupLockScreenPlayingCurrentTime(needEditDuration: Bool) {
-		if needEditDuration, let duration = player.currentItem?.duration.seconds {
-			MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = duration
-		}
-		// if not set elapsedTime you will have a bug after pause click
-		let elapsedTime = player.currentTime().seconds
-		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = elapsedTime
 	}
 	
 	
@@ -314,20 +257,31 @@ class PlayerDetailsView: UIView {
 		UIApplication.tabBarVC()?.minimizePlayer()
 	}
 	
-	
+	//MARK: main player timer
+	/// timer
 	private func observeCurrentPlayerTime() {
-		let interval = CMTimeMake(value: 1, timescale: 2) // timer for update durations
+		let interval = CMTimeMake(value: 1, timescale: 1) // timer for update durations
 		player.addPeriodicTimeObserver(forInterval: interval, queue: .main) {
 			[weak self] (time) in
-			//print("......")
 			guard let strongSelf = self else { return } // fix retain cycle
 			let totalSeconds = CMTimeGetSeconds(time)
 			strongSelf.timeBeginLabel.text = SUtils.convertTime(seconds: totalSeconds)
-			if let duration = strongSelf.player.currentItem?.duration.seconds, !duration.isNaN {
+			if let duration = strongSelf.player.currentItem?.asset.duration.seconds, !duration.isNaN {
 				strongSelf.timeEndLabel.text = SUtils.convertTime(seconds: duration, needHours: true)
 				strongSelf.updateTimeSlider()
+				strongSelf.updateLockScreenPlayingTime(elapsedTime: Int(totalSeconds), duration: Int(duration))
+			}
+			else {
+				print("Error occure!")
 			}
 		}
+	}
+	
+	
+	/// lockscreen current time + duration setup
+	private func updateLockScreenPlayingTime(elapsedTime: Int, duration: Int) {
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = duration
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = elapsedTime
 	}
 	
 	
@@ -350,7 +304,6 @@ class PlayerDetailsView: UIView {
 			shrinkTitleImage()
 			MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 0
 		}
-		setupLockScreenPlayingCurrentTime(needEditDuration: false)
 	}
 	
 	private func internalPlayFunc() {
@@ -448,7 +401,7 @@ class PlayerDetailsView: UIView {
 	
 	
 	private func prepareToPlay() {
-		removeBoundaryTimeObserver()
+		//removeBoundaryTimeObserver()
 		timeBeginLabel.text = "00:00"
 		timeEndLabel.text = "--:--"
 		var url: URL
@@ -468,9 +421,8 @@ class PlayerDetailsView: UIView {
 		let playerItem = AVPlayerItem(url: url)
 		player.replaceCurrentItem(with: playerItem)
 		player.volume = playerVolume
-		//player.play()
 		internalPlayFunc()
-		addBoundaryTimeObserver()
+		//addBoundaryTimeObserver()
 	}
 	
 	
@@ -500,6 +452,51 @@ class PlayerDetailsView: UIView {
 		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyPlaybackRate] = 0
 		UIApplication.tabBarVC()?.hideMiniPlayer()
 	}
+	
+	
+	// this is serious BUG which doesn't give properly load data for background!!!!
+	//	private func observeBoundaryTime() {
+	//		let time = CMTimeMake(value: 1, timescale: 3) // dispatcher animation after 1 second of playing
+	//		let times = [NSValue(time: time)]
+	//		boundaryTimeObserver = player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
+	//			[weak self] in // episode start playing
+	//			self?.updateLockScreenPlayingTime(updDur: <#T##Bool#>, updElaps: <#T##Bool#>)
+	//			print(#function)
+	//		}
+	//	}
+	//
+	//
+	//	var boundaryTimeObserver: Any?
+	//
+	//	func addBoundaryTimeObserver() {
+	//		// Divide the asset's duration into quarters.
+	//		guard let duration = player.currentItem?.asset.duration else {
+	//			print("Can't get player.currentItem!")
+	//			return
+	//		}
+	//		print(duration)
+	//		let interval = CMTimeMultiplyByFloat64(duration, multiplier: 0.25)
+	//		var currentTime = CMTime.zero
+	//		var times = [NSValue]()
+	//
+	//		// Calculate boundary times
+	//		while currentTime < duration {
+	//			currentTime = currentTime + interval
+	//			times.append(NSValue(time:currentTime))
+	//		}
+	//		print(times)
+	//		boundaryTimeObserver = player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
+	//			// Update UI
+	//			print(Date().timeIntervalSinceNow)
+	//		}
+	//	}
+	//
+	//	func removeBoundaryTimeObserver() {
+	//		if let timeObserverToken = boundaryTimeObserver {
+	//			player.removeTimeObserver(timeObserverToken)
+	//			boundaryTimeObserver = nil
+	//		}
+	//	}
 	
 	
 }
