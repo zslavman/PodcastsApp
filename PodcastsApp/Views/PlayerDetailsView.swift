@@ -130,7 +130,7 @@ class PlayerDetailsView: UIView {
 	
 	/// lockscreen Author + title setup
 	private func setupLockScreenPlayingInfo() {
-		var mediaDict = [String:Any]()
+		var mediaDict = [String : Any]()
 		mediaDict[MPMediaItemPropertyArtist] = episode.author
 		mediaDict[MPMediaItemPropertyTitle] = episode.title
 		mediaDict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: #imageLiteral(resourceName: "appicon"))
@@ -142,12 +142,12 @@ class PlayerDetailsView: UIView {
 	private func setupLockScreenPlayingArtwork(imageLarge: UIImage) {
 		let picSize = CGSize(width: 100, height: 100)
 		let resizedImg = SUtils.resizeImage(imageLarge, toSize: picSize)
-		let artwork = MPMediaItemArtwork(boundsSize: resizedImg.size, requestHandler: {
-			(siz) -> UIImage in
-			print("Return image")
+		print("Prepare return image")
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: resizedImg.size) {
+			(_) -> UIImage in
+			print("Return image!")
 			return resizedImg
-		})
-		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = artwork
+		}
 	}
 	
 	
@@ -260,7 +260,7 @@ class PlayerDetailsView: UIView {
 	//MARK: main player timer
 	/// timer
 	private func observeCurrentPlayerTime() {
-		let interval = CMTimeMake(value: 1, timescale: 1) // timer for update durations
+		let interval = CMTimeMake(value: 1, timescale: 2) // timer for update durations
 		player.addPeriodicTimeObserver(forInterval: interval, queue: .main) {
 			[weak self] (time) in
 			guard let strongSelf = self else { return } // fix retain cycle
@@ -269,7 +269,7 @@ class PlayerDetailsView: UIView {
 			if let duration = strongSelf.player.currentItem?.asset.duration.seconds, !duration.isNaN {
 				strongSelf.timeEndLabel.text = SUtils.convertTime(seconds: duration, needHours: true)
 				strongSelf.updateTimeSlider()
-				strongSelf.updateLockScreenPlayingTime(elapsedTime: Int(totalSeconds), duration: Int(duration))
+				//strongSelf.updateLockScreenPlayingTime(elapsedTime: Int(totalSeconds), duration: Int(duration))
 			}
 			else {
 				print("Error occure!")
@@ -280,8 +280,8 @@ class PlayerDetailsView: UIView {
 	
 	/// lockscreen current time + duration setup
 	private func updateLockScreenPlayingTime(elapsedTime: Int, duration: Int) {
-		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = duration
 		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = elapsedTime
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyPlaybackDuration] = duration
 	}
 	
 	
