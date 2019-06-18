@@ -50,16 +50,16 @@ class PlayerDetailsView: UIView {
 			setupAudiosessionBackgroundMode()
 			prepareToPlay()
 			guard let url = URL(string: episode.imageLink) else { return }
-			titleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
-			miniTitleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: []) {
+			miniTitleImage.image = #imageLiteral(resourceName: "image_placeholder")
+			titleImage.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: []) {
 				[weak self] (loadedImage, error, _, _) in
 				if let err = error {
 					print(err.localizedDescription)
 					return
 				}
-				print("---", Thread.current)
 				guard let image = loadedImage else { return }
-				self?.setupLockScreenPlayingArtwork(image: image)
+				self?.miniTitleImage.image = image
+				self?.setupLockScreenPlayingArtwork(imageLarge: image)
 			}
 		}
 	}
@@ -130,12 +130,13 @@ class PlayerDetailsView: UIView {
 	
 	
 	private func observeBoundaryTime() {
+		return // this is serious BUG which doesn't give properly load data for background!!!!
 		let time = CMTimeMake(value: 1, timescale: 3) // dispatcher animation after 1 second of playing
 		let times = [NSValue(time: time)]
-		player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
+		let observer = player.addBoundaryTimeObserver(forTimes: times, queue: .main) {
 			[weak self] in // episode start playing
-			self?.enlargeTitleImage()
 			self?.setupLockScreenPlayingCurrentTime(needEditDuration: true)
+			print(#function)
 		}
 	}
 	
@@ -145,19 +146,21 @@ class PlayerDetailsView: UIView {
 		var mediaDict = [String:Any]()
 		mediaDict[MPMediaItemPropertyArtist] = episode.author
 		mediaDict[MPMediaItemPropertyTitle] = episode.title
+		mediaDict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: #imageLiteral(resourceName: "appicon"))
 		MPNowPlayingInfoCenter.default().nowPlayingInfo = mediaDict
 	}
 	
 	
 	/// lockscreen Album artwork setup
-	private func setupLockScreenPlayingArtwork(image: UIImage) {
-		let picSize = CGSize(width: 300, height: 300)
-		let artwork = MPMediaItemArtwork(boundsSize: picSize, requestHandler: {
+	private func setupLockScreenPlayingArtwork(imageLarge: UIImage) {
+		let picSize = CGSize(width: 100, height: 100)
+		let resizedImg = SUtils.resizeImage(imageLarge, toSize: picSize)
+		print("resizedImg.size = \(resizedImg.size)")
+		let artwork = MPMediaItemArtwork(boundsSize: resizedImg.size, requestHandler: {
 			(siz) -> UIImage in
 			print("Return image")
-			return image
+			return resizedImg
 		})
-//		let artwork = MPMediaItemArtwork(image: image)
 		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = artwork
 	}
 	
@@ -281,9 +284,6 @@ class PlayerDetailsView: UIView {
 	
 	
 	private func observeCurrentPlayerTime() {
-//		timeBeginLabel.text = "00:00"
-//		timeEndLabel.text = "--:--"
-		
 		let interval = CMTimeMake(value: 1, timescale: 2) // timer for update durations
 		player.addPeriodicTimeObserver(forInterval: interval, queue: .main) {
 			[weak self] (time) in
