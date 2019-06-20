@@ -167,19 +167,25 @@ class PlayerDetailsView: UIView {
 	private func setupBackgroundControls() {
 		UIApplication.shared.beginReceivingRemoteControlEvents()
 		let commandCenter = MPRemoteCommandCenter.shared()
-		commandCenter.playCommand.isEnabled = true
+		//commandCenter.playCommand.isEnabled = true
 		commandCenter.playCommand.addTarget {
-			(_) -> MPRemoteCommandHandlerStatus in
-			self.onPlayPauseClick()
-			return .success
+			[unowned self] (event) in
+			if self.player.rate == 0.0 {
+				self.onPlayPauseClick()
+				return .success
+			}
+			return .commandFailed
 		}
-		commandCenter.pauseCommand.isEnabled = true
+		//commandCenter.pauseCommand.isEnabled = true
 		commandCenter.pauseCommand.addTarget {
-			(_) -> MPRemoteCommandHandlerStatus in
-			self.onPlayPauseClick()
-			return .success
+			[unowned self] (event) in
+			if self.player.rate == 1.0 {
+				self.onPlayPauseClick()
+				return .success
+			}
+			return .commandFailed
 		}
-		commandCenter.togglePlayPauseCommand.isEnabled = true // for headphones button
+		//commandCenter.togglePlayPauseCommand.isEnabled = true // for headphones button
 		commandCenter.togglePlayPauseCommand.addTarget {
 			(_) -> MPRemoteCommandHandlerStatus in
 			self.onPlayPauseClick()
