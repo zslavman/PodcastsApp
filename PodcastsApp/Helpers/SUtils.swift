@@ -252,8 +252,29 @@ struct SUtils {
 		return newImage!
 	}
 	
+	
+	public static func getPointForTabbarItemAt(_ itemIndex: Int) -> CGPoint {
+		guard let tabBar = UIApplication.tabBarVC()?.tabBar else { return CGPoint.zero }
+		var items = tabBar.subviews.compactMap { return $0 is UIControl ? $0 : nil }
+		items.sort { $0.frame.origin.x < $1.frame.origin.x }
+		if items.count > itemIndex {
+			// recount tabBarLocation.y
+			var pointsArray = [CGPoint]()
+			items.forEach {
+				let point = tabBar.convert($0.center, to: nil)
+				pointsArray.append(point)
+			}
+			return pointsArray[itemIndex]
+		}
+		return CGPoint.zero
+	}
+	
+	
+	
 }
 
+
+//****************************************************************************************************
 
 extension String {
 	

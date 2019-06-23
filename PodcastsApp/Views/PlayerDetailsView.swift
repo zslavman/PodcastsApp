@@ -143,11 +143,12 @@ class PlayerDetailsView: UIView {
 		let picSize = CGSize(width: 100, height: 100)
 		let resizedImg = SUtils.resizeImage(imageLarge, toSize: picSize)
 		print("Prepare return image")
-		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: resizedImg.size) {
-			(_) -> UIImage in
-			print("Return image!")
-			return resizedImg
-		}
+//		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: resizedImg.size) {
+//			(_) -> UIImage in
+//			print("Return image!")
+//			return resizedImg
+//		}
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: resizedImg)
 	}
 	
 	
@@ -193,8 +194,19 @@ class PlayerDetailsView: UIView {
 		}
 		commandCenter.nextTrackCommand.addTarget(self, action: #selector(onNextTrack))
 		commandCenter.previousTrackCommand.addTarget(self, action: #selector(onPrevTrack))
+		commandCenter.changePlaybackPositionCommand.isEnabled = true
+		commandCenter.changePlaybackPositionCommand.addTarget(self, action: #selector(onChangePlaybackPosition))
 	}
 	
+	
+	@objc private func onChangePlaybackPosition(_ event:MPChangePlaybackPositionCommandEvent) -> MPRemoteCommandHandlerStatus {
+		let seekTime = event.positionTime
+		print("time = \(time)")
+		let cmTime = CMTime(seconds: seekTime, preferredTimescale: 1000)
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPNowPlayingInfoPropertyElapsedPlaybackTime] = cmTime.seconds
+		player.seek(to: cmTime)
+		return .success
+	}
 	
 	
 	@objc private func onPrevTrack() {
@@ -275,7 +287,7 @@ class PlayerDetailsView: UIView {
 			if let duration = strongSelf.player.currentItem?.asset.duration.seconds, !duration.isNaN {
 				strongSelf.timeEndLabel.text = SUtils.convertTime(seconds: duration, needHours: true)
 				strongSelf.updateTimeSlider()
-				//strongSelf.updateLockScreenPlayingTime(elapsedTime: Int(totalSeconds), duration: Int(duration))
+				strongSelf.updateLockScreenPlayingTime(elapsedTime: Int(totalSeconds), duration: Int(duration))
 			}
 			else {
 				print("Error occure!")

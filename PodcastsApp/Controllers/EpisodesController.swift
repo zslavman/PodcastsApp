@@ -8,7 +8,7 @@
 import UIKit
 import FeedKit
 
-class EpisodesController: UITableViewController {
+class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 	
 	public var podcast: Podcast? {
 		didSet {
@@ -20,7 +20,8 @@ class EpisodesController: UITableViewController {
 	}
 	private var episodes = [Episode]()
 	private var podcastsArray = [Podcast]()
-	
+	internal var flyingView: UIImageView!
+
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -88,6 +89,58 @@ class EpisodesController: UITableViewController {
 	}
 	
 	
+	private func flyingAnimation(fromSender: UIView, indexPath: IndexPath) {
+		guard let window = UIApplication.shared.keyWindow else { return }
+		UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = nil
+		
+		// get image from clicked cell
+		guard let cell = tableView.cellForRow(at: indexPath) as? EpisodeCell else { return }
+		guard let img = cell.episodeImageView else { return }
+		
+		// create copy of image, otherwise you will use image from cell
+		guard let cgImage = img.image?.cgImage?.copy() else { return }
+		let newImage = UIImage(cgImage: cgImage)
+		flyingView = UIImageView(image: newImage)
+		
+		flyingView.layer.cornerRadius = 20
+		flyingView.layer.masksToBounds = true
+		flyingView.alpha = 0.8
+		flyingView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
+		let touchPoint = fromSender.convert(CGPoint.zero, to: nil)
+		
+		let animation = CAKeyframeAnimation(keyPath: "position")
+		animation.delegate = self
+		animation.path = customPath(startPoint: touchPoint).cgPath
+		animation.duration = 0.7
+		animation.fillMode = CAMediaTimingFillMode.backwards
+		animation.isRemovedOnCompletion = true
+		animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+		
+		flyingView.layer.add(animation, forKey: nil)
+		window.addSubview(flyingView)
+		
+		// animated scale image
+		UIView.animate(withDuration: animation.duration) {
+			[weak self] in
+			self?.flyingView.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
+		}
+	}
+	
+	
+	func customPath(startPoint: CGPoint) -> UIBezierPath {
+		let path = UIBezierPath()
+		path.move(to: startPoint)
+		let endPoint = SUtils.getPointForTabbarItemAt(2)
+		let randomShiftX = CGFloat(10 + drand48() * 200)
+		// appcoda.com/wp-content/uploads/2017/03/bezier-curve.png
+		let controlPoint1 = CGPoint(x: startPoint.x - randomShiftX, y: startPoint.y)
+		let controlPoint2 = CGPoint(x: endPoint.x - randomShiftX, y: endPoint.y)
+		
+		path.addCurve(to: endPoint, controlPoint1: controlPoint1, controlPoint2: controlPoint2)
+		return path
+	}
+	
+	
 	//MARK:- UITableView Methods
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -95,7 +148,7 @@ class EpisodesController: UITableViewController {
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: PodcastCell.cellID, for: indexPath) as! EpisodeCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: EpisodeCell.cellID, for: indexPath) as! EpisodeCell
 		cell.episode = episodes[indexPath.row]
 		return cell
 	}
@@ -136,10 +189,10 @@ class EpisodesController: UITableViewController {
 		if allowEdit { // allow download
 			action = UIContextualAction(style: .normal, title: "Скачать", handler: {
 				(act, someView, completionHandler) in
-				UserDefaults.standard.saveEpisode(episodes: [selectedPod], addOperation: true)
-				APIServices.shared.startDownloadEpisode(episode: selectedPod)
-				UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = "New"
-				completionHandler(true) // perform delete action
+				self.flyingAnimation(fromSender: someView, indexPath: indexPath)
+//				UserDefaults.standard.saveEpisode(episodes: [selectedPod], addOperation: true)
+//				APIServices.shared.startDownloadEpisode(episode: selectedPod)
+				completionHandler(true) // perform action
 			})
 			action.backgroundColor = #colorLiteral(red: 0.2124915746, green: 0.6660024672, blue: 0.148491782, alpha: 1)
 			action.image = #imageLiteral(resourceName: "downloads")
@@ -156,5 +209,14 @@ class EpisodesController: UITableViewController {
 		return swipeAction
 	}
 	
+}
+	
+
+extension EpisodesController: CAAnimationDelegate {
+	
+	func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
+		UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = "New"
+		flyingView.removeFromSuperview()
+	}
 	
 }
