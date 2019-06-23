@@ -24,6 +24,22 @@ class TabBarController: UITabBarController {
 		//UINavigationBar.appearance().prefersLargeTitles = true
 		setupTabs()
 		setupPlayerDetailsView()
+		NotificationCenter.default.addObserver(self, selector: #selector(onLoadComplete), name: .downloadComplete, object: nil)
+	}
+	
+	
+	@objc private func onLoadComplete(notif: Notification) {
+		// update badge
+		let badgeValue = viewControllers?[2].tabBarItem.badgeValue
+		guard let bv = badgeValue, var intFromString = Int(bv) else { return }
+		
+		if intFromString <= 1 {
+			viewControllers?[2].tabBarItem.badgeValue = nil
+		}
+		else {
+			intFromString -= 1
+			viewControllers?[2].tabBarItem.badgeValue = intFromString.description
+		}
 	}
 	
 	
@@ -117,6 +133,7 @@ class TabBarController: UITabBarController {
 	
 	/// hide/show tabbar
 	func setTabBar(hidden: Bool) {
+		if true { return }
 		var offset: CGFloat = UIScreen.main.bounds.size.height
 		if hidden {
 			holdOnSafeArea()

@@ -53,7 +53,7 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 	
 	
 	/// save favorite into persistance storage
-	@objc private func onLikeClick() {
+	@objc private func onLikeClick(sender: UIBarButtonItem) {
 		guard let podcast = podcast else { return }
 		if podcastsArray.contains(podcast) { return }
 		podcastsArray.append(podcast)
@@ -62,12 +62,13 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 		UserDefaults.standard.set(data, forKey: "favPodKey")
 		// update button appearance
 		navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "heart"), style: .plain, target: nil, action: nil)
-		showBageHightlight()
-	}
-	
-	
-	private func showBageHightlight() {
-		UIApplication.tabBarVC()?.viewControllers?[1].tabBarItem.badgeValue = "New"
+		// animation
+		guard let originView = sender.value(forKey: "view") as? UIView else { return }
+		let globalCoords = originView.convert(CGPoint.zero, to: nil)
+
+		let img = UIImageView(image: #imageLiteral(resourceName: "heart"))
+		img.tintColor = .blue
+		flyingAnimation(fromPoint: globalCoords, toTabBarItemNo: 1, img: img)
 	}
 	
 	
@@ -89,48 +90,59 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 	}
 	
 	
-	private func flyingAnimation(fromSender: UIView, indexPath: IndexPath) {
-		guard let window = UIApplication.shared.keyWindow else { return }
-		UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = nil
-		
+	private func prepareToFlightAnim(fromSender: UIView, indexPath: IndexPath, toTabBarItemNo: Int) {
+		let startPoint = fromSender.convert(CGPoint.zero, to: nil) // convert to global coords
 		// get image from clicked cell
 		guard let cell = tableView.cellForRow(at: indexPath) as? EpisodeCell else { return }
 		guard let img = cell.episodeImageView else { return }
 		
 		// create copy of image, otherwise you will use image from cell
 		guard let cgImage = img.image?.cgImage?.copy() else { return }
-		let newImage = UIImage(cgImage: cgImage)
-		flyingView = UIImageView(image: newImage)
+		let newImage = UIImageView(image: UIImage(cgImage: cgImage))
 		
-		flyingView.layer.cornerRadius = 20
-		flyingView.layer.masksToBounds = true
-		flyingView.alpha = 0.8
-		flyingView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-		let touchPoint = fromSender.convert(CGPoint.zero, to: nil)
+		newImage.layer.cornerRadius = 16
+		newImage.layer.masksToBounds = true
+		newImage.alpha = 0.8
+		newImage.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
 		
-		let animation = CAKeyframeAnimation(keyPath: "position")
+		flyingAnimation(fromPoint: startPoint, toTabBarItemNo: toTabBarItemNo, img: newImage)
+	}
+	
+	
+	/// Picture flight to tabBar animation
+	private func flyingAnimation(fromPoint: CGPoint, toTabBarItemNo: Int, img: UIImageView) {
+		guard let window = UIApplication.shared.keyWindow else { return }
+		let animation = CAKeyframeAnimation(keyPath: "position")// don't edit string - it's a key!
 		animation.delegate = self
-		animation.path = customPath(startPoint: touchPoint).cgPath
+		animation.path = customPath(startPoint: fromPoint, toPointtoTabBarItemNo: toTabBarItemNo).cgPath
 		animation.duration = 0.7
 		animation.fillMode = CAMediaTimingFillMode.backwards
 		animation.isRemovedOnCompletion = true
 		animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeOut)
+		let animID = (toTabBarItemNo == 1) ? "first" : "second"
+		animation.setValue(animID, forKey: "animID")
 		
+		flyingView = img
 		flyingView.layer.add(animation, forKey: nil)
 		window.addSubview(flyingView)
 		
-		// animated scale image
+		// animated image scaling to final width = 30
+		let wid = img.frame.width
+		let multiplier: CGFloat = 30 / wid
 		UIView.animate(withDuration: animation.duration) {
 			[weak self] in
-			self?.flyingView.transform = CGAffineTransform(scaleX: 0.3, y: 0.3)
+			self?.flyingView.transform = CGAffineTransform(scaleX: multiplier, y: multiplier)
 		}
 	}
 	
 	
-	func customPath(startPoint: CGPoint) -> UIBezierPath {
+	/// Calculate & Return animation path
+	///
+	/// - Parameter startPoint: start point of path (in glogal coords)
+	func customPath(startPoint: CGPoint, toPointtoTabBarItemNo: Int) -> UIBezierPath {
 		let path = UIBezierPath()
 		path.move(to: startPoint)
-		let endPoint = SUtils.getPointForTabbarItemAt(2)
+		let endPoint = SUtils.getPointForTabbarItemAt(toPointtoTabBarItemNo)
 		let randomShiftX = CGFloat(10 + drand48() * 200)
 		// appcoda.com/wp-content/uploads/2017/03/bezier-curve.png
 		let controlPoint1 = CGPoint(x: startPoint.x - randomShiftX, y: startPoint.y)
@@ -189,9 +201,9 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 		if allowEdit { // allow download
 			action = UIContextualAction(style: .normal, title: "Скачать", handler: {
 				(act, someView, completionHandler) in
-				self.flyingAnimation(fromSender: someView, indexPath: indexPath)
-//				UserDefaults.standard.saveEpisode(episodes: [selectedPod], addOperation: true)
-//				APIServices.shared.startDownloadEpisode(episode: selectedPod)
+				self.prepareToFlightAnim(fromSender: someView, indexPath: indexPath, toTabBarItemNo: 2)
+				UserDefaults.standard.saveEpisode(episodes: [selectedPod], addOperation: true)
+				APIServices.shared.startDownloadEpisode(episode: selectedPod)
 				completionHandler(true) // perform action
 			})
 			action.backgroundColor = #colorLiteral(red: 0.2124915746, green: 0.6660024672, blue: 0.148491782, alpha: 1)
@@ -215,7 +227,19 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 extension EpisodesController: CAAnimationDelegate {
 	
 	func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
-		UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = "New"
+		var tabBarItemNum = 1
+		// identify current animation
+		if let animType = anim.value(forKey: "animID") as? String {
+			tabBarItemNum = (animType == "first") ? 1 : 2
+		}
+		let badgeValue = UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue
+		if let bv = badgeValue, var intFromString = Int(bv) {
+			intFromString += 1
+			UIApplication.tabBarVC()?.viewControllers?[tabBarItemNum].tabBarItem.badgeValue = intFromString.description
+		}
+		else {
+			UIApplication.tabBarVC()?.viewControllers?[tabBarItemNum].tabBarItem.badgeValue = "1"
+		}
 		flyingView.removeFromSuperview()
 	}
 	

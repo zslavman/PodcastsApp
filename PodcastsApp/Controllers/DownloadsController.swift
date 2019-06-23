@@ -23,7 +23,7 @@ class DownloadsController: UITableViewController {
 		super.viewWillAppear(animated)
 		downloadedEpArr = UserDefaults.standard.getDownloadedEpisodes()
 		tableView.reloadData()
-		UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = nil
+		//UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = nil
 	}
 	
 	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
