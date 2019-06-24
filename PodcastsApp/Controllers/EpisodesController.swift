@@ -66,7 +66,7 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 		guard let originView = sender.value(forKey: "view") as? UIView else { return }
 		let globalCoords = originView.convert(CGPoint.zero, to: nil)
 
-		let img = UIImageView(image: #imageLiteral(resourceName: "heart"))
+		let img = UIImageView(image: #imageLiteral(resourceName: "heart_blue"))
 		img.tintColor = .blue
 		flyingAnimation(fromPoint: globalCoords, toTabBarItemNo: 1, img: img)
 	}

@@ -53,6 +53,11 @@ class EpisodeCell: UITableViewCell {
 		//TODO:check if file allready downloaded - set progress hiden
 	}
 	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		//episode = nil
+	}
+	
 }
 
 

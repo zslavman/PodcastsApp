@@ -20,7 +20,7 @@ class PSearchController: UITableViewController {
 		tableView.keyboardDismissMode = .interactive
 		setupTable()
 		setupSearchBar()
-		searchBar(searchController.searchBar, textDidChange: "Deep Dish") // set default search phrase
+		searchBar(searchController.searchBar, textDidChange: "loung") // set default search phrase
 		//navigationController?.hidesBarsOnSwipe = true
 	}
 	

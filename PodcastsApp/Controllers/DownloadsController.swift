@@ -23,7 +23,6 @@ class DownloadsController: UITableViewController {
 		super.viewWillAppear(animated)
 		downloadedEpArr = UserDefaults.standard.getDownloadedEpisodes()
 		tableView.reloadData()
-		//UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue = nil
 	}
 	
 	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -53,11 +52,19 @@ class DownloadsController: UITableViewController {
 		guard let userInfo = notif.userInfo as? [String: Any] else { return }
 		guard let progress = userInfo["progress"] as? Double else { return }
 		guard let title = userInfo["title"] as? String else { return }
-		guard let row = downloadedEpArr.firstIndex(where: {$0.title == title}) else { return }
-		guard let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0)) as? EpisodeCell else { return }
-		cell.progressBar.progress = Float(progress)
-		cell.progressBar.isHidden = false
-		cell.episodeImageView.alpha = 0.25
+//		guard let row = downloadedEpArr.firstIndex(where: {$0.title == title}) else { return }
+//		guard let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0)) as? EpisodeCell else { return }
+		
+		let visibleCells = tableView.visibleCells as! [EpisodeCell]
+		visibleCells.forEach {
+			(cell) in
+			if cell.titleLabel.text == title {
+				cell.progressBar.progress = Float(progress)
+				cell.progressBar.isHidden = false
+				cell.episodeImageView.alpha = 0.25
+			}
+		}
+
 	}
 	
 	
