@@ -24,7 +24,7 @@ struct Episode: Codable {
 	let author: String
 	let strimLink: String
 	let fileSize: String?
-	var fileUrl: String?
+	var fileUrl: String? // local link to downloaded file
 	
 	init(feedItem: RSSFeedItem, parentImageLink: String) {
 		strimLink 			= feedItem.enclosure?.attributes?.url ?? "" // audio-file link

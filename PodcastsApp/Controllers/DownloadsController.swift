@@ -54,17 +54,21 @@ class DownloadsController: UITableViewController {
 		guard let title = userInfo["title"] as? String else { return }
 //		guard let row = downloadedEpArr.firstIndex(where: {$0.title == title}) else { return }
 //		guard let cell = tableView.cellForRow(at: IndexPath(row: row, section: 0)) as? EpisodeCell else { return }
-		
 		let visibleCells = tableView.visibleCells as! [EpisodeCell]
 		visibleCells.forEach {
 			(cell) in
-			if cell.titleLabel.text == title {
-				cell.progressBar.progress = Float(progress)
-				cell.progressBar.isHidden = false
-				cell.episodeImageView.alpha = 0.25
+			if cell.episode.fileUrl == nil {
+				if cell.titleLabel.text == title {
+					cell.progressBar.progress = Float(progress)
+					cell.progressBar.isHidden = false
+					cell.episodeImageView.alpha = 0.25
+				}
+			}
+			else {
+				cell.progressBar.isHidden = true
+				cell.episodeImageView.alpha = 1
 			}
 		}
-
 	}
 	
 	
@@ -73,8 +77,10 @@ class DownloadsController: UITableViewController {
 		guard let index = downloadedEpArr.firstIndex(where: {$0.title == epLoadCompl.episodeTitle}) else { return }
 		downloadedEpArr[index].fileUrl = epLoadCompl.fileUrl
 		guard let cell = tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? EpisodeCell else { return }
-		cell.progressBar.isHidden = true
-		cell.episodeImageView.alpha = 1
+		DispatchQueue.main.async {
+			cell.progressBar.isHidden = true
+			cell.episodeImageView.alpha = 1
+		}
 	}
 	
 	//MARK:- UITableView

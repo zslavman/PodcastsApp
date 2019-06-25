@@ -28,17 +28,18 @@ class TabBarController: UITabBarController {
 	}
 	
 	
+	/// update badge on last tab when download complete
 	@objc private func onLoadComplete(notif: Notification) {
-		// update badge
 		let badgeValue = viewControllers?[2].tabBarItem.badgeValue
 		guard let bv = badgeValue, var intFromString = Int(bv) else { return }
-		
-		if intFromString <= 1 {
-			viewControllers?[2].tabBarItem.badgeValue = nil
-		}
-		else {
-			intFromString -= 1
-			viewControllers?[2].tabBarItem.badgeValue = intFromString.description
+		DispatchQueue.main.async {
+			if intFromString <= 1 {
+				self.viewControllers?[2].tabBarItem.badgeValue = nil
+			}
+			else {
+				intFromString -= 1
+				self.viewControllers?[2].tabBarItem.badgeValue = intFromString.description
+			}
 		}
 	}
 	
