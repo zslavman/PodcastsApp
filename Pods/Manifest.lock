@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (4.7.3)
+  - EmptyDataSet-Swift (4.2.0)
   - FeedKit (8.1.1)
   - SDWebImage (5.0.0):
     - SDWebImage/Core (= 5.0.0)
@@ -7,20 +8,23 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.7.3)
+  - EmptyDataSet-Swift (~> 4.2.0)
   - FeedKit (~> 8.0)
   - SDWebImage (~> 5.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
+    - EmptyDataSet-Swift
     - FeedKit
     - SDWebImage
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  EmptyDataSet-Swift: 1fa0b35f530a35f852ecb2b53564728b0c300aaf
   FeedKit: 3418eed25f0b493b205b4de1b8511ac21d413fa9
   SDWebImage: 5de80a0302de9e377e62f47d2fa1304efff0e55f
 
-PODFILE CHECKSUM: ec5dc8466978da59a844b2f32150eb6eac7ebf6f
+PODFILE CHECKSUM: 334121a625661b6216da2fe239bd3b4a321cf937
 
 COCOAPODS: 1.5.3

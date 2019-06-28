@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "63F8162C8F7E39928BE63ECB3357B57B"
-               BuildableName = "Pods_PodcastsApp.framework"
-               BlueprintName = "Pods-PodcastsApp"
+               BlueprintIdentifier = "A94242B0669C7A9BBE8B3ADE5C7844A0"
+               BuildableName = "EmptyDataSet_Swift.framework"
+               BlueprintName = "EmptyDataSet-Swift"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "63F8162C8F7E39928BE63ECB3357B57B"
-            BuildableName = "Pods_PodcastsApp.framework"
-            BlueprintName = "Pods-PodcastsApp"
+            BlueprintIdentifier = "A94242B0669C7A9BBE8B3ADE5C7844A0"
+            BuildableName = "EmptyDataSet_Swift.framework"
+            BlueprintName = "EmptyDataSet-Swift"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
