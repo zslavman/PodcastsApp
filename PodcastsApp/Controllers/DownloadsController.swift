@@ -11,9 +11,11 @@ import UIKit
 class DownloadsController: UITableViewController {
 	
 	private var downloadedEpArr = UserDefaults.standard.getDownloadedEpisodes()
+	private var placeholder: PlaceholderView!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		setupEmty()
 		setupTableView()
 		setupObservers()
 	}
@@ -39,6 +41,15 @@ class DownloadsController: UITableViewController {
 		tableView.tableFooterView = UIView()
 		let nib = UINib(nibName: "EpisodeCell", bundle: nil)
 		tableView.register(nib, forCellReuseIdentifier: EpisodeCell.cellID)
+	}
+	
+	
+	/// configure empty collectionView
+	private func setupEmty() {
+		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_downloads"), title: "Нет файлов", onTapAction: {
+			print()
+		})
+		tableView.addSubview(placeholder)
 	}
 	
 	
@@ -86,6 +97,12 @@ class DownloadsController: UITableViewController {
 	//MARK:- UITableView
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		if downloadedEpArr.count == 0 {
+			placeholder.isHidden = false
+		}
+		else {
+			placeholder.isHidden = true
+		}
 		return downloadedEpArr.count
 	}
 	

@@ -14,6 +14,8 @@ class PlaceholderView: UIView {
 	private let mainPicture = UIImageView()
 	private var str: String?
 	private var tapAction:(() -> ())!
+	private var centerYConstraint: NSLayoutConstraint!
+	private var tabBarHeight: CGFloat = 0
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -26,12 +28,13 @@ class PlaceholderView: UIView {
 		tapAction = onTapAction
 		isUserInteractionEnabled = true
 		
-		mainPicture.image = #imageLiteral(resourceName: "placeholder_favorites").withRenderingMode(.alwaysTemplate)
+		mainPicture.image = img.withRenderingMode(.alwaysTemplate)
 		mainPicture.translatesAutoresizingMaskIntoConstraints = false
 		mainPicture.tintColor = .lightGray
 		mainPicture.isUserInteractionEnabled = true
 		mainPicture.contentMode = .scaleAspectFit
-		mainPicture.alpha = 0.7
+		
+		alpha = 0.25
 		
 		addSubview(mainPicture)
 	}
@@ -41,7 +44,8 @@ class PlaceholderView: UIView {
 		super.didMoveToWindow()
 		translatesAutoresizingMaskIntoConstraints = false
 		let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? TabBarController
-		let tabBarHeight = tabBarVC?.tabBar.frame.size.height ?? 0
+		tabBarHeight = tabBarVC?.tabBar.frame.size.height ?? 0
+		
 		guard let sv = superview else { return }
 		
 		let picWidthAnchor = NSLayoutConstraint(
@@ -50,16 +54,38 @@ class PlaceholderView: UIView {
 			relatedBy: .equal,
 			toItem: sv,
 			attribute: .width,
-			multiplier: 0.55,
+			multiplier: 0.5,
 			constant: 0
 		)
+		centerYConstraint = mainPicture.centerYAnchor.constraint(equalTo: sv.centerYAnchor, constant: -tabBarHeight)
+		
 		NSLayoutConstraint.activate([
 			mainPicture.centerXAnchor.constraint(equalTo: sv.centerXAnchor),
-			mainPicture.centerYAnchor.constraint(equalTo: sv.centerYAnchor, constant: -tabBarHeight),
 			mainPicture.heightAnchor.constraint(equalTo: mainPicture.widthAnchor),
+			centerYConstraint,
 			picWidthAnchor,
 		])
 		mainPicture.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onSelfTap)))
+		
+		if let str = str {
+			addTitle(str)
+		}
+	}
+	
+	
+	private func addTitle(_ str: String) {
+		let label = UILabel()
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.text = str
+		label.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+		label.textColor = .lightGray
+		addSubview(label)
+		
+		NSLayoutConstraint.activate([
+			label.centerXAnchor.constraint(equalTo: mainPicture.centerXAnchor),
+			label.topAnchor.constraint(equalTo: mainPicture.bottomAnchor, constant: 0)
+		])
+		centerYConstraint.constant = -tabBarHeight - label.frame.height
 	}
 	
 	

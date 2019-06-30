@@ -11,7 +11,7 @@ import UIKit
 class FavoritesController: UICollectionViewController  {
 	
 	private var favPodcastsArr = UserDefaults.standard.fetchFavorites()
-	private lazy var placeholder = PlaceholderView()
+	private var placeholder: PlaceholderView!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
