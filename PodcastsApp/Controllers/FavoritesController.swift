@@ -11,7 +11,7 @@ import UIKit
 class FavoritesController: UICollectionViewController  {
 	
 	private var favPodcastsArr = UserDefaults.standard.fetchFavorites()
-	private lazy var placeholder = UIImageView()
+	private lazy var placeholder = PlaceholderView()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -48,18 +48,23 @@ class FavoritesController: UICollectionViewController  {
 	
 	/// configure empty collectionView
 	private func setupEmty() {
-		placeholder.image = #imageLiteral(resourceName: "placeholder_favorites")
-		placeholder.translatesAutoresizingMaskIntoConstraints = false
-		placeholder.isUserInteractionEnabled = true
+		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_favorites"), title: "Нет записей", onTapAction: {
+			self.tabBarController?.selectedIndex = 0
+		})
 		collectionView.addSubview(placeholder)
-		let tabBarHeight = tabBarController?.tabBar.frame.size.height ?? 0
-		NSLayoutConstraint.activate([
-			placeholder.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -tabBarHeight),
-			placeholder.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
-			placeholder.widthAnchor.constraint(equalToConstant: 200),
-			placeholder.heightAnchor.constraint(equalToConstant: 200),
-		])
-		placeholder.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPlaceholderTap)))
+		
+//		placeholder.image = #imageLiteral(resourceName: "placeholder_favorites")
+//		placeholder.translatesAutoresizingMaskIntoConstraints = false
+//		placeholder.isUserInteractionEnabled = true
+//		collectionView.addSubview(placeholder)
+//		let tabBarHeight = tabBarController?.tabBar.frame.size.height ?? 0
+//		NSLayoutConstraint.activate([
+//			placeholder.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -tabBarHeight),
+//			placeholder.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
+//			placeholder.widthAnchor.constraint(equalToConstant: 200),
+//			placeholder.heightAnchor.constraint(equalToConstant: 200),
+//		])
+//		placeholder.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPlaceholderTap)))
 	}
 	
 	
