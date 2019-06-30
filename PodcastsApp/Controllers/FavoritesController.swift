@@ -8,15 +8,14 @@
 
 import UIKit
 
-
 class FavoritesController: UICollectionViewController  {
 	
 	private var favPodcastsArr = UserDefaults.standard.fetchFavorites()
-	
-	
+	private lazy var placeholder = UIImageView()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		setupEmty()
 		setupCollectionView()
 	}
 	
@@ -43,8 +42,29 @@ class FavoritesController: UICollectionViewController  {
 		collectionView.backgroundColor = .white
 		
 		let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress))
-		//longGesture.minimumPressDuration = 0.5
 		collectionView.addGestureRecognizer(longGesture)
+	}
+	
+	
+	/// configure empty collectionView
+	private func setupEmty() {
+		placeholder.image = #imageLiteral(resourceName: "placeholder_favorites")
+		placeholder.translatesAutoresizingMaskIntoConstraints = false
+		placeholder.isUserInteractionEnabled = true
+		collectionView.addSubview(placeholder)
+		let tabBarHeight = tabBarController?.tabBar.frame.size.height ?? 0
+		NSLayoutConstraint.activate([
+			placeholder.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -tabBarHeight),
+			placeholder.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
+			placeholder.widthAnchor.constraint(equalToConstant: 200),
+			placeholder.heightAnchor.constraint(equalToConstant: 200),
+		])
+		placeholder.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPlaceholderTap)))
+	}
+	
+	
+	@objc private func onPlaceholderTap() {
+		tabBarController?.selectedIndex = 0
 	}
 	
 	
@@ -74,6 +94,12 @@ class FavoritesController: UICollectionViewController  {
 	//MARK:- UICollectionView methods
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		if favPodcastsArr.count == 0 {
+			placeholder.isHidden = false
+		}
+		else {
+			placeholder.isHidden = true
+		}
 		return favPodcastsArr.count
 	}
 	
@@ -94,7 +120,6 @@ class FavoritesController: UICollectionViewController  {
 }
 
 
-
 /// sizing of cells
 extension FavoritesController: UICollectionViewDelegateFlowLayout {
 	
@@ -110,5 +135,6 @@ extension FavoritesController: UICollectionViewDelegateFlowLayout {
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
 		return 16
 	}
-	
 }
+
+
