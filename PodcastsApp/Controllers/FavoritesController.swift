@@ -52,24 +52,12 @@ class FavoritesController: UICollectionViewController  {
 			self.tabBarController?.selectedIndex = 0
 		})
 		collectionView.addSubview(placeholder)
-		
-//		placeholder.image = #imageLiteral(resourceName: "placeholder_favorites")
-//		placeholder.translatesAutoresizingMaskIntoConstraints = false
-//		placeholder.isUserInteractionEnabled = true
-//		collectionView.addSubview(placeholder)
-//		let tabBarHeight = tabBarController?.tabBar.frame.size.height ?? 0
-//		NSLayoutConstraint.activate([
-//			placeholder.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor, constant: -tabBarHeight),
-//			placeholder.centerXAnchor.constraint(equalTo: collectionView.centerXAnchor),
-//			placeholder.widthAnchor.constraint(equalToConstant: 200),
-//			placeholder.heightAnchor.constraint(equalToConstant: 200),
-//		])
-//		placeholder.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onPlaceholderTap)))
 	}
 	
 	
 	@objc private func onPlaceholderTap() {
 		tabBarController?.selectedIndex = 0
+		print("1 tap")
 	}
 	
 	
