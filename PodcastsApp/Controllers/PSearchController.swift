@@ -14,10 +14,11 @@ class PSearchController: UITableViewController {
 	private var podcasts = [Podcast]()
 	private let searchController = UISearchController(searchResultsController: nil)
 	private var timer: Timer?
+	private var placeholder: PlaceholderView!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		tableView.keyboardDismissMode = .interactive
+		setupEmty()
 		setupTable()
 		setupSearchBar()
 		searchBar(searchController.searchBar, textDidChange: "loung") // set default search phrase
@@ -25,6 +26,7 @@ class PSearchController: UITableViewController {
 	}
 	
 	private func setupTable() {
+		tableView.keyboardDismissMode = .interactive
 		tableView.tableFooterView = UIView()
 		let nib = UINib(nibName: "PodcastCell", bundle: nil)
 		tableView.register(nib, forCellReuseIdentifier: PodcastCell.cellID)
@@ -50,27 +52,27 @@ class PSearchController: UITableViewController {
 	}
 	
 	
+	/// configure empty collectionView
+	private func setupEmty() {
+		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_search"), title: "Введите условия поиска", onTapAction: {
+			print()
+		})
+		view.addSubview(placeholder)
+	}
+	
+	
 	//MARK:- UITableView methods
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		if podcasts.count == 0 {
+			placeholder.isHidden = false
+		}
+		else {
+			placeholder.isHidden = true
+		}
 		return podcasts.count
 	}
 	
-	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-		let label = UILabel()
-		label.text = "Введите условия поиска"
-		label.textColor = .lightGray
-		label.textAlignment = .center
-		label.font = UIFont.boldSystemFont(ofSize: 18)
-		return label
-	}
-	
-	override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		if podcasts.count == 0 {
-			return 250
-		}
-		return 0
-	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: PodcastCell.cellID, for: indexPath) as! PodcastCell
@@ -78,9 +80,11 @@ class PSearchController: UITableViewController {
 		return cell
 	}
 	
+	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return 132
 	}
+	
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let episodesVC = EpisodesController()

@@ -51,7 +51,7 @@ class FavoritesController: UICollectionViewController  {
 		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_favorites"), title: "Нет записей", onTapAction: {
 			self.tabBarController?.selectedIndex = 0
 		})
-		collectionView.addSubview(placeholder)
+		view.addSubview(placeholder)
 	}
 	
 	
@@ -88,9 +88,7 @@ class FavoritesController: UICollectionViewController  {
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		if favPodcastsArr.count == 0 {
-			DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-				self.placeholder.isHidden = false
-			}
+			placeholder.isHidden = false
 		}
 		else {
 			placeholder.isHidden = true

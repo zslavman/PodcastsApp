@@ -98,9 +98,11 @@ class DownloadsController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		if downloadedEpArr.count == 0 {
+			tableView.alwaysBounceVertical = false
 			placeholder.isHidden = false
 		}
 		else {
+			tableView.alwaysBounceVertical = true
 			placeholder.isHidden = true
 		}
 		return downloadedEpArr.count
