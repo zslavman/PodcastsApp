@@ -34,7 +34,7 @@ class PlaceholderView: UIView {
 		mainPicture.isUserInteractionEnabled = true
 		mainPicture.contentMode = .scaleAspectFit
 		
-		alpha = 0.25
+		alpha = 0.45
 		
 		addSubview(mainPicture)
 	}

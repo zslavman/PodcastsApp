@@ -88,7 +88,9 @@ class FavoritesController: UICollectionViewController  {
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		if favPodcastsArr.count == 0 {
-			placeholder.isHidden = false
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+				self.placeholder.isHidden = false
+			}
 		}
 		else {
 			placeholder.isHidden = true
