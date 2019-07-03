@@ -49,7 +49,7 @@ class DownloadsController: UITableViewController {
 		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_downloads"), title: "Нет файлов", onTapAction: {
 			print()
 		})
-		tableView.addSubview(placeholder)
+		view.addSubview(placeholder)
 	}
 	
 	
@@ -145,6 +145,6 @@ class DownloadsController: UITableViewController {
 			UIApplication.tabBarVC()?.maximizePlayer(episode: selected, playlist: downloadedEpArr)
 		}
 		tableView.deselectRow(at: indexPath, animated: true)
-		
 	}
+	
 }

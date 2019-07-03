@@ -21,7 +21,7 @@ class PSearchController: UITableViewController {
 		setupEmty()
 		setupTable()
 		setupSearchBar()
-		searchBar(searchController.searchBar, textDidChange: "loung") // set default search phrase
+		//searchBar(searchController.searchBar, textDidChange: "loung") // set default search phrase
 		//navigationController?.hidesBarsOnSwipe = true
 	}
 	
@@ -58,6 +58,7 @@ class PSearchController: UITableViewController {
 			print()
 		})
 		view.addSubview(placeholder)
+		//tableView.backgroundView = placeholder
 	}
 	
 	
