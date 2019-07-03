@@ -29,6 +29,12 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 		setupNavBar()
 	}
 	
+	
+	override func viewWillAppear(_ animated: Bool) {
+		setupNavBar() // update heart status
+	}
+	
+	
 	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
 			UIApplication.tabBarVC()?.setTabBar(hidden: true)
@@ -40,9 +46,10 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 	
 	
 	private func setupNavBar() {
-		let savedPodcasts = UserDefaults.standard.fetchFavorites()
+		podcastsArray = UserDefaults.standard.fetchFavorites()
 		guard let podcast = podcast else { return }
-		if savedPodcasts.contains(podcast) {
+		navigationItem.rightBarButtonItem = nil
+		if podcastsArray.contains(podcast) {
 			navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "heart"), style: .plain, target: nil, action: nil)
 		}
 		else {
@@ -56,7 +63,7 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 	@objc private func onLikeClick(sender: UIBarButtonItem) {
 		guard let podcast = podcast else { return }
 		if podcastsArray.contains(podcast) { return }
-		podcastsArray.append(podcast)
+		podcastsArray.insert(podcast, at: 0)
 		// transform podcast into Data
 		let data = NSKeyedArchiver.archivedData(withRootObject: podcastsArray)
 		UserDefaults.standard.set(data, forKey: "favPodKey")
@@ -232,7 +239,7 @@ extension EpisodesController: CAAnimationDelegate {
 		if let animType = anim.value(forKey: "animID") as? String {
 			tabBarItemNum = (animType == "first") ? 1 : 2
 		}
-		let badgeValue = UIApplication.tabBarVC()?.viewControllers?[2].tabBarItem.badgeValue
+		let badgeValue = UIApplication.tabBarVC()?.viewControllers?[tabBarItemNum].tabBarItem.badgeValue
 		if let bv = badgeValue, var intFromString = Int(bv) {
 			intFromString += 1
 			UIApplication.tabBarVC()?.viewControllers?[tabBarItemNum].tabBarItem.badgeValue = intFromString.description

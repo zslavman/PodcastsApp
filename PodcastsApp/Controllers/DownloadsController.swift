@@ -50,9 +50,7 @@ class DownloadsController: UIViewController {
 	
 	/// configure empty collectionView
 	private func setupEmty() {
-		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_downloads"), title: "Нет файлов", onTapAction: {
-			print()
-		})
+		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_downloads"), title: "Нет файлов")
 		view.addSubview(placeholder)
 	}
 	

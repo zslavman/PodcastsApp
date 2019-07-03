@@ -23,7 +23,7 @@ class PSearchController: UIViewController {
 		setupEmty()
 		setupTable()
 		setupSearchBar()
-		//searchBar(searchController.searchBar, textDidChange: "loung") // set default search phrase
+		searchBar(searchController.searchBar, textDidChange: "loung") // set default search phrase
 		//navigationController?.hidesBarsOnSwipe = true
 	}
 	
@@ -55,9 +55,7 @@ class PSearchController: UIViewController {
 	
 	/// configure empty collectionView
 	private func setupEmty() {
-		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_search"), title: "Введите условия поиска", onTapAction: {
-			print()
-		})
+		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_search"), title: "Введите условия поиска")
 		view.addSubview(placeholder)
 	}
 }
@@ -87,6 +85,7 @@ extension PSearchController: UITableViewDataSource, UITableViewDelegate {
 	}
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		tableView.deselectRow(at: indexPath, animated: true)
 		let episodesVC = EpisodesController()
 		episodesVC.podcast = podcasts[indexPath.row]
 		UIApplication.tabBarVC()?.setTabBar(hidden: false)
@@ -103,6 +102,20 @@ extension PSearchController: UITableViewDataSource, UITableViewDelegate {
 			self.navigationController?.navigationBar.prefersLargeTitles = true
 		}
 	}
+	
+//	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//		if placeholder == nil {
+//			placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_search"), title: "Введите условия поиска")
+//		}
+//		return placeholder
+//	}
+//
+//	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//		let navBarHeight = navigationController?.navigationBar.frame.height ?? 0
+//		let tabBarHeight = UIApplication.tabBarVC()?.tabBar.frame.height ?? 0
+//		let workAreaHeight = UIScreen.main.bounds.height - (navBarHeight + tabBarHeight)
+//		return (podcasts.count == 0) ? workAreaHeight : 0
+//	}
 }
 
 

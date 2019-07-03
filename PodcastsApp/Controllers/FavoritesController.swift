@@ -49,15 +49,13 @@ class FavoritesController: UICollectionViewController  {
 	/// configure empty collectionView
 	private func setupEmty() {
 		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_favorites"), title: "Нет записей", onTapAction: {
-			self.tabBarController?.selectedIndex = 0
+			guard let toView = UIApplication.tabBarVC()?.viewControllers?.first?.view else { return }
+			UIView.transition(from: self.view, to: toView, duration: 0.4, options: [.transitionCrossDissolve], completion: {
+				(bool) in
+				self.tabBarController?.selectedIndex = 0
+			})
 		})
 		view.addSubview(placeholder)
-	}
-	
-	
-	@objc private func onPlaceholderTap() {
-		tabBarController?.selectedIndex = 0
-		print("1 tap")
 	}
 	
 	
@@ -118,7 +116,7 @@ extension FavoritesController: UICollectionViewDelegateFlowLayout {
 	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 		let needWidth = (view.frame.width - 3 * 16) / 2
-		return CGSize(width: needWidth, height: needWidth + 40)// 40 - footer height for labels
+		return CGSize(width: needWidth, height: needWidth + 40) // 40 - footer height for labels
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

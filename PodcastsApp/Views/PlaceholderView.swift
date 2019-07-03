@@ -13,23 +13,24 @@ class PlaceholderView: UIView {
 	
 	private var mainPicture: UIImageView!
 	private var str: String?
-	private var tapAction:(() -> ())!
+	private var tapAction:(() -> ())?
 	private var centerYConstraint: NSLayoutConstraint!
 	private var tabBarHeight: CGFloat = 0
-	private var img:UIImage!
+	private var img: UIImage!
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 	}
 	
 	
-	convenience init (img: UIImage, title: String? = nil, onTapAction: @escaping (() -> ())) {
-		self.init()
+	convenience init (img: UIImage, title: String? = nil, onTapAction: (() -> ())? = nil) {
+		self.init(frame: .zero)
 		self.img = img
 		str = title
 		tapAction = onTapAction
 		isUserInteractionEnabled = true
 		translatesAutoresizingMaskIntoConstraints = false
+		alpha = 0.5
 	}
 	
 	
@@ -47,13 +48,8 @@ class PlaceholderView: UIView {
 		mainPicture.isUserInteractionEnabled = true
 		mainPicture.contentMode = .scaleAspectFit
 		addSubview(mainPicture)
-
-		alpha = 0.45
-		
-		let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? TabBarController
-		tabBarHeight = tabBarVC?.tabBar.frame.size.height ?? 0
-		let navBarHeight = UIApplication.shared.statusBarFrame.height
-		
+		//let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? TabBarController
+		//tabBarHeight = tabBarVC?.tabBar.frame.size.height ?? 0
 		let picWidthAnchor = NSLayoutConstraint(
 			item: mainPicture,
 			attribute: .width,
@@ -63,8 +59,7 @@ class PlaceholderView: UIView {
 			multiplier: 0.5,
 			constant: 0
 		)
-		centerYConstraint = mainPicture.centerYAnchor.constraint(equalTo: sv.centerYAnchor, constant: -tabBarHeight)
-		
+		centerYConstraint = mainPicture.centerYAnchor.constraint(equalTo: sv.centerYAnchor, constant: 0)
 		NSLayoutConstraint.activate([
 			mainPicture.centerXAnchor.constraint(equalTo: sv.centerXAnchor),
 			picWidthAnchor,
@@ -72,7 +67,6 @@ class PlaceholderView: UIView {
 			centerYConstraint,
 		])
 		mainPicture.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onSelfTap)))
-		
 		if let str = str {
 			addTitle(str)
 		}
@@ -91,7 +85,7 @@ class PlaceholderView: UIView {
 			label.centerXAnchor.constraint(equalTo: mainPicture.centerXAnchor),
 			label.topAnchor.constraint(equalTo: mainPicture.bottomAnchor, constant: 0)
 		])
-		centerYConstraint.constant = -tabBarHeight - label.frame.height
+		centerYConstraint.constant = label.frame.height
 	}
 	
 	
@@ -105,18 +99,18 @@ class PlaceholderView: UIView {
 	}
 	
 	
-	// rotate on appear
+	// rotate on every time when shown
 	private func animateOnShow() {
 		let dur: TimeInterval = 0.2
-		UIView.animate(withDuration: dur, animations: {
+		UIView.animate(withDuration: dur, delay: 0, options: [.allowUserInteraction], animations: {
 			self.transform = CGAffineTransform(rotationAngle: .pi / 20)
 		}, completion: {
 			(finish) in
-			UIView.animate(withDuration: dur, animations: {
+			UIView.animate(withDuration: dur, delay: 0, options: [.allowUserInteraction], animations: {
 				self.transform = CGAffineTransform(rotationAngle: -1 * (.pi / 20))
 			}, completion: {
 				(finishh) in
-				UIView.animate(withDuration: dur, animations: {
+				UIView.animate(withDuration: dur, delay: 0, options: [.allowUserInteraction], animations: {
 					self.transform = CGAffineTransform.identity
 				})
 			})
@@ -125,9 +119,12 @@ class PlaceholderView: UIView {
 	
 	
 	@objc private func onSelfTap() {
-		//guard let function = tapAction else { return }
-		tapAction()
-		print("Tapped!")
+		guard let function = tapAction else {
+			animateOnShow()
+			return
+		}
+		function()
+		print("Tapped on placeholder!")
 	}
 	
 	
