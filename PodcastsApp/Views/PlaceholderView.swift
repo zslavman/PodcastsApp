@@ -34,7 +34,7 @@ class PlaceholderView: UIView {
 	
 	
 	override func didMoveToWindow() {
-		animate()
+		animateOnShow()
 		guard mainPicture == nil else { return }
 		super.didMoveToWindow()
 		guard let sv = superview else { return }
@@ -49,10 +49,10 @@ class PlaceholderView: UIView {
 		addSubview(mainPicture)
 
 		alpha = 0.45
-		backgroundColor = UIColor.red
 		
 		let tabBarVC = UIApplication.shared.keyWindow?.rootViewController as? TabBarController
 		tabBarHeight = tabBarVC?.tabBar.frame.size.height ?? 0
+		let navBarHeight = UIApplication.shared.statusBarFrame.height
 		
 		let picWidthAnchor = NSLayoutConstraint(
 			item: mainPicture,
@@ -91,7 +91,7 @@ class PlaceholderView: UIView {
 			label.centerXAnchor.constraint(equalTo: mainPicture.centerXAnchor),
 			label.topAnchor.constraint(equalTo: mainPicture.bottomAnchor, constant: 0)
 		])
-		//centerYConstraint.constant = -tabBarHeight - label.frame.height
+		centerYConstraint.constant = -tabBarHeight - label.frame.height
 	}
 	
 	
@@ -106,14 +106,14 @@ class PlaceholderView: UIView {
 	
 	
 	// rotate on appear
-	private func animate() {
+	private func animateOnShow() {
 		let dur: TimeInterval = 0.2
 		UIView.animate(withDuration: dur, animations: {
-			self.transform = CGAffineTransform(rotationAngle: .pi / 15)
+			self.transform = CGAffineTransform(rotationAngle: .pi / 20)
 		}, completion: {
 			(finish) in
 			UIView.animate(withDuration: dur, animations: {
-				self.transform = CGAffineTransform(rotationAngle: -1 * (.pi / 15))
+				self.transform = CGAffineTransform(rotationAngle: -1 * (.pi / 20))
 			}, completion: {
 				(finishh) in
 				UIView.animate(withDuration: dur, animations: {

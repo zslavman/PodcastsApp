@@ -9,15 +9,17 @@
 
 import UIKit
 
-class PSearchController: UITableViewController {
+class PSearchController: UIViewController {
 	
 	private var podcasts = [Podcast]()
 	private let searchController = UISearchController(searchResultsController: nil)
 	private var timer: Timer?
 	private var placeholder: PlaceholderView!
+	private var tableView: UITableView = UITableView(frame: .zero, style: .plain)
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		view.backgroundColor = .white
 		setupEmty()
 		setupTable()
 		setupSearchBar()
@@ -26,10 +28,21 @@ class PSearchController: UITableViewController {
 	}
 	
 	private func setupTable() {
+		tableView.delegate = self
+		tableView.dataSource = self
 		tableView.keyboardDismissMode = .interactive
 		tableView.tableFooterView = UIView()
 		let nib = UINib(nibName: "PodcastCell", bundle: nil)
 		tableView.register(nib, forCellReuseIdentifier: PodcastCell.cellID)
+		
+		view.insertSubview(tableView, belowSubview: placeholder)
+		tableView.translatesAutoresizingMaskIntoConstraints = false
+		NSLayoutConstraint.activate([
+			tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+			tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+			tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+			tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+		])
 	}
 	
 	private func setupSearchBar() {
@@ -39,18 +52,6 @@ class PSearchController: UITableViewController {
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.searchBar.delegate = self
 	}
-
-	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
-			UIApplication.tabBarVC()?.setTabBar(hidden: true)
-			self.navigationController?.navigationBar.prefersLargeTitles = false
-		}
-		else {
-			UIApplication.tabBarVC()?.setTabBar(hidden: false)
-			self.navigationController?.navigationBar.prefersLargeTitles = true
-		}
-	}
-	
 	
 	/// configure empty collectionView
 	private func setupEmty() {
@@ -58,13 +59,14 @@ class PSearchController: UITableViewController {
 			print()
 		})
 		view.addSubview(placeholder)
-		//tableView.backgroundView = placeholder
 	}
+}
+
+
+//MARK:- UITableView methods
+extension PSearchController: UITableViewDataSource, UITableViewDelegate {
 	
-	
-	//MARK:- UITableView methods
-	
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		if podcasts.count == 0 {
 			placeholder.isHidden = false
 		}
@@ -74,24 +76,32 @@ class PSearchController: UITableViewController {
 		return podcasts.count
 	}
 	
-	
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: PodcastCell.cellID, for: indexPath) as! PodcastCell
 		cell.podcast = podcasts[indexPath.row]
 		return cell
 	}
 	
-	
-	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return 132
 	}
 	
-	
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let episodesVC = EpisodesController()
 		episodesVC.podcast = podcasts[indexPath.row]
 		UIApplication.tabBarVC()?.setTabBar(hidden: false)
 		navigationController?.pushViewController(episodesVC, animated: true)
+	}
+	
+	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
+			UIApplication.tabBarVC()?.setTabBar(hidden: true)
+			self.navigationController?.navigationBar.prefersLargeTitles = false
+		}
+		else {
+			UIApplication.tabBarVC()?.setTabBar(hidden: false)
+			self.navigationController?.navigationBar.prefersLargeTitles = true
+		}
 	}
 }
 
@@ -112,9 +122,7 @@ extension PSearchController: UISearchBarDelegate {
 				}
 			}
 		})
-	}
-	
-	
+	}	
 }
 
 

@@ -8,13 +8,15 @@
 
 import UIKit
 
-class DownloadsController: UITableViewController {
+class DownloadsController: UIViewController {
 	
 	private var downloadedEpArr = UserDefaults.standard.getDownloadedEpisodes()
 	private var placeholder: PlaceholderView!
+	private var tableView: UITableView = UITableView(frame: .zero, style: .plain)
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		view.backgroundColor = .white
 		setupEmty()
 		setupTableView()
 		setupObservers()
@@ -27,20 +29,22 @@ class DownloadsController: UITableViewController {
 		tableView.reloadData()
 	}
 	
-	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
-			UIApplication.tabBarVC()?.setTabBar(hidden: true)
-		}
-		else {
-			UIApplication.tabBarVC()?.setTabBar(hidden: false)
-		}
-	}
-	
 	
 	private func setupTableView() {
+		tableView.delegate = self
+		tableView.dataSource = self
 		tableView.tableFooterView = UIView()
 		let nib = UINib(nibName: "EpisodeCell", bundle: nil)
 		tableView.register(nib, forCellReuseIdentifier: EpisodeCell.cellID)
+		
+		view.insertSubview(tableView, belowSubview: placeholder)
+		tableView.translatesAutoresizingMaskIntoConstraints = false
+		NSLayoutConstraint.activate([
+			tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+			tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+			tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+			tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+		])
 	}
 	
 	
@@ -93,10 +97,14 @@ class DownloadsController: UITableViewController {
 			cell.episodeImageView.alpha = 1
 		}
 	}
+}
+
+
+//MARK:- UITableView
+extension DownloadsController: UITableViewDelegate, UITableViewDataSource {
 	
-	//MARK:- UITableView
 	
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		if downloadedEpArr.count == 0 {
 			tableView.alwaysBounceVertical = false
 			placeholder.isHidden = false
@@ -108,17 +116,17 @@ class DownloadsController: UITableViewController {
 		return downloadedEpArr.count
 	}
 	
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: EpisodeCell.cellID, for: indexPath) as! EpisodeCell
 		cell.episode = downloadedEpArr[indexPath.row]
 		return cell
 	}
 	
-	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return 134
 	}
 	
-	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+	func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
 		let delAction = UITableViewRowAction(style: .destructive, title: "Удалить") {
 			(action, indexPath) in
 			self.downloadedEpArr.remove(at: indexPath.row)
@@ -128,7 +136,7 @@ class DownloadsController: UITableViewController {
 		return [delAction]
 	}
 	
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let selected = downloadedEpArr[indexPath.row]
 		if selected.fileUrl == nil {
 			let actionSheetVC = UIAlertController(title: "Ошибка!", message: "Невозможно найти локальный файл. Запустить  онлайн стрим?", preferredStyle: .actionSheet)

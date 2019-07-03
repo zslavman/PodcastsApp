@@ -51,7 +51,6 @@ class FavoritesController: UICollectionViewController  {
 		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_favorites"), title: "Нет записей", onTapAction: {
 			self.tabBarController?.selectedIndex = 0
 		})
-		//collectionView.backgroundView = placeholder
 		view.addSubview(placeholder)
 	}
 	
