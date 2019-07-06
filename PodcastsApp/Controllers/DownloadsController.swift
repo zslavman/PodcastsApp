@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MediaPlayer
 
 class DownloadsController: UIViewController {
 	
@@ -20,6 +21,12 @@ class DownloadsController: UIViewController {
 		setupEmty()
 		setupTableView()
 		setupObservers()
+		
+//		let volumeView = MPVolumeView(frame: CGRect(x: 100, y: 100, width: 100, height: 100))
+//		volumeView.backgroundColor = .red
+//		volumeView.isHidden = false
+//		volumeView.alpha = 0.8
+//		view.addSubview(volumeView)
 	}
 	
 	

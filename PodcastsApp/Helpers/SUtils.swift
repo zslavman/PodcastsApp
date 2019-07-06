@@ -330,9 +330,19 @@ extension UserDefaults {
 }
 
 extension UIApplication {
-	
 	static func tabBarVC() -> TabBarController? {
 		return UIApplication.shared.keyWindow?.rootViewController as? TabBarController
 	}
-	
 }
+
+import MediaPlayer
+extension MPVolumeView {
+	static func setVolume(_ volume: Float) {
+		let volumeView = MPVolumeView()
+		guard let slider = volumeView.subviews.first(where: { $0 is UISlider }) as? UISlider else { return }
+		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.01) {
+			slider.value = volume
+		}
+	}
+}
+

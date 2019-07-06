@@ -9,7 +9,7 @@
 import UIKit
 import AVKit
 import MediaPlayer
-import AVKit
+
 
 // this View init with build TabBar
 class PlayerDetailsView: UIView {
@@ -47,7 +47,7 @@ class PlayerDetailsView: UIView {
 			titleLabel.text = episode.title
 			authorLabel.text = episode.author
 			setupLockScreenPlayingInfo()
-			setupAudiosessionBackgroundMode()
+			//setupAudiosessionBackgroundMode()
 			prepareToPlay()
 			guard let url = URL(string: episode.imageLink) else { return }
 			miniTitleImage.image = #imageLiteral(resourceName: "image_placeholder")
@@ -90,9 +90,13 @@ class PlayerDetailsView: UIView {
 		super.awakeFromNib()
 		setupBackgroundControls()
 		setupGestures()
-		currentVolumeSlider.value = playerVolume
 		setupInteruptionObserver()
 		observeCurrentPlayerTime()
+		setupAudiosessionBackgroundMode()
+		
+		pairAudioSliders()
+		setupVolume()
+		
 		//observeBoundaryTime()
 	}
 	
@@ -107,6 +111,34 @@ class PlayerDetailsView: UIView {
 	
 	@objc private func setupInteruptionObserver() {
 		NotificationCenter.default.addObserver(self, selector: #selector(handleInterruption), name: AVAudioSession.interruptionNotification, object: nil)
+	}
+	
+	
+	
+	private func pairAudioSliders() {
+		// add system volume slider (unvisible) for prevent showing native volume change view
+		let volumeView = MPVolumeView()
+		volumeView.alpha = 0.01
+		addSubview(volumeView)
+		NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(appWillTerminate), name: UIApplication.willTerminateNotification, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(appWillTerminate), name: UIApplication.willResignActiveNotification, object: nil)
+	}
+	
+	private func setupVolume() {
+		player.volume = 1
+		MPVolumeView.setVolume(applicationVolume)
+		currentVolumeSlider.value = AVAudioSession.sharedInstance().outputVolume
+	}
+	
+	
+	@objc private func appDidBecomeActive() {
+		saveSystemVolume()
+		setupVolume()
+	}
+	
+	@objc private func appWillTerminate() {
+		returnSystemVolume()
 	}
 	
 	
@@ -143,12 +175,12 @@ class PlayerDetailsView: UIView {
 		let picSize = CGSize(width: 100, height: 100)
 		let resizedImg = SUtils.resizeImage(imageLarge, toSize: picSize)
 		print("Prepare return image")
-//		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: resizedImg.size) {
-//			(_) -> UIImage in
-//			print("Return image!")
-//			return resizedImg
-//		}
-		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: resizedImg)
+		MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: resizedImg.size) {
+			(_) -> UIImage in
+			print("Return image!")
+			return resizedImg
+		}
+		//MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: resizedImg)
 	}
 	
 	
@@ -156,10 +188,24 @@ class PlayerDetailsView: UIView {
 	private func setupAudiosessionBackgroundMode() {
 		do {
 			try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
+			// resume play after interuption ended
 			try AVAudioSession.sharedInstance().setActive(true, options: [.notifyOthersOnDeactivation])
+			// volume buttons listener
+			AVAudioSession.sharedInstance().addObserver(self, forKeyPath: "outputVolume", options: .new, context: nil)
 		}
 		catch let err {
 			print("Failed to activate session: ", err.localizedDescription)
+		}
+	}
+	
+	
+	/// volume buttons handlerd
+	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+		guard let key = keyPath else { return }
+		let audioSession = AVAudioSession.sharedInstance()
+		if key == "outputVolume" {
+			print(audioSession.outputVolume)
+			currentVolumeSlider.setValue(audioSession.outputVolume, animated: true)
 		}
 	}
 	
@@ -384,7 +430,8 @@ class PlayerDetailsView: UIView {
 	
 	
 	@IBAction func onVolumeScrubbing(_ sender: UISlider) {
-		playerVolume = sender.value
+		applicationVolume = sender.value
+		MPVolumeView.setVolume(applicationVolume)
 	}
 	
 	
@@ -438,23 +485,35 @@ class PlayerDetailsView: UIView {
 		}
 		let playerItem = AVPlayerItem(url: url)
 		player.replaceCurrentItem(with: playerItem)
-		player.volume = playerVolume
 		internalPlayFunc()
 		//addBoundaryTimeObserver()
 	}
 	
 	
-	private var playerVolume: Float {
+	private var applicationVolume: Float {
 		get {
-			guard let generalVolume = UserDefaults.standard.object(forKey: "generalVolume") as? Float
-				else { return 1 }
+			guard let generalVolume = UserDefaults.standard.object(forKey: "generalVolume") as? Float else {
+				return 0.8
+			}
 			return generalVolume
 		}
 		set {
 			UserDefaults.standard.set(newValue, forKey: "generalVolume")
-			player.volume = newValue
+			//player.volume = newValue
+			MPVolumeView.setVolume(newValue)
 		}
 	}
+	
+	
+	private func saveSystemVolume() {
+		let curSysVol = AVAudioSession.sharedInstance().outputVolume
+		UserDefaults.standard.set(curSysVol, forKey: "sysVolume")
+	}
+	private func returnSystemVolume() {
+		let savedSysVol = UserDefaults.standard.float(forKey: "sysVolume")
+		MPVolumeView.setVolume(savedSysVol)
+	}
+	
 	
 	
 	@IBAction func onMiniPlayPauseClick(_ sender: UIButton) {
