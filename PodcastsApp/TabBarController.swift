@@ -77,6 +77,9 @@ class TabBarController: UITabBarController {
 			self.view.layoutIfNeeded()
 			self.playerDetailsView.maximizedStackView.alpha = 0
 			self.playerDetailsView.miniPlayerView.alpha = 1
+		}, completion: {
+			(_) in
+			self.playerDetailsView.isMinimized = true
 		})
 		self.tabBar.transform = .identity
 	}
@@ -98,8 +101,11 @@ class TabBarController: UITabBarController {
 			self.view.layoutIfNeeded()
 			self.playerDetailsView.maximizedStackView.alpha = 1
 			self.playerDetailsView.miniPlayerView.alpha = 0
+		}, completion: {
+			(_) in
+			self.playerDetailsView.isMinimized = false
 		})
-		self.tabBar.transform = CGAffineTransform(translationX: 0, y: 100) // hide tabBar
+		tabBar.transform = CGAffineTransform(translationX: 0, y: 100) // hide tabBar
 	}
 	
 	

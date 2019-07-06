@@ -76,6 +76,13 @@ class PlayerDetailsView: UIView {
 	}
 	private let kvoSoundVolumeKey1 = "AVSystemController_SystemVolumeDidChangeNotification"
 	private let kvoSoundVolumeKey2 = "AVSystemController_AudioVolumeChangeReasonNotificationParameter"
+	public var isMinimized = false { // player state
+		didSet {
+			print("isMinimized = \(isMinimized)")
+		}
+	}
+	
+	
 	
 	
 	
