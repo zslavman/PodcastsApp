@@ -74,6 +74,8 @@ class PlayerDetailsView: UIView {
 			print("playlist.count = ", playlist.count)
 		}
 	}
+	private let kvoSoundVolumeKey1 = "AVSystemController_SystemVolumeDidChangeNotification"
+	private let kvoSoundVolumeKey2 = "AVSystemController_AudioVolumeChangeReasonNotificationParameter"
 	
 	
 	
@@ -94,9 +96,9 @@ class PlayerDetailsView: UIView {
 		observeCurrentPlayerTime()
 		setupAudiosessionBackgroundMode()
 		
-		pairAudioSliders()
+		//pairAudioSliders()
 		setupVolume()
-		
+		currentTimeSlider.isContinuous = false
 		//observeBoundaryTime()
 	}
 	
@@ -120,25 +122,19 @@ class PlayerDetailsView: UIView {
 		let volumeView = MPVolumeView()
 		volumeView.alpha = 0.01
 		addSubview(volumeView)
-		NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(appWillTerminate), name: UIApplication.willTerminateNotification, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(appWillTerminate), name: UIApplication.willResignActiveNotification, object: nil)
+		//NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+		//NotificationCenter.default.addObserver(self, selector: #selector(appWillTerminate), name: UIApplication.willTerminateNotification, object: nil)
+		//NotificationCenter.default.addObserver(self, selector: #selector(appWillTerminate), name: UIApplication.willResignActiveNotification, object: nil)
 	}
 	
 	private func setupVolume() {
-		player.volume = 1
-		MPVolumeView.setVolume(applicationVolume)
-		currentVolumeSlider.value = AVAudioSession.sharedInstance().outputVolume
-	}
-	
-	
-	@objc private func appDidBecomeActive() {
-		saveSystemVolume()
-		setupVolume()
-	}
-	
-	@objc private func appWillTerminate() {
-		returnSystemVolume()
+		player.volume = applicationVolume
+		currentVolumeSlider.value = applicationVolume
+		// volume buttons listener (limit not reached)
+		AVAudioSession.sharedInstance().addObserver(self, forKeyPath: "outputVolume", options: [.new, .old], context: nil)
+		// volume buttons listener after limit
+		NotificationCenter.default.addObserver(self, selector: #selector(volumeChanged),
+											   name: NSNotification.Name(rawValue: kvoSoundVolumeKey1), object: nil)
 	}
 	
 	
@@ -190,8 +186,6 @@ class PlayerDetailsView: UIView {
 			try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
 			// resume play after interuption ended
 			try AVAudioSession.sharedInstance().setActive(true, options: [.notifyOthersOnDeactivation])
-			// volume buttons listener
-			AVAudioSession.sharedInstance().addObserver(self, forKeyPath: "outputVolume", options: .new, context: nil)
 		}
 		catch let err {
 			print("Failed to activate session: ", err.localizedDescription)
@@ -199,13 +193,35 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
-	/// volume buttons handlerd
+	/// volume buttons handlerd (limit not reached)
 	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-		guard let key = keyPath else { return }
-		let audioSession = AVAudioSession.sharedInstance()
+		guard let key = keyPath, let change = change else { return }
+		let step: Float = 1/16
+		
 		if key == "outputVolume" {
-			print(audioSession.outputVolume)
-			currentVolumeSlider.setValue(audioSession.outputVolume, animated: true)
+			let oldValue = change[.oldKey] as! NSNumber
+			let newValue = change[.newKey] as! NSNumber
+			
+			if newValue.floatValue > oldValue.floatValue {
+				setStepVolume(arg: step)
+			}
+			else {
+				setStepVolume(arg: -step)
+			}
+		}
+	}
+	
+	/// volume buttons handlerd (limit is reached)
+	@objc private func volumeChanged(notif: Notification) {
+		guard let userInfo = notif.userInfo else { return }
+		guard let volumeChangeType = userInfo[kvoSoundVolumeKey2] as? String else { return }
+		guard volumeChangeType == "ExplicitVolumeChange" else { return }
+		let curSysVolume = AVAudioSession.sharedInstance().outputVolume
+		if curSysVolume == 1 {
+			setStepVolume(arg: 1/16)
+		}
+		else if curSysVolume == 0 {
+			setStepVolume(arg: -1/16)
 		}
 	}
 	
@@ -214,7 +230,6 @@ class PlayerDetailsView: UIView {
 	private func setupBackgroundControls() {
 		UIApplication.shared.beginReceivingRemoteControlEvents()
 		let commandCenter = MPRemoteCommandCenter.shared()
-		//commandCenter.playCommand.isEnabled = true
 		commandCenter.playCommand.addTarget {
 			[unowned self] (event) in
 			if self.player.rate == 0.0 {
@@ -380,10 +395,7 @@ class PlayerDetailsView: UIView {
 	
 	/// drag to maximize
 	@objc public func onPan(gesture: UIPanGestureRecognizer) {
-		if gesture.state == .began {
-			print("began")
-		}
-		else if gesture.state == .changed {
+		if gesture.state == .changed {
 			panChanged(gesture: gesture)
 		}
 		else if gesture.state == .ended {
@@ -431,7 +443,6 @@ class PlayerDetailsView: UIView {
 	
 	@IBAction func onVolumeScrubbing(_ sender: UISlider) {
 		applicationVolume = sender.value
-		MPVolumeView.setVolume(applicationVolume)
 	}
 	
 	
@@ -499,21 +510,18 @@ class PlayerDetailsView: UIView {
 		}
 		set {
 			UserDefaults.standard.set(newValue, forKey: "generalVolume")
-			//player.volume = newValue
-			MPVolumeView.setVolume(newValue)
+			player.volume = newValue
+			currentVolumeSlider.setValue(newValue, animated: true)
 		}
 	}
+
 	
-	
-	private func saveSystemVolume() {
-		let curSysVol = AVAudioSession.sharedInstance().outputVolume
-		UserDefaults.standard.set(curSysVol, forKey: "sysVolume")
+	private func setStepVolume(arg: Float) {
+		var newValue = applicationVolume + arg
+		if newValue < 0 { newValue = 0 }
+		if newValue > 1 { newValue = 1 }
+		applicationVolume = newValue
 	}
-	private func returnSystemVolume() {
-		let savedSysVol = UserDefaults.standard.float(forKey: "sysVolume")
-		MPVolumeView.setVolume(savedSysVol)
-	}
-	
 	
 	
 	@IBAction func onMiniPlayPauseClick(_ sender: UIButton) {
