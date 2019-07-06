@@ -23,7 +23,7 @@ class PlayerDetailsView: UIView {
 	@IBOutlet weak var timeBeginLabel: UILabel!
 	@IBOutlet weak var timeEndLabel: UILabel!
 	@IBOutlet weak var currentTimeSlider: UISlider!
-	@IBOutlet weak var currentVolumeSlider: UISlider!
+	@IBOutlet weak var currentVolumeSlider: InfoSlider!
 	@IBOutlet weak var titleImage: UIImageView! {
 		didSet {
 			titleImage.layer.cornerRadius = 8
@@ -315,19 +315,29 @@ class PlayerDetailsView: UIView {
 	
 	@objc private func dragToDismiss(gesture: UIPanGestureRecognizer) {
 		let translation = gesture.translation(in: superview)
-		if gesture.state == .changed {
+		
+		switch gesture.state {
+		case .began:
+			guard let tabBar = UIApplication.tabBarVC() else { return }
+			tabBar.prepareConstraintToMinimize()
+		case .changed:
+			if translation.y < 0 { return } // suppress up-side drag
 			maximizedStackView.transform = CGAffineTransform(translationX: 0, y: translation.y)
-		}
-		else if gesture.state == .ended {
+			
+		case .ended:
 			let velocity = gesture.velocity(in: superview)
 			UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseOut, animations: {
 				self.maximizedStackView.transform = .identity
 				if translation.y > 100 || velocity.y > 500 {
 					UIApplication.tabBarVC()?.minimizePlayer()
 				}
+				else {
+					
+				}
 			})
+			
+		default: ()
 		}
-		
 	}
 	
 	

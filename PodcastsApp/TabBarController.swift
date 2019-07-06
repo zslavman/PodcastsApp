@@ -68,6 +68,13 @@ class TabBarController: UITabBarController {
 		])
 	}
 	
+	
+	public func prepareConstraintToMinimize() {
+//		maximizedTopAnchorConstraint.isActive = false
+//		bottomAnchorConstraint.constant = view.frame.height
+//		minimizedTopAnchorConstraint.isActive = true
+	}
+	
 
 	@objc public func minimizePlayer() {
 		maximizedTopAnchorConstraint.isActive = false
