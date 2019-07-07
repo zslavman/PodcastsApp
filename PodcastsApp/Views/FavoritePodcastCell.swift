@@ -1,5 +1,5 @@
 //
-//  FavoritePodcastCellCollectionViewCell.swift
+//  FavoritePodcastCell.swift
 //  PodcastsApp
 //
 //  Created by Zinko Viacheslav on 11.06.2019.

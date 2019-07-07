@@ -116,7 +116,7 @@ class LabelForSlider: UIView {
 	
 	override func draw(_ rect: CGRect) {
 		// Set the fill color
-		UIColor.black.withAlphaComponent(0.08).setFill()
+		#colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1).setFill()
 		
 		// Create the path for the rounded rectangle
 		let roundedRect = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: bounds.size.width, height: bounds.size.height * 0.8)
@@ -146,7 +146,7 @@ class LabelForSlider: UIView {
 		let textRect = CGRect(x: roundedRect.origin.x, y: yOffset, width: roundedRect.size.width, height: siz.height)
 		str.draw(in: textRect, withAttributes: [
 			.font			: font,
-			.foregroundColor: UIColor.black,
+			.foregroundColor: UIColor.white,
 			.paragraphStyle : style,
 		])
 	}

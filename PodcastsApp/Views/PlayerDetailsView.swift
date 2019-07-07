@@ -97,6 +97,7 @@ class PlayerDetailsView: UIView {
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
+		//currentVolumeSlider.layer.zPosition = 999
 		setupBackgroundControls()
 		setupGestures()
 		setupInteruptionObserver()
