@@ -9,14 +9,12 @@
 import Foundation
 import UIKit
 
-
 class TabBarController: UITabBarController {
 	
 	private var maximizedTopAnchorConstraint: NSLayoutConstraint!
 	private var minimizedTopAnchorConstraint: NSLayoutConstraint!
 	private var bottomAnchorConstraint: NSLayoutConstraint!
 	public let playerDetailsView = PlayerDetailsView.initFromNib()
-	
 	
 	
 	override func viewDidLoad() {

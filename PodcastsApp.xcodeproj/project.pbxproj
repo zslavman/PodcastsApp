@@ -48,6 +48,7 @@
 		565A11CD22B046420077996D /* FavoritePodcastCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritePodcastCell.swift; sourceTree = "<group>"; };
 		566B0FDC22B646A700097A70 /* DownloadsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsController.swift; sourceTree = "<group>"; };
 		566B0FDE22B65E2400097A70 /* PSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PSearchController.swift; sourceTree = "<group>"; };
+		566E716C22D5432F00F9806D /* PodcastsApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PodcastsApp.entitlements; sourceTree = "<group>"; };
 		56C11AAB22D1529E009E3B56 /* InfoSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSlider.swift; sourceTree = "<group>"; };
 		56DB88F2224966E6000F7D3C /* PodcastsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PodcastsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56DB88F5224966E6000F7D3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -77,6 +78,7 @@
 		562E7EE322515D0C00D576F8 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				56DB89072249674F000F7D3C /* TabBarController.swift */,
 				566B0FDE22B65E2400097A70 /* PSearchController.swift */,
 				563D8EA7228460E300F2A6CA /* EpisodesController.swift */,
 				565A11C922B033C40077996D /* FavoritesController.swift */,
@@ -139,12 +141,12 @@
 		56DB88F4224966E6000F7D3C /* PodcastsApp */ = {
 			isa = PBXGroup;
 			children = (
+				566E716C22D5432F00F9806D /* PodcastsApp.entitlements */,
 				56FC323C22651AF0008E5DD7 /* Helpers */,
 				5648056722667EF8008CAD73 /* API */,
 				562E7EE622515E6200D576F8 /* Models */,
 				5648056A22668365008CAD73 /* Views */,
 				562E7EE322515D0C00D576F8 /* Controllers */,
-				56DB89072249674F000F7D3C /* TabBarController.swift */,
 				56DB88F5224966E6000F7D3C /* AppDelegate.swift */,
 				56DB890922496865000F7D3C /* Supporting Files */,
 			);
@@ -222,6 +224,9 @@
 					56DB88F1224966E6000F7D3C = {
 						CreatedOnToolsVersion = 10.1;
 						SystemCapabilities = {
+							com.apple.AccessWiFi = {
+								enabled = 1;
+							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
@@ -274,6 +279,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-PodcastsApp/Pods-PodcastsApp-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/FeedKit/FeedKit.framework",
+				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -282,6 +288,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FeedKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -473,6 +480,7 @@
 			baseConfigurationReference = 6223AC8F1ABBDE582E35BB40 /* Pods-PodcastsApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = PodcastsApp/PodcastsApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = "$(SRCROOT)/PodcastsApp/Supporting Files/Info.plist";
@@ -492,6 +500,7 @@
 			baseConfigurationReference = 5D4D50EEF55E1512ECB06F22 /* Pods-PodcastsApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = PodcastsApp/PodcastsApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = "$(SRCROOT)/PodcastsApp/Supporting Files/Info.plist";

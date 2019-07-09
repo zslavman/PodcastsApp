@@ -9,6 +9,7 @@ target 'PodcastsApp' do
   pod 'Alamofire', '~> 4.7.3'
   pod 'SDWebImage', '~> 5.0'
   pod 'FeedKit', '~> 8.0'
+  pod 'ReachabilitySwift', '4.3.0'
   # pod 'EmptyDataSet-Swift', '~> 4.2.0'
 
 end

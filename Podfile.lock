@@ -1,6 +1,7 @@
 PODS:
   - Alamofire (4.7.3)
   - FeedKit (8.1.1)
+  - ReachabilitySwift (4.3.0)
   - SDWebImage (5.0.0):
     - SDWebImage/Core (= 5.0.0)
   - SDWebImage/Core (5.0.0)
@@ -8,19 +9,22 @@ PODS:
 DEPENDENCIES:
   - Alamofire (~> 4.7.3)
   - FeedKit (~> 8.0)
+  - ReachabilitySwift (= 4.3.0)
   - SDWebImage (~> 5.0)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Alamofire
     - FeedKit
+    - ReachabilitySwift
     - SDWebImage
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   FeedKit: 3418eed25f0b493b205b4de1b8511ac21d413fa9
+  ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
   SDWebImage: 5de80a0302de9e377e62f47d2fa1304efff0e55f
 
-PODFILE CHECKSUM: e75b0bfd83d645dd3a200e16ca92cae34ff71a66
+PODFILE CHECKSUM: ae7025b96ecce1771b11c0f8f049f0f89e327675
 
 COCOAPODS: 1.5.3
