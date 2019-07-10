@@ -48,7 +48,6 @@
 		565A11CD22B046420077996D /* FavoritePodcastCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoritePodcastCell.swift; sourceTree = "<group>"; };
 		566B0FDC22B646A700097A70 /* DownloadsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsController.swift; sourceTree = "<group>"; };
 		566B0FDE22B65E2400097A70 /* PSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PSearchController.swift; sourceTree = "<group>"; };
-		566E716C22D5432F00F9806D /* PodcastsApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PodcastsApp.entitlements; sourceTree = "<group>"; };
 		56C11AAB22D1529E009E3B56 /* InfoSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSlider.swift; sourceTree = "<group>"; };
 		56DB88F2224966E6000F7D3C /* PodcastsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PodcastsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56DB88F5224966E6000F7D3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -141,7 +140,6 @@
 		56DB88F4224966E6000F7D3C /* PodcastsApp */ = {
 			isa = PBXGroup;
 			children = (
-				566E716C22D5432F00F9806D /* PodcastsApp.entitlements */,
 				56FC323C22651AF0008E5DD7 /* Helpers */,
 				5648056722667EF8008CAD73 /* API */,
 				562E7EE622515E6200D576F8 /* Models */,
@@ -225,7 +223,7 @@
 						CreatedOnToolsVersion = 10.1;
 						SystemCapabilities = {
 							com.apple.AccessWiFi = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -480,7 +478,6 @@
 			baseConfigurationReference = 6223AC8F1ABBDE582E35BB40 /* Pods-PodcastsApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = PodcastsApp/PodcastsApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = "$(SRCROOT)/PodcastsApp/Supporting Files/Info.plist";
@@ -500,7 +497,6 @@
 			baseConfigurationReference = 5D4D50EEF55E1512ECB06F22 /* Pods-PodcastsApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = PodcastsApp/PodcastsApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = "$(SRCROOT)/PodcastsApp/Supporting Files/Info.plist";
