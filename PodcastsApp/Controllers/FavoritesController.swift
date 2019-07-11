@@ -12,11 +12,17 @@ class FavoritesController: UICollectionViewController  {
 	
 	private var favPodcastsArr = UserDefaults.standard.fetchFavorites()
 	private var placeholder: PlaceholderView!
+	private var selectedIndexArr = [IndexPath]() // This is selected cell Index array
+	private var selectedDataArr = [Podcast]() // This is selected cell data array
+	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupEmty()
 		setupCollectionView()
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Редакт", style: .plain, target: self, action: #selector(onEditClick))
+		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Удалить", style: .plain, target: self, action: #selector(onDeleteClick))
+		navigationItem.leftBarButtonItem?.isEnabled = false
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -37,12 +43,32 @@ class FavoritesController: UICollectionViewController  {
 	}
 	
 	private func setupCollectionView() {
+		collectionView.allowsMultipleSelection = true
 		collectionView.register(FavoritePodcastCell.self, forCellWithReuseIdentifier: FavoritePodcastCell.favCellIdentifier)
 		collectionView.alwaysBounceVertical = true
 		collectionView.backgroundColor = .white
 		
 		let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress))
 		collectionView.addGestureRecognizer(longGesture)
+	}
+	
+	@objc private func onEditClick() {
+		guard let button = navigationItem.rightBarButtonItem else { return }
+		isEditing = !isEditing
+		if isEditing {
+			button.title = "Отмена"
+			navigationItem.leftBarButtonItem?.isEnabled = true
+		}
+		else {
+			button.title = "Редакт."
+			navigationItem.leftBarButtonItem?.isEnabled = false
+			print(selectedIndexArr)
+			selectedIndexArr.removeAll()
+		}
+	}
+	
+	@objc private func onDeleteClick() {
+		
 	}
 	
 	
@@ -60,6 +86,7 @@ class FavoritesController: UICollectionViewController  {
 	
 	
 	@objc private func onLongPress(gesture: UIGestureRecognizer) {
+		if isEditing { return }
 		guard gesture.state == .began else { return }
 		let touchLocation = gesture.location(in: collectionView)
 		guard let indexPath = collectionView.indexPathForItem(at: touchLocation) else { return }
@@ -103,15 +130,20 @@ class FavoritesController: UICollectionViewController  {
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+		let selectedItem = favPodcastsArr[indexPath.item]
+		if isEditing {
+			selectedIndexArr.append(indexPath)
+			return
+		}
 		let episodesVC = EpisodesController()
-		episodesVC.podcast = favPodcastsArr[indexPath.item]
+		episodesVC.podcast = selectedItem
 		navigationController?.pushViewController(episodesVC, animated: true)
 	}
 	
 }
 
 
-/// sizing of cells
+/// cells sizing
 extension FavoritesController: UICollectionViewDelegateFlowLayout {
 	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

@@ -27,6 +27,16 @@ class FavoritePodcastCell: UICollectionViewCell {
 	}()
 	public var podcast: Podcast!
 	
+	override var isSelected: Bool {
+		didSet {
+			if isSelected {
+				imageView.alpha = 0.15
+			}
+			else {
+				imageView.alpha = 1
+			}
+		}
+	}
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -74,6 +84,11 @@ class FavoritePodcastCell: UICollectionViewCell {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		isSelected = false
+	}
 	
 	
 }
