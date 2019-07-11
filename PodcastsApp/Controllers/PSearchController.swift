@@ -122,6 +122,7 @@ extension PSearchController: UITableViewDataSource, UITableViewDelegate {
 extension PSearchController: UISearchBarDelegate {
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+		if !ReachabilityService.isNetworkAvailable { return }
 		// fix flickering results on each letter inputs
 		timer?.invalidate()
 		timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: {
