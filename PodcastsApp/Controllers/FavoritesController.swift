@@ -12,8 +12,8 @@ class FavoritesController: UICollectionViewController  {
 	
 	private var favPodcastsArr = UserDefaults.standard.fetchFavorites()
 	private var placeholder: PlaceholderView!
-	private var selectedIndexArr = [IndexPath]() // This is selected cell Index array
-	private var selectedDataArr = [Podcast]() // This is selected cell data array
+	private var selectedIndexArr = [IndexPath]() // selected cell Index array
+	private var selectedDataArr = [Podcast]()
 	
 	
 	override func viewDidLoad() {
@@ -27,10 +27,8 @@ class FavoritesController: UICollectionViewController  {
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		collectionView.performBatchUpdates({
-//			favPodcastsArr = UserDefaults.standard.fetchFavorites()
-//			collectionView.reloadData()
-		})
+		favPodcastsArr = UserDefaults.standard.fetchFavorites()
+		collectionView.reloadData()
 		UIApplication.tabBarVC()?.viewControllers?[1].tabBarItem.badgeValue = nil
 	}
 	
@@ -123,11 +121,13 @@ class FavoritesController: UICollectionViewController  {
 	
 	private func makeDeselect() {
 		print(selectedIndexArr)
-		selectedIndexArr.forEach {
+		let copy = selectedIndexArr
+		selectedIndexArr.removeAll()
+		copy.forEach {
 			(indexPath) in
 			collectionView.deselectItem(at: indexPath, animated: false)
 		}
-		selectedIndexArr.removeAll()
+		collectionView.reloadData()
 	}
 	
 	

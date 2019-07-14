@@ -52,7 +52,9 @@ class FavoritePodcastCell: UICollectionViewCell {
 	
 	override var isSelected: Bool {
 		didSet {
-			if !delegate!.currentEditStatus() { return } // don't select on click
+			if let delegate = delegate {
+				if !delegate.currentEditStatus() { return } // don't select on click
+			}
 			if isSelected {
 				imageView.alpha = 0.3
 				checkMark.isHidden = false
@@ -158,9 +160,9 @@ class FavoritePodcastCell: UICollectionViewCell {
 	
 	override func prepareForReuse() {
 		super.prepareForReuse()
-		isSelected = false
+		//isSelected = false
 		checkMark.isHidden = true
-		//setCheckBox(false)
+		setCheckBox(false)
 	}
 	
 	
