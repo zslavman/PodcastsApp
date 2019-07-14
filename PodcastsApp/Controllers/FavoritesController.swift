@@ -13,7 +13,6 @@ class FavoritesController: UICollectionViewController  {
 	private var favPodcastsArr = UserDefaults.standard.fetchFavorites()
 	private var placeholder: PlaceholderView!
 	private var selectedIndexArr = [IndexPath]() // selected cell Index array
-	private var selectedDataArr = [Podcast]()
 	
 	
 	override func viewDidLoad() {
@@ -27,15 +26,10 @@ class FavoritesController: UICollectionViewController  {
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		favPodcastsArr = UserDefaults.standard.fetchFavorites()
-		collectionView.reloadData()
-		//collectionView.reloadItems(at: collectionView.indexPathsForVisibleItems)
-		//collectionView.collectionViewLayout.invalidateLayout()
-		//collectionView.layoutSubviews()
 		/*
-		  fixing Swift BUG:
-		  you can't select or deselect cell if it was selected before reload
-		  you should use both selection methods to do it clickable!
+		fixing Swift BUG:
+		you can't select or deselect cell if it was selected before reload
+		you should use both selection methods to do it clickable!
 		*/
 		if isEditing {
 			selectedIndexArr.forEach {
@@ -43,7 +37,17 @@ class FavoritesController: UICollectionViewController  {
 				collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
 			}
 		}
+		guard let bageValue = UIApplication.tabBarVC()?.viewControllers?[1].tabBarItem.badgeValue else { return }
+		guard Int(bageValue) != nil else { return }
+		if isEditing { // turnOff edit mode
+			onEditClick()
+		}
+		favPodcastsArr = UserDefaults.standard.fetchFavorites()
+		collectionView.reloadData()
 		UIApplication.tabBarVC()?.viewControllers?[1].tabBarItem.badgeValue = nil
+		//collectionView.reloadItems(at: collectionView.indexPathsForVisibleItems)
+		//collectionView.collectionViewLayout.invalidateLayout()
+		//collectionView.layoutSubviews()
 	}
 	
 	
@@ -73,7 +77,6 @@ class FavoritesController: UICollectionViewController  {
 		isEditing = !isEditing
 		if isEditing {
 			button.title = "Отмена"
-			navigationItem.leftBarButtonItem?.isEnabled = true
 		}
 		else {
 			button.title = "Редакт."
@@ -85,17 +88,21 @@ class FavoritesController: UICollectionViewController  {
 	
 	
 	@objc private func onDeleteClick() {
-		selectedIndexArr.forEach {
-			(indexPath) in
-			deleteItemAt(indexPath: indexPath)
-		}
+		deleteItems(indexPathArr: selectedIndexArr)
 		onEditClick()
 	}
 	
 	
-	private func deleteItemAt(indexPath: IndexPath) {
-		favPodcastsArr.remove(at: indexPath.row)
-		collectionView.deleteItems(at: [indexPath])
+	private func deleteItems(indexPathArr: [IndexPath]) {
+		// remove multiple elements from array
+		let indexesToDelete = indexPathArr.map{ $0.row }
+		let resultArtr = favPodcastsArr
+			.enumerated()
+			.filter { !indexesToDelete.contains( $0.offset) }
+			.map { $0.element }
+		favPodcastsArr = resultArtr
+		
+		collectionView.deleteItems(at: indexPathArr)
 		// remove from UserDefaults
 		let data = NSKeyedArchiver.archivedData(withRootObject: self.favPodcastsArr)
 		UserDefaults.standard.set(data, forKey: "favPodKey")
@@ -125,7 +132,7 @@ class FavoritesController: UICollectionViewController  {
 		let actionSheetVC = UIAlertController(title: "Действия с подкастом", message: nil, preferredStyle: .actionSheet)
 		let delAction = UIAlertAction(title: "Удалить", style: .destructive) {
 			(action) in
-			self.deleteItemAt(indexPath: indexPath)
+			self.deleteItems(indexPathArr: [indexPath])
 		}
 		let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
 		
@@ -183,6 +190,9 @@ class FavoritesController: UICollectionViewController  {
 		let selectedItem = favPodcastsArr[indexPath.item]
 		if isEditing {
 			pushElement(indexPath: indexPath)
+			if !selectedIndexArr.isEmpty {
+				navigationItem.leftBarButtonItem?.isEnabled = true
+			}
 			return
 		}
 		let episodesVC = EpisodesController()
@@ -194,6 +204,9 @@ class FavoritesController: UICollectionViewController  {
 	override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
 		if isEditing {
 			pushElement(indexPath: indexPath)
+			if selectedIndexArr.isEmpty {
+				navigationItem.leftBarButtonItem?.isEnabled = false
+			}
 		}
 	}
 	
