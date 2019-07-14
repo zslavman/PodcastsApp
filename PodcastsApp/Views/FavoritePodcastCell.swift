@@ -37,7 +37,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 		box.layer.borderColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1).cgColor
 		box.layer.borderWidth = 1
 		box.translatesAutoresizingMaskIntoConstraints = false
-		box.isHidden = true
+		box.alpha = 0
 		return box
 	}()
 	private let checkMark: UIImageView = {
@@ -72,6 +72,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 		NotificationCenter.default.addObserver(self, selector: #selector(configCheckBox(notification:)),
 											   name: .editModeChahged, object: nil)
 	}
+	
 	
 	private func setup() {
 		let stackView = UIStackView(arrangedSubviews: [
@@ -108,7 +109,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 	public func configure(passedPodcast: Podcast, hasSelection: Bool) {
 		if let delegate = delegate {
 			setCheckBox(delegate.currentEditStatus())
-			markIf(selected: hasSelection)
+			isSelected = hasSelection
 		}
 		podcast = passedPodcast
 		nameLabel.text = podcast.trackName
@@ -121,35 +122,29 @@ class FavoritePodcastCell: UICollectionViewCell {
 	}
 	
 	
-	override func awakeFromNib() {
-		super.awakeFromNib()
-		imageView.layer.cornerRadius = 8
-		imageView.layer.masksToBounds = true
-	}
-	
-	
 	@objc private func configCheckBox(notification: Notification) {
 		guard let isEditMode = notification.object as? Bool else { return }
-		setCheckBox(isEditMode)
+		setCheckBox(isEditMode, animate: true)
 	}
 	
 	
-	private func setCheckBox(_ isEditMode: Bool) {
+	private func setCheckBox(_ isEditMode: Bool, animate: Bool = false) {
 		if isEditMode {
-			checkBox.isHidden = false
+			let duration = animate ? 0.3 : 0
+			UIView.animate(withDuration: duration) {
+				self.checkBox.transform = .identity
+				self.checkBox.alpha = 1
+			}
 		}
 		else {
-			isSelected = false
-			checkBox.isHidden = true
+			UIView.animate(withDuration: 0.3) {
+				let scaleTransform = CGAffineTransform(scaleX: 0.1, y: 0.1)// dont set to 0 - this will ignore duration
+				self.checkBox.transform = scaleTransform
+				self.checkBox.alpha = 0
+			}
+			checkMark.isHidden = true
+			imageView.alpha = 1
 		}
-	}
-	
-	private func markIf(selected: Bool) {
-//		if selected {
-//			imageView.alpha = 0.3
-//			checkMark.isHidden = false
-//		}
-		isSelected = selected
 	}
 	
 	
@@ -160,9 +155,9 @@ class FavoritePodcastCell: UICollectionViewCell {
 	
 	override func prepareForReuse() {
 		super.prepareForReuse()
-		//isSelected = false
 		checkMark.isHidden = true
-		setCheckBox(false)
+		checkBox.alpha = 0
+		imageView.alpha = 1
 	}
 	
 	

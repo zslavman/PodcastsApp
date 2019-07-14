@@ -29,6 +29,20 @@ class FavoritesController: UICollectionViewController  {
 		super.viewWillAppear(animated)
 		favPodcastsArr = UserDefaults.standard.fetchFavorites()
 		collectionView.reloadData()
+		//collectionView.reloadItems(at: collectionView.indexPathsForVisibleItems)
+		//collectionView.collectionViewLayout.invalidateLayout()
+		//collectionView.layoutSubviews()
+		/*
+		  fixing Swift BUG:
+		  you can't select or deselect cell if it was selected before reload
+		  you should use both selection methods to do it clickable!
+		*/
+		if isEditing {
+			selectedIndexArr.forEach {
+				(indexPath) in
+				collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+			}
+		}
 		UIApplication.tabBarVC()?.viewControllers?[1].tabBarItem.badgeValue = nil
 	}
 	
@@ -42,6 +56,7 @@ class FavoritesController: UICollectionViewController  {
 		}
 	}
 	
+	
 	private func setupCollectionView() {
 		collectionView.allowsMultipleSelection = true
 		collectionView.register(FavoritePodcastCell.self, forCellWithReuseIdentifier: FavoritePodcastCell.favCellIdentifier)
@@ -51,6 +66,7 @@ class FavoritesController: UICollectionViewController  {
 		let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress))
 		collectionView.addGestureRecognizer(longGesture)
 	}
+	
 	
 	@objc private func onEditClick() {
 		guard let button = navigationItem.rightBarButtonItem else { return }
@@ -67,8 +83,22 @@ class FavoritesController: UICollectionViewController  {
 		NotificationCenter.default.post(name: .editModeChahged, object: isEditing)
 	}
 	
+	
 	@objc private func onDeleteClick() {
-		
+		selectedIndexArr.forEach {
+			(indexPath) in
+			deleteItemAt(indexPath: indexPath)
+		}
+		onEditClick()
+	}
+	
+	
+	private func deleteItemAt(indexPath: IndexPath) {
+		favPodcastsArr.remove(at: indexPath.row)
+		collectionView.deleteItems(at: [indexPath])
+		// remove from UserDefaults
+		let data = NSKeyedArchiver.archivedData(withRootObject: self.favPodcastsArr)
+		UserDefaults.standard.set(data, forKey: "favPodKey")
 	}
 	
 	
@@ -95,11 +125,7 @@ class FavoritesController: UICollectionViewController  {
 		let actionSheetVC = UIAlertController(title: "Действия с подкастом", message: nil, preferredStyle: .actionSheet)
 		let delAction = UIAlertAction(title: "Удалить", style: .destructive) {
 			(action) in
-			self.favPodcastsArr.remove(at: indexPath.row)
-			self.collectionView.deleteItems(at: [indexPath])
-			// remove from UserDefaults
-			let data = NSKeyedArchiver.archivedData(withRootObject: self.favPodcastsArr)
-			UserDefaults.standard.set(data, forKey: "favPodKey")
+			self.deleteItemAt(indexPath: indexPath)
 		}
 		let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
 		
@@ -127,7 +153,7 @@ class FavoritesController: UICollectionViewController  {
 			(indexPath) in
 			collectionView.deselectItem(at: indexPath, animated: false)
 		}
-		collectionView.reloadData()
+		//collectionView.reloadData()
 	}
 	
 	
@@ -170,7 +196,6 @@ class FavoritesController: UICollectionViewController  {
 			pushElement(indexPath: indexPath)
 		}
 	}
-	
 	
 }
 
