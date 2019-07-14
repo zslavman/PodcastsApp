@@ -103,4 +103,5 @@ class APIServices {
 extension Notification.Name {
 	static let podLoadingProgress = Notification.Name("podLoadingProgress")
 	static let downloadComplete = Notification.Name("downloadComplete")
+	static let editModeChahged = Notification.Name("editModeChahged")
 }

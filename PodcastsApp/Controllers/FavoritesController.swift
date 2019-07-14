@@ -27,8 +27,10 @@ class FavoritesController: UICollectionViewController  {
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		favPodcastsArr = UserDefaults.standard.fetchFavorites()
-		collectionView.reloadData()
+		collectionView.performBatchUpdates({
+//			favPodcastsArr = UserDefaults.standard.fetchFavorites()
+//			collectionView.reloadData()
+		})
 		UIApplication.tabBarVC()?.viewControllers?[1].tabBarItem.badgeValue = nil
 	}
 	
@@ -62,9 +64,9 @@ class FavoritesController: UICollectionViewController  {
 		else {
 			button.title = "Редакт."
 			navigationItem.leftBarButtonItem?.isEnabled = false
-			print(selectedIndexArr)
-			selectedIndexArr.removeAll()
+			makeDeselect()
 		}
+		NotificationCenter.default.post(name: .editModeChahged, object: isEditing)
 	}
 	
 	@objc private func onDeleteClick() {
@@ -109,6 +111,26 @@ class FavoritesController: UICollectionViewController  {
 	}
 	
 	
+	/// Append or delete element if array allready has element
+	private func pushElement(indexPath: IndexPath) {
+		if let index = selectedIndexArr.firstIndex(of: indexPath) {
+			selectedIndexArr.remove(at: index)
+			return
+		}
+		selectedIndexArr.append(indexPath)
+	}
+	
+	
+	private func makeDeselect() {
+		print(selectedIndexArr)
+		selectedIndexArr.forEach {
+			(indexPath) in
+			collectionView.deselectItem(at: indexPath, animated: false)
+		}
+		selectedIndexArr.removeAll()
+	}
+	
+	
 	//MARK:- UICollectionView methods
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -124,7 +146,9 @@ class FavoritesController: UICollectionViewController  {
 	
 	override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoritePodcastCell.favCellIdentifier, for: indexPath) as! FavoritePodcastCell
-		cell.configure(passedPodcast: favPodcastsArr[indexPath.row])
+		cell.delegate = self
+		let hasSelection = selectedIndexArr.contains(indexPath)
+		cell.configure(passedPodcast: favPodcastsArr[indexPath.row], hasSelection: hasSelection)
 		return cell
 	}
 	
@@ -132,7 +156,7 @@ class FavoritesController: UICollectionViewController  {
 	override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 		let selectedItem = favPodcastsArr[indexPath.item]
 		if isEditing {
-			selectedIndexArr.append(indexPath)
+			pushElement(indexPath: indexPath)
 			return
 		}
 		let episodesVC = EpisodesController()
@@ -140,8 +164,22 @@ class FavoritesController: UICollectionViewController  {
 		navigationController?.pushViewController(episodesVC, animated: true)
 	}
 	
+	
+	override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+		if isEditing {
+			pushElement(indexPath: indexPath)
+		}
+	}
+	
+	
 }
 
+
+extension FavoritesController: FavoritesControllerDelegate {
+	func currentEditStatus() -> Bool {
+		return isEditing
+	}
+}
 
 /// cells sizing
 extension FavoritesController: UICollectionViewDelegateFlowLayout {
