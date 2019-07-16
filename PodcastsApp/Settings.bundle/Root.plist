@@ -14,23 +14,13 @@
 		</dict>
 		<dict>
 			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
+			<string>PSTitleValueSpecifier</string>
 			<key>Title</key>
 			<string>Версия</string>
 			<key>Key</key>
-			<string>name_preference</string>
+			<string>assemble_string</string>
 			<key>DefaultValue</key>
-			<string>1.0</string>
-		</dict>
-		<dict>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
-			<key>Title</key>
-			<string>Сборка</string>
-			<key>Key</key>
-			<string>name_preference</string>
-			<key>DefaultValue</key>
-			<string>18</string>
+			<string></string>
 		</dict>
 		<dict>
 			<key>Type</key>
@@ -45,5 +35,3 @@
 	</array>
 </dict>
 </plist>
-
-<!--https://medium.com/@abhimuralidharan/adding-settings-to-your-ios-app-cecef8c5497-->

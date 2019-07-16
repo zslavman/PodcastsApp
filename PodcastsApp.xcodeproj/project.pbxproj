@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		562E7EE822515E7500D576F8 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562E7EE722515E7500D576F8 /* Podcast.swift */; };
+		563D8AA722DE56DF00C2F085 /* SettingsBundleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8AA622DE56DF00C2F085 /* SettingsBundleHelper.swift */; };
 		563D8EA8228460E300F2A6CA /* EpisodesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8EA7228460E300F2A6CA /* EpisodesController.swift */; };
 		563DE3FC2286021B002AAB8A /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DE3FB2286021B002AAB8A /* Episode.swift */; };
 		563DE3FF2286035E002AAB8A /* EpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DE3FD2286035E002AAB8A /* EpisodeCell.swift */; };
@@ -36,6 +37,7 @@
 
 /* Begin PBXFileReference section */
 		562E7EE722515E7500D576F8 /* Podcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
+		563D8AA622DE56DF00C2F085 /* SettingsBundleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsBundleHelper.swift; sourceTree = "<group>"; };
 		563D8EA7228460E300F2A6CA /* EpisodesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesController.swift; sourceTree = "<group>"; };
 		563DE3FB2286021B002AAB8A /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
 		563DE3FD2286035E002AAB8A /* EpisodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeCell.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 			children = (
 				56FC323D22651B3E008E5DD7 /* SUtils.swift */,
 				563DE40122862D73002AAB8A /* RSSFeed.swift */,
+				563D8AA622DE56DF00C2F085 /* SettingsBundleHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				5648056E22668723008CAD73 /* PodcastCell.swift in Sources */,
 				565A11CE22B046420077996D /* FavoritePodcastCell.swift in Sources */,
 				563DE3FF2286035E002AAB8A /* EpisodeCell.swift in Sources */,
+				563D8AA722DE56DF00C2F085 /* SettingsBundleHelper.swift in Sources */,
 				563DE3FC2286021B002AAB8A /* Episode.swift in Sources */,
 				56DB89082249674F000F7D3C /* TabBarController.swift in Sources */,
 				5648056922667F3E008CAD73 /* APIServices.swift in Sources */,
