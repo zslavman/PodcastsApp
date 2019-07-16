@@ -92,7 +92,11 @@ class APIServices {
 				//update UserDefaults downloaded episode with this temp file
 				var allDownloads = UserDefaults.standard.getDownloadedEpisodes()
 				guard let index = allDownloads.index(where: {$0 == episode}) else { return }
-				allDownloads[index].fileUrl = resp.destinationURL?.absoluteString ?? ""
+				let fileURL = resp.destinationURL?.absoluteString ?? ""
+				
+				// prevent backup file to iCloud
+				SUtils.iCloudPreventBackupFile(localUrl: resp.destinationURL)
+				allDownloads[index].fileUrl = fileURL
 				UserDefaults.standard.saveEpisode(episodes: allDownloads, addOperation: false)
 				print("Download complete!")
 		}
