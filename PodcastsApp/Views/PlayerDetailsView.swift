@@ -13,7 +13,7 @@ import MediaPlayer
 
 // this View init with build TabBar
 class PlayerDetailsView: UIView {
-	
+
 	@IBOutlet weak var miniPlayerView: UIStackView! // stack container
 	@IBOutlet weak var miniTitleImage: UIImageView!
 	@IBOutlet weak var miniLabel: UILabel!
@@ -81,7 +81,7 @@ class PlayerDetailsView: UIView {
 			print("isMinimized = \(isMinimized)")
 		}
 	}
-	
+	public var allowTimerTranslatSlider = true
 	
 	
 	
@@ -98,6 +98,7 @@ class PlayerDetailsView: UIView {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		//currentVolumeSlider.layer.zPosition = 999
+		currentVolumeSlider.delegate = self
 		setupBackgroundControls()
 		setupGestures()
 		setupInteruptionObserver()
@@ -383,6 +384,7 @@ class PlayerDetailsView: UIView {
 	
 	
 	private func updateTimeSlider() {
+		if !allowTimerTranslatSlider { return }
 		let curTime = player.currentTime().seconds
 		let overallTime = player.currentItem?.duration.seconds ?? CMTimeMake(value: 1, timescale: 1).seconds
 		let percentage = curTime / overallTime
@@ -601,5 +603,14 @@ class PlayerDetailsView: UIView {
 	//		}
 	//	}
 	
+}
+
+
+extension PlayerDetailsView: PlayerDetailsViewDelegate {
+	
+	func setPermissionTo(_ arg: Bool) {
+		allowTimerTranslatSlider = arg
+	}
 	
 }
+

@@ -27,9 +27,9 @@ class FavoritesController: UICollectionViewController  {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		/*
-		fixing Swift BUG:
-		you can't select or deselect cell if it was selected before reload
-		you should use both selection methods to do it clickable!
+		  fixing Swift BUG:
+		  you can't select or deselect cell if it was selected before reload
+		  you should use both selection methods to do it clickable!
 		*/
 		if isEditing {
 			selectedIndexArr.forEach {
