@@ -22,7 +22,7 @@ class PlayerDetailsView: UIView {
 	@IBOutlet weak var maximizedStackView: UIStackView!
 	@IBOutlet weak var timeBeginLabel: UILabel!
 	@IBOutlet weak var timeEndLabel: UILabel!
-	@IBOutlet weak var currentTimeSlider: UISlider!
+	@IBOutlet weak var currentTimeSlider: CustomSlider!
 	@IBOutlet weak var currentVolumeSlider: InfoSlider!
 	@IBOutlet weak var titleImage: UIImageView! {
 		didSet {
@@ -81,12 +81,11 @@ class PlayerDetailsView: UIView {
 			print("isMinimized = \(isMinimized)")
 		}
 	}
-	public var allowTimerTranslatSlider = true
+	public var allowTimerTranslatSlider = true // false - timer doesn't translane slider handle
 	
 	
 	
-	
-	
+
 	//MARK:- Class methods
 	
 	public static func initFromNib() -> PlayerDetailsView {
@@ -98,7 +97,7 @@ class PlayerDetailsView: UIView {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		//currentVolumeSlider.layer.zPosition = 999
-		currentVolumeSlider.delegate = self
+		currentTimeSlider.delegate = self
 		setupBackgroundControls()
 		setupGestures()
 		setupInteruptionObserver()
@@ -113,10 +112,13 @@ class PlayerDetailsView: UIView {
 	
 	
 	private func setupGestures() {
-		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
 		miniPlayerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
+		
+		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
 		miniPlayerView.addGestureRecognizer(panGesture)
-		maximizedStackView.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(dragToDismiss)))
+		
+		let panGestureForMaximized = UIPanGestureRecognizer(target: self, action: #selector(dragToDismiss))
+		maximizedStackView.addGestureRecognizer(panGestureForMaximized)
 	}
 	
 	

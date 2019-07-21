@@ -8,10 +8,6 @@
 
 import UIKit
 
-protocol PlayerDetailsViewDelegate:class {
-	func setPermissionTo(_ arg: Bool)
-}
-
 class InfoSlider: UISlider {
 	
 	public let infoLable: LabelForSlider = {
@@ -19,7 +15,6 @@ class InfoSlider: UISlider {
 		label.alpha = 0
 		return label
 	}()
-	weak var delegate: PlayerDetailsViewDelegate?
 	
 	override func awakeFromNib() {
 		super.awakeFromNib()
@@ -54,7 +49,6 @@ class InfoSlider: UISlider {
 	
 	
 	override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-		delegate?.setPermissionTo(false)
 		let touchPoint: CGPoint = touch.location(in: self)
 		// Check if the knob is touched. Only in this case show the popup-view
 		if getCurrentThumbRect().insetBy(dx: -12, dy: -12).contains(touchPoint) {
@@ -72,13 +66,11 @@ class InfoSlider: UISlider {
 	
 	
 	override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-		delegate?.setPermissionTo(true)
 		showPopupView(false)
 		super.endTracking(touch, with: event)
 	}
 	
 	override func cancelTracking(with event: UIEvent?) {
-		delegate?.setPermissionTo(true)
 		showPopupView(false)
 		super.cancelTracking(with: event)
 	}
