@@ -21,13 +21,12 @@ class InfoSlider: UISlider {
 		handle.backgroundColor = .white
 		handle.frame.size = CGSize(width: 40, height: 40)
 		handle.layer.cornerRadius = 20
-		handle.clipsToBounds = true
 //		handle.layer.shadowOffset = CGSize(width: 1, height: 3)
 //		handle.layer.shadowRadius = 20
 //		handle.layer.shadowOpacity = 0.9
 		handle.layer.borderWidth = 2
 		handle.layer.borderColor = UIColor.black.withAlphaComponent(0.7).cgColor
-		
+		handle.layer.masksToBounds = true
 		return handle
 	}()
 	
@@ -54,6 +53,7 @@ class InfoSlider: UISlider {
 		translatesAutoresizingMaskIntoConstraints = false
 		addSubview(infoLable)
 		let handleImage = UIImage(view: customHandle)
+		//guard let handleImage = SUtils.viewToImage(view: customHandle) else { return }
 		setThumbImage(handleImage, for: .normal) // fix bug when handle moove on touch
 	}
 	

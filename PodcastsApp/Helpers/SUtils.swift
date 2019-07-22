@@ -287,6 +287,15 @@ struct SUtils {
 			print(error.localizedDescription)
 		}
 	}
+	
+	
+	/// bad - masked view willbe without mask
+	public static func viewToImage(view: UIView) -> UIImage? {
+		UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.isOpaque, 0)
+		defer { UIGraphicsEndImageContext() }
+		view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
+		return UIGraphicsGetImageFromCurrentImageContext()
+	}
 
 	
 }
@@ -364,10 +373,10 @@ extension MPVolumeView {
 	}
 }
 
-extension UIImage {
+extension UIImage { // bad - can see pixels
 	convenience init(view: UIView) {
 		UIGraphicsBeginImageContext(view.frame.size)
-		view.layer.render(in:UIGraphicsGetCurrentContext()!)
+		view.layer.render(in: UIGraphicsGetCurrentContext()!)
 		let image = UIGraphicsGetImageFromCurrentImageContext()
 		UIGraphicsEndImageContext()
 		self.init(cgImage: image!.cgImage!)
