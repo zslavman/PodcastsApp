@@ -12,7 +12,7 @@ protocol PlayerDetailsViewDelegate: class {
 	func setPermissionTo(_ arg: Bool)
 }
 
-
+// NOT USED!!!
 // this slider stops the timer while handle dragging
 class CustomSlider: UISlider {
 	weak var delegate: PlayerDetailsViewDelegate?

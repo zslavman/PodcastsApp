@@ -98,7 +98,7 @@
                                 <constraint firstAttribute="width" secondItem="YQD-pU-dwg" secondAttribute="height" id="LQ8-c4-PrY"/>
                             </constraints>
                         </imageView>
-                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="yAq-85-y7H" customClass="CustomSlider" customModule="PodcastsApp" customModuleProvider="target">
+                        <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="yAq-85-y7H">
                             <rect key="frame" x="-2" y="381" width="331" height="41"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="40" id="P3y-8S-8Og"/>

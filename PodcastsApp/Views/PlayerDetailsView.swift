@@ -22,7 +22,7 @@ class PlayerDetailsView: UIView {
 	@IBOutlet weak var maximizedStackView: UIStackView!
 	@IBOutlet weak var timeBeginLabel: UILabel!
 	@IBOutlet weak var timeEndLabel: UILabel!
-	@IBOutlet weak var currentTimeSlider: CustomSlider!
+	@IBOutlet weak var currentTimeSlider: UISlider!
 	@IBOutlet weak var currentVolumeSlider: InfoSlider!
 	@IBOutlet weak var titleImage: UIImageView! {
 		didSet {
@@ -81,8 +81,8 @@ class PlayerDetailsView: UIView {
 			print("isMinimized = \(isMinimized)")
 		}
 	}
-	public var allowTimerTranslatSlider = true // false - timer doesn't translane slider handle
-	
+	private var allowTimerTranslatSlider = true // false - timer doesn't translane slider handle
+	private var allowPanGesture = true
 	
 	
 
@@ -97,7 +97,6 @@ class PlayerDetailsView: UIView {
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		//currentVolumeSlider.layer.zPosition = 999
-		currentTimeSlider.delegate = self
 		setupBackgroundControls()
 		setupGestures()
 		setupInteruptionObserver()
@@ -113,12 +112,13 @@ class PlayerDetailsView: UIView {
 	
 	private func setupGestures() {
 		miniPlayerView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onThisViewClick)))
-		
 		panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPan(gesture:)))
 		miniPlayerView.addGestureRecognizer(panGesture)
-		
 		let panGestureForMaximized = UIPanGestureRecognizer(target: self, action: #selector(dragToDismiss))
 		maximizedStackView.addGestureRecognizer(panGestureForMaximized)
+		
+		currentTimeSlider.addTarget(self, action: #selector(sliderDidStartTouch), for: .touchDown)
+		currentTimeSlider.addTarget(self, action: #selector(sliderDidEndTouch), for: [.touchUpInside, .touchUpOutside, .touchCancel])
 	}
 	
 	
@@ -163,6 +163,19 @@ class PlayerDetailsView: UIView {
 			if options == AVAudioSession.InterruptionOptions.shouldResume.rawValue {
 				onPlayPauseClick()
 			}
+		}
+	}
+	
+	
+	@objc private func sliderDidStartTouch() {
+		allowTimerTranslatSlider = false
+	}
+	
+	@objc private func sliderDidEndTouch() {
+		// fix bug with jumping handel
+		// Most likely, the player doesn't have time to seek in selecte position
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+			self.allowTimerTranslatSlider = true
 		}
 	}
 	
@@ -318,6 +331,7 @@ class PlayerDetailsView: UIView {
 	
 	
 	@objc private func dragToDismiss(gesture: UIPanGestureRecognizer) {
+		if !allowPanGesture { return }
 		let translation = gesture.translation(in: superview)
 		
 		switch gesture.state {
@@ -385,8 +399,10 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
-	private func updateTimeSlider() {
-		if !allowTimerTranslatSlider { return }
+	private func updateTimeSlider(forced: Bool = false) {
+		if !forced {
+			if !allowTimerTranslatSlider { return }
+		}
 		let curTime = player.currentTime().seconds
 		let overallTime = player.currentItem?.duration.seconds ?? CMTimeMake(value: 1, timescale: 1).seconds
 		let percentage = curTime / overallTime
@@ -561,7 +577,7 @@ class PlayerDetailsView: UIView {
 	}
 	
 	
-	// this is serious BUG which doesn't give properly load data for background!!!!
+	// this is serious BUG which doesn't allow properly load data for background!!!!
 	//	private func observeBoundaryTime() {
 	//		let time = CMTimeMake(value: 1, timescale: 3) // dispatcher animation after 1 second of playing
 	//		let times = [NSValue(time: time)]
@@ -606,13 +622,3 @@ class PlayerDetailsView: UIView {
 	//	}
 	
 }
-
-
-extension PlayerDetailsView: PlayerDetailsViewDelegate {
-	
-	func setPermissionTo(_ arg: Bool) {
-		allowTimerTranslatSlider = arg
-	}
-	
-}
-

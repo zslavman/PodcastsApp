@@ -16,6 +16,21 @@ class InfoSlider: UISlider {
 		return label
 	}()
 	
+	private let customHandle: UIView = {
+		let handle = UIView()
+		handle.backgroundColor = .white
+		handle.frame.size = CGSize(width: 40, height: 40)
+		handle.layer.cornerRadius = 20
+		handle.clipsToBounds = true
+//		handle.layer.shadowOffset = CGSize(width: 1, height: 3)
+//		handle.layer.shadowRadius = 20
+//		handle.layer.shadowOpacity = 0.9
+		handle.layer.borderWidth = 2
+		handle.layer.borderColor = UIColor.black.withAlphaComponent(0.7).cgColor
+		
+		return handle
+	}()
+	
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		setup()
@@ -38,6 +53,8 @@ class InfoSlider: UISlider {
 	private func setup() {
 		translatesAutoresizingMaskIntoConstraints = false
 		addSubview(infoLable)
+		let handleImage = UIImage(view: customHandle)
+		setThumbImage(handleImage, for: .normal) // fix bug when handle moove on touch
 	}
 	
 	
