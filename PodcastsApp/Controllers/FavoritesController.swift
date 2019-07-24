@@ -13,7 +13,9 @@ class FavoritesController: UICollectionViewController  {
 	private var favPodcastsArr = UserDefaults.standard.fetchFavorites()
 	private var placeholder: PlaceholderView!
 	private var selectedIndexArr = [IndexPath]() // selected cell Index array
-	
+	private var lastSelectedCell = IndexPath()
+	private var panGesture: UIPanGestureRecognizer!
+	private var isPanSelectionMode = false
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -67,6 +69,12 @@ class FavoritesController: UICollectionViewController  {
 		collectionView.alwaysBounceVertical = true
 		collectionView.backgroundColor = .white
 		
+		// for pangesture selection cells
+		collectionView.canCancelContentTouches = false
+		panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPanToSelectCells(panGesture:)))
+		collectionView.addGestureRecognizer(panGesture)
+		panGesture.isEnabled = false
+		
 		let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress))
 		collectionView.addGestureRecognizer(longGesture)
 	}
@@ -77,8 +85,10 @@ class FavoritesController: UICollectionViewController  {
 		isEditing = !isEditing
 		if isEditing {
 			button.title = "Отмена"
+			panGesture.isEnabled = true
 		}
 		else {
+			panGesture.isEnabled = false
 			button.title = "Редакт."
 			navigationItem.leftBarButtonItem?.isEnabled = false
 			makeDeselect()
@@ -90,6 +100,47 @@ class FavoritesController: UICollectionViewController  {
 	@objc private func onDeleteClick() {
 		deleteItems(indexPathArr: selectedIndexArr)
 		onEditClick()
+	}
+	
+	
+	
+	/// for pangesture selection cells
+	@objc private func didPanToSelectCells(panGesture: UIPanGestureRecognizer) {
+		guard isEditing else { return }
+		//guard isPanSelectionMode else { return }
+		if panGesture.state == .began {
+			collectionView.isUserInteractionEnabled = false
+			collectionView.isScrollEnabled = false
+		}
+		else if panGesture.state == .changed {
+			let location: CGPoint = panGesture.location(in: collectionView)
+			if let indexPath: IndexPath = collectionView?.indexPathForItem(at: location) {
+				if indexPath != lastSelectedCell { // fix blinking on touched cell
+					selectCell(indexPath, selected: true)
+					lastSelectedCell = indexPath
+				}
+			}
+		}
+		else if panGesture.state == .ended {
+			collectionView.isScrollEnabled = true
+			collectionView.isUserInteractionEnabled = true
+			isPanSelectionMode = false
+		}
+		
+	}
+	private func selectCell(_ indexPath: IndexPath, selected: Bool) {
+		if let cell = collectionView.cellForItem(at: indexPath) {
+			if cell.isSelected {
+				collectionView.deselectItem(at: indexPath, animated: true)
+				collectionView.scrollToItem(at: indexPath, at: UICollectionView.ScrollPosition.centeredVertically,
+											animated: true)
+			}
+			else {
+				collectionView.selectItem(at: indexPath, animated: true,
+										  scrollPosition: UICollectionView.ScrollPosition.centeredVertically)
+			}
+			pushElement(indexPath: indexPath)
+		}
 	}
 	
 	
@@ -146,9 +197,15 @@ class FavoritesController: UICollectionViewController  {
 	private func pushElement(indexPath: IndexPath) {
 		if let index = selectedIndexArr.firstIndex(of: indexPath) {
 			selectedIndexArr.remove(at: index)
+			if selectedIndexArr.isEmpty {
+				navigationItem.leftBarButtonItem?.isEnabled = false
+			}
 			return
 		}
 		selectedIndexArr.append(indexPath)
+		if !selectedIndexArr.isEmpty {
+			navigationItem.leftBarButtonItem?.isEnabled = true
+		}
 	}
 	
 	
@@ -190,9 +247,6 @@ class FavoritesController: UICollectionViewController  {
 		let selectedItem = favPodcastsArr[indexPath.item]
 		if isEditing {
 			pushElement(indexPath: indexPath)
-			if !selectedIndexArr.isEmpty {
-				navigationItem.leftBarButtonItem?.isEnabled = true
-			}
 			return
 		}
 		let episodesVC = EpisodesController()
@@ -204,9 +258,6 @@ class FavoritesController: UICollectionViewController  {
 	override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
 		if isEditing {
 			pushElement(indexPath: indexPath)
-			if selectedIndexArr.isEmpty {
-				navigationItem.leftBarButtonItem?.isEnabled = false
-			}
 		}
 	}
 	
