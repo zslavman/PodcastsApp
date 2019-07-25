@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FavoritesController: UICollectionViewController  {
+class FavoritesController: UICollectionViewController {
 	
 	private var favPodcastsArr = UserDefaults.standard.fetchFavorites()
 	private var placeholder: PlaceholderView!
@@ -24,6 +24,7 @@ class FavoritesController: UICollectionViewController  {
 		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Редакт", style: .plain, target: self, action: #selector(onEditClick))
 		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Удалить", style: .plain, target: self, action: #selector(onDeleteClick))
 		navigationItem.leftBarButtonItem?.isEnabled = false
+		panGesture.delegate = self
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -53,16 +54,6 @@ class FavoritesController: UICollectionViewController  {
 	}
 	
 	
-	override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		if scrollView.panGestureRecognizer.translation(in: scrollView).y < 0 {
-			UIApplication.tabBarVC()?.setTabBar(hidden: true)
-		}
-		else {
-			UIApplication.tabBarVC()?.setTabBar(hidden: false)
-		}
-	}
-	
-	
 	private func setupCollectionView() {
 		collectionView.allowsMultipleSelection = true
 		collectionView.register(FavoritePodcastCell.self, forCellWithReuseIdentifier: FavoritePodcastCell.favCellIdentifier)
@@ -71,7 +62,7 @@ class FavoritesController: UICollectionViewController  {
 		
 		// for pangesture selection cells
 		collectionView.canCancelContentTouches = false
-		panGesture = UIPanGestureRecognizer(target: self, action: #selector(didHorizontalPan(panGesture:)))
+		panGesture = UIPanGestureRecognizer(target: self, action: #selector(didHorizontalPan(gesture:)))
 		collectionView.addGestureRecognizer(panGesture)
 		panGesture.isEnabled = false
 		
@@ -100,58 +91,6 @@ class FavoritesController: UICollectionViewController  {
 	@objc private func onDeleteClick() {
 		deleteItems(indexPathArr: selectedIndexArr)
 		onEditClick()
-	}
-	
-	
-	
-	/// for pangesture selection cells ///
-	
-	@objc private func didHorizontalPan(gesture: UIPanGestureRecognizer) {
-		let velocity = panGesture.velocity(in: collectionView)
-		guard abs(velocity.y) < abs(velocity.x) else {
-			
-			return
-		}
-		// pass only horizontal gestures
-		didPanToSelectCells(panGesture: gesture)
-	}
-	
-	private func didPanToSelectCells(panGesture: UIPanGestureRecognizer) {
-		guard isEditing else { return }
-		//guard isPanSelectionMode else { return }
-		if panGesture.state == .began {
-			collectionView.isUserInteractionEnabled = false
-			collectionView.isScrollEnabled = false
-		}
-		else if panGesture.state == .changed {
-			let location: CGPoint = panGesture.location(in: collectionView)
-			if let indexPath: IndexPath = collectionView?.indexPathForItem(at: location) {
-				if indexPath != lastSelectedCell { // fix blinking on touched cell
-					selectCell(indexPath, selected: true)
-					lastSelectedCell = indexPath
-				}
-			}
-		}
-		else if panGesture.state == .ended {
-			collectionView.isScrollEnabled = true
-			collectionView.isUserInteractionEnabled = true
-			isPanSelectionMode = false
-		}
-	}
-	
-	private func selectCell(_ indexPath: IndexPath, selected: Bool) {
-		if let cell = collectionView.cellForItem(at: indexPath) {
-			if cell.isSelected {
-				collectionView.deselectItem(at: indexPath, animated: true)
-				collectionView.scrollToItem(at: indexPath, at: UICollectionView.ScrollPosition.centeredVertically,
-											animated: true)
-			}
-			else {
-				collectionView.selectItem(at: indexPath, animated: true,
-										  scrollPosition: UICollectionView.ScrollPosition.centeredVertically)
-			}
-			pushElement(indexPath: indexPath)
-		}
 	}
 	
 	
@@ -296,6 +235,65 @@ extension FavoritesController: UICollectionViewDelegateFlowLayout {
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
 		return 16
 	}
+}
+
+
+/// for pangesture selection cells ///
+extension FavoritesController: UIGestureRecognizerDelegate {
+	
+	// allow recognition of two gestures at the same time
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+		return true
+	}
+	
+	@objc private func didHorizontalPan(gesture: UIPanGestureRecognizer) {
+		let velocity = panGesture.velocity(in: collectionView)
+		// pass only horizontal gestures
+		if abs(velocity.y) < abs(velocity.x) {
+			didPanToSelectCells(panGesture: gesture)
+		}
+	}
+	
+	
+	private func didPanToSelectCells(panGesture: UIPanGestureRecognizer) {
+		guard isEditing else { return }
+		//guard isPanSelectionMode else { return }
+		if panGesture.state == .began {
+			collectionView.isUserInteractionEnabled = false
+			collectionView.isScrollEnabled = false
+		}
+		else if panGesture.state == .changed {
+			let location: CGPoint = panGesture.location(in: collectionView)
+			if let indexPath: IndexPath = collectionView?.indexPathForItem(at: location) {
+				if indexPath != lastSelectedCell { // fix blinking on touched cell
+					selectCell(indexPath, selected: true)
+					lastSelectedCell = indexPath
+				}
+			}
+		}
+		else if panGesture.state == .ended {
+			collectionView.isScrollEnabled = true
+			collectionView.isUserInteractionEnabled = true
+			isPanSelectionMode = false
+		}
+	}
+	
+	
+	private func selectCell(_ indexPath: IndexPath, selected: Bool) {
+		if let cell = collectionView.cellForItem(at: indexPath) {
+			if cell.isSelected {
+				collectionView.deselectItem(at: indexPath, animated: true)
+				collectionView.scrollToItem(at: indexPath, at: UICollectionView.ScrollPosition.centeredVertically,
+											animated: true)
+			}
+			else {
+				collectionView.selectItem(at: indexPath, animated: true,
+										  scrollPosition: UICollectionView.ScrollPosition.centeredVertically)
+			}
+			pushElement(indexPath: indexPath)
+		}
+	}
+	
 }
 
 
