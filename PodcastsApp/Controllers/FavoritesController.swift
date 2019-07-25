@@ -71,7 +71,7 @@ class FavoritesController: UICollectionViewController  {
 		
 		// for pangesture selection cells
 		collectionView.canCancelContentTouches = false
-		panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPanToSelectCells(panGesture:)))
+		panGesture = UIPanGestureRecognizer(target: self, action: #selector(didHorizontalPan(panGesture:)))
 		collectionView.addGestureRecognizer(panGesture)
 		panGesture.isEnabled = false
 		
@@ -104,8 +104,19 @@ class FavoritesController: UICollectionViewController  {
 	
 	
 	
-	/// for pangesture selection cells
-	@objc private func didPanToSelectCells(panGesture: UIPanGestureRecognizer) {
+	/// for pangesture selection cells ///
+	
+	@objc private func didHorizontalPan(gesture: UIPanGestureRecognizer) {
+		let velocity = panGesture.velocity(in: collectionView)
+		guard abs(velocity.y) < abs(velocity.x) else {
+			
+			return
+		}
+		// pass only horizontal gestures
+		didPanToSelectCells(panGesture: gesture)
+	}
+	
+	private func didPanToSelectCells(panGesture: UIPanGestureRecognizer) {
 		guard isEditing else { return }
 		//guard isPanSelectionMode else { return }
 		if panGesture.state == .began {
@@ -126,8 +137,8 @@ class FavoritesController: UICollectionViewController  {
 			collectionView.isUserInteractionEnabled = true
 			isPanSelectionMode = false
 		}
-		
 	}
+	
 	private func selectCell(_ indexPath: IndexPath, selected: Bool) {
 		if let cell = collectionView.cellForItem(at: indexPath) {
 			if cell.isSelected {
