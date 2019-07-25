@@ -15,7 +15,7 @@ class FavoritesController: UICollectionViewController {
 	private var selectedIndexArr = [IndexPath]() // selected cell Index array
 	private var lastSelectedCell = IndexPath()
 	private var panGesture: UIPanGestureRecognizer!
-	private var isPanSelectionMode = false
+
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -257,9 +257,7 @@ extension FavoritesController: UIGestureRecognizerDelegate {
 	
 	private func didPanToSelectCells(panGesture: UIPanGestureRecognizer) {
 		guard isEditing else { return }
-		//guard isPanSelectionMode else { return }
 		if panGesture.state == .began {
-			collectionView.isUserInteractionEnabled = false
 			collectionView.isScrollEnabled = false
 		}
 		else if panGesture.state == .changed {
@@ -273,8 +271,6 @@ extension FavoritesController: UIGestureRecognizerDelegate {
 		}
 		else if panGesture.state == .ended {
 			collectionView.isScrollEnabled = true
-			collectionView.isUserInteractionEnabled = true
-			isPanSelectionMode = false
 		}
 	}
 	
