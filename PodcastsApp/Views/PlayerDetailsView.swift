@@ -185,7 +185,7 @@ class PlayerDetailsView: UIView {
 		var mediaDict = [String : Any]()
 		mediaDict[MPMediaItemPropertyArtist] = episode.author
 		mediaDict[MPMediaItemPropertyTitle] = episode.title
-		mediaDict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: #imageLiteral(resourceName: "appicon2"))
+		//mediaDict[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: #imageLiteral(resourceName: "appicon2"))
 		MPNowPlayingInfoCenter.default().nowPlayingInfo = mediaDict
 	}
 	

@@ -145,18 +145,17 @@ class TabBarController: UITabBarController {
 	
 	/// hide/show tabbar
 	func setTabBar(hidden: Bool) {
-		if true { return }
-		var offset: CGFloat = UIScreen.main.bounds.size.height
-		if hidden {
-			holdOnSafeArea()
-		} else {
-			holdOnTabBar()
-			offset = UIScreen.main.bounds.size.height - tabBar.frame.size.height
-		}
-		if offset == tabBar.frame.origin.y { return }
-		UIView.animate(withDuration: 0.3, animations: {
-			self.tabBar.frame.origin.y = offset
-		})
+//		var offset: CGFloat = UIScreen.main.bounds.size.height
+//		if hidden {
+//			holdOnSafeArea()
+//		} else {
+//			holdOnTabBar()
+//			offset = UIScreen.main.bounds.size.height - tabBar.frame.size.height
+//		}
+//		if offset == tabBar.frame.origin.y { return }
+//		UIView.animate(withDuration: 0.3, animations: {
+//			self.tabBar.frame.origin.y = offset
+//		})
 	}
 	
 	

@@ -494,7 +494,8 @@
 			baseConfigurationReference = 6223AC8F1ABBDE582E35BB40 /* Pods-PodcastsApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = "$(SRCROOT)/PodcastsApp/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -503,8 +504,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.zslavman.PodcastsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.zslavman.PodcastsApp";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -513,7 +516,9 @@
 			baseConfigurationReference = 5D4D50EEF55E1512ECB06F22 /* Pods-PodcastsApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LC7P3687MC;
 				INFOPLIST_FILE = "$(SRCROOT)/PodcastsApp/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -522,8 +527,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.zslavman.PodcastsApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.zslavman.PodcastsApp";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
