@@ -3,6 +3,11 @@
 
 default_platform(:ios)
 
+lane :GenerateCerts do
+    match(app_identifier: "com.zslavman.PodcastsApp", type: "development")
+    match(app_identifier: "com.zslavman.PodcastsApp", type: "appstore")
+end
+
 platform :ios do
 
 	before_all do
