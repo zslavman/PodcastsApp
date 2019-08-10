@@ -3,10 +3,12 @@
 
 default_platform(:ios)
 
+# create new certificates & profiles
 lane :GenerateCerts do
     match(app_identifier: "com.zslavman.PodcastsApp", type: "development")
     match(app_identifier: "com.zslavman.PodcastsApp", type: "appstore")
 end
+
 
 platform :ios do
 
