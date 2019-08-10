@@ -498,7 +498,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LC7P3687MC;
-				INFOPLIST_FILE = "$(SRCROOT)/PodcastsApp/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "PodcastsApp/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -522,7 +522,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = LC7P3687MC;
-				INFOPLIST_FILE = "$(SRCROOT)/PodcastsApp/Supporting Files/Info.plist";
+				INFOPLIST_FILE = "PodcastsApp/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
