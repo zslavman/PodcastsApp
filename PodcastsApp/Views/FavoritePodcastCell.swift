@@ -16,7 +16,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 	
 	weak var delegate: FavoritesControllerDelegate?
 	public static let favCellIdentifier = "favCellIdentifier"
-	private let imageView = UIImageView(image: #imageLiteral(resourceName: "appicon"))
+	public let imageView = UIImageView(image: #imageLiteral(resourceName: "appicon"))
 	private let nameLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Podcast Name"

@@ -8,8 +8,7 @@
 
 import UIKit
 import AXPhotoViewer
-import Photos
-import FLAnimatedImage
+//import FLAnimatedImage
 
 
 class FavoritesController: UICollectionViewController {
@@ -213,9 +212,23 @@ class FavoritesController: UICollectionViewController {
 			return
 		}
 		if isImagePreview {
-			print("Need Preview!")
+			let cell = collectionView.cellForItem(at: indexPath) as! FavoritePodcastCell
+			let imageView = cell.imageView
+			let transitionInfo = AXTransitionInfo(interactiveDismissalEnabled: true, startingView: imageView) {
+				[weak self] (photo, index) -> UIImageView? in
+				guard let `self` = self else {
+					return nil
+				}
+				let indexPath = IndexPath(row: index, section: 0)
+				guard let cell = self.collectionView.cellForItem(at: indexPath) as? FavoritePodcastCell else {
+					return nil
+				}
+				// adjusting the reference view attached to our transition info to allow for contextual animation
+				return cell.imageView
+			}
+			
 			let dataSource = AXPhotosDataSource(photos: favPodcastsArr, initialPhotoIndex: indexPath.item)
-			let photosViewController = AXPhotosViewController(dataSource: dataSource)
+			let photosViewController = AXPhotosViewController(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
 			photosViewController.delegate = self
 			present(photosViewController, animated: true)
 		}
@@ -236,8 +249,26 @@ class FavoritesController: UICollectionViewController {
 }
 
 
-extension FavoritesController: AXPhotosViewControllerDelegate {
+extension FavoritesController: AXPhotosViewControllerDelegate, UIViewControllerPreviewingDelegate {
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+		guard let indexPath = self.collectionView.indexPathForItem(at: location),
+			let cell = self.collectionView.cellForItem(at: indexPath) as? FavoritePodcastCell
+			else {
+				return nil
+		}
+		let imageView = cell.imageView
+		previewingContext.sourceRect = self.collectionView.convert(imageView.frame, from: imageView.superview)
+		let dataSource = AXPhotosDataSource(photos: favPodcastsArr, initialPhotoIndex: indexPath.row)
+		let previewingPhotosViewController = AXPreviewingPhotosViewController(dataSource: dataSource)
+		return previewingPhotosViewController
+	}
 	
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+		if let previewingPhotosViewController = viewControllerToCommit as? AXPreviewingPhotosViewController {
+			self.present(AXPhotosViewController(from: previewingPhotosViewController), animated: false)
+		}
+	}
+
 }
 
 
