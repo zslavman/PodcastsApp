@@ -7,6 +7,10 @@
 //
 
 import UIKit
+import AXPhotoViewer
+import Photos
+import FLAnimatedImage
+
 
 class FavoritesController: UICollectionViewController {
 	
@@ -15,6 +19,15 @@ class FavoritesController: UICollectionViewController {
 	private var selectedIndexArr = [IndexPath]() // selected cell Index array
 	private var lastSelectedCell = IndexPath()
 	private var panGesture: UIPanGestureRecognizer!
+	private var isImagePreview: Bool {
+		get {
+			let flag = UserDefaults.standard.value(forKey: SettingsBundleHelper.PREVIEW_IMAGE)
+			if let flag = flag as? Bool  {
+				return flag
+			}
+			return false
+		}
+	}
 
 	
 	override func viewDidLoad() {
@@ -199,9 +212,18 @@ class FavoritesController: UICollectionViewController {
 			pushElement(indexPath: indexPath)
 			return
 		}
-		let episodesVC = EpisodesController()
-		episodesVC.podcast = selectedItem
-		navigationController?.pushViewController(episodesVC, animated: true)
+		if isImagePreview {
+			print("Need Preview!")
+			let dataSource = AXPhotosDataSource(photos: favPodcastsArr, initialPhotoIndex: indexPath.item)
+			let photosViewController = AXPhotosViewController(dataSource: dataSource)
+			photosViewController.delegate = self
+			present(photosViewController, animated: true)
+		}
+		else {
+			let episodesVC = EpisodesController()
+			episodesVC.podcast = selectedItem
+			navigationController?.pushViewController(episodesVC, animated: true)
+		}
 	}
 	
 	
@@ -210,6 +232,11 @@ class FavoritesController: UICollectionViewController {
 			pushElement(indexPath: indexPath)
 		}
 	}
+	
+}
+
+
+extension FavoritesController: AXPhotosViewControllerDelegate {
 	
 }
 

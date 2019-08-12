@@ -30,6 +30,13 @@
 		56DB8900224966E8000F7D3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56DB88FE224966E8000F7D3C /* LaunchScreen.storyboard */; };
 		56DB89082249674F000F7D3C /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DB89072249674F000F7D3C /* TabBarController.swift */; };
 		56EAB05122E3CB9700BD2294 /* CustomSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EAB05022E3CB9700BD2294 /* CustomSlider.swift */; };
+		56EB2C1C22FF85E7003B51A8 /* DSC6.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56EB2C1922FF85E7003B51A8 /* DSC6.JPG */; };
+		56EB2C1D22FF85E7003B51A8 /* DSC8.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56EB2C1A22FF85E7003B51A8 /* DSC8.JPG */; };
+		56EB2C1E22FF85E7003B51A8 /* pdftitle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 56EB2C1B22FF85E7003B51A8 /* pdftitle.pdf */; };
+		56EB2C2A22FF89F8003B51A8 /* t01.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 56EB2C2722FF89F8003B51A8 /* t01.jpg */; };
+		56EB2C2B22FF89F8003B51A8 /* t02.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 56EB2C2822FF89F8003B51A8 /* t02.jpg */; };
+		56EB2C2C22FF89F8003B51A8 /* t03.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 56EB2C2922FF89F8003B51A8 /* t03.jpg */; };
+		56EB2C2E22FF8C6E003B51A8 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EB2C2D22FF8C6E003B51A8 /* IAPManager.swift */; };
 		56F4E6E122C94BFE00E02892 /* PlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F4E6E022C94BFE00E02892 /* PlaceholderView.swift */; };
 		56FC323E22651B3E008E5DD7 /* SUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FC323D22651B3E008E5DD7 /* SUtils.swift */; };
 		AACD116CAFC13F12A38FA032 /* Pods_PodcastsApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D629AF9AC10498D8C87924D2 /* Pods_PodcastsApp.framework */; };
@@ -62,6 +69,17 @@
 		56DB8901224966E8000F7D3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56DB89072249674F000F7D3C /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		56EAB05022E3CB9700BD2294 /* CustomSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSlider.swift; sourceTree = "<group>"; };
+		56EB2C1322FF85A5003B51A8 /* Purchase1 */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = Purchase1; sourceTree = BUILT_PRODUCTS_DIR; };
+		56EB2C1522FF85A5003B51A8 /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
+		56EB2C1922FF85E7003B51A8 /* DSC6.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC6.JPG; sourceTree = "<group>"; };
+		56EB2C1A22FF85E7003B51A8 /* DSC8.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = DSC8.JPG; sourceTree = "<group>"; };
+		56EB2C1B22FF85E7003B51A8 /* pdftitle.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = pdftitle.pdf; sourceTree = "<group>"; };
+		56EB2C2122FF89D9003B51A8 /* Purchase2 */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = Purchase2; sourceTree = BUILT_PRODUCTS_DIR; };
+		56EB2C2322FF89D9003B51A8 /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
+		56EB2C2722FF89F8003B51A8 /* t01.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t01.jpg; sourceTree = "<group>"; };
+		56EB2C2822FF89F8003B51A8 /* t02.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t02.jpg; sourceTree = "<group>"; };
+		56EB2C2922FF89F8003B51A8 /* t03.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t03.jpg; sourceTree = "<group>"; };
+		56EB2C2D22FF8C6E003B51A8 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 		56F4E6E022C94BFE00E02892 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
 		56FC323D22651B3E008E5DD7 /* SUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SUtils.swift; sourceTree = "<group>"; };
 		5D4D50EEF55E1512ECB06F22 /* Pods-PodcastsApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodcastsApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-PodcastsApp/Pods-PodcastsApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -71,11 +89,25 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1D1BF9335FEBA57C7FFA4EF5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		56DB88EF224966E6000F7D3C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				AACD116CAFC13F12A38FA032 /* Pods_PodcastsApp.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2AD03C676FBFF93CBFDBA30 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,6 +140,7 @@
 			children = (
 				5648056822667F3E008CAD73 /* APIServices.swift */,
 				567153EF22D7BEC5000C5E9A /* ReachabilityService.swift */,
+				56EB2C2D22FF8C6E003B51A8 /* IAPManager.swift */,
 			);
 			path = "API, services";
 			sourceTree = "<group>";
@@ -133,6 +166,8 @@
 			isa = PBXGroup;
 			children = (
 				56DB88F4224966E6000F7D3C /* PodcastsApp */,
+				56EB2C1422FF85A5003B51A8 /* Purchase1 */,
+				56EB2C2222FF89D9003B51A8 /* Purchase2 */,
 				56DB88F3224966E6000F7D3C /* Products */,
 				DDE65EC7876B0F145325E419 /* Pods */,
 				97109C52D9140AF7C2DB1E22 /* Frameworks */,
@@ -143,6 +178,8 @@
 			isa = PBXGroup;
 			children = (
 				56DB88F2224966E6000F7D3C /* PodcastsApp.app */,
+				56EB2C1322FF85A5003B51A8 /* Purchase1 */,
+				56EB2C2122FF89D9003B51A8 /* Purchase2 */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -170,6 +207,28 @@
 				56DB8901224966E8000F7D3C /* Info.plist */,
 			);
 			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		56EB2C1422FF85A5003B51A8 /* Purchase1 */ = {
+			isa = PBXGroup;
+			children = (
+				56EB2C1922FF85E7003B51A8 /* DSC6.JPG */,
+				56EB2C1A22FF85E7003B51A8 /* DSC8.JPG */,
+				56EB2C1B22FF85E7003B51A8 /* pdftitle.pdf */,
+				56EB2C1522FF85A5003B51A8 /* ContentInfo.plist */,
+			);
+			path = Purchase1;
+			sourceTree = "<group>";
+		};
+		56EB2C2222FF89D9003B51A8 /* Purchase2 */ = {
+			isa = PBXGroup;
+			children = (
+				56EB2C2722FF89F8003B51A8 /* t01.jpg */,
+				56EB2C2822FF89F8003B51A8 /* t02.jpg */,
+				56EB2C2922FF89F8003B51A8 /* t03.jpg */,
+				56EB2C2322FF89D9003B51A8 /* ContentInfo.plist */,
+			);
+			path = Purchase2;
 			sourceTree = "<group>";
 		};
 		56FC323C22651AF0008E5DD7 /* Helpers */ = {
@@ -221,6 +280,38 @@
 			productReference = 56DB88F2224966E6000F7D3C /* PodcastsApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		56EB2C1222FF85A5003B51A8 /* Purchase1 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 56EB2C1822FF85A5003B51A8 /* Build configuration list for PBXNativeTarget "Purchase1" */;
+			buildPhases = (
+				56EB2C1122FF85A5003B51A8 /* Resources */,
+				C2AD03C676FBFF93CBFDBA30 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Purchase1;
+			productName = Purchase1;
+			productReference = 56EB2C1322FF85A5003B51A8 /* Purchase1 */;
+			productType = "com.apple.product-type.in-app-purchase-content";
+		};
+		56EB2C2022FF89D9003B51A8 /* Purchase2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 56EB2C2422FF89D9003B51A8 /* Build configuration list for PBXNativeTarget "Purchase2" */;
+			buildPhases = (
+				56EB2C1F22FF89D9003B51A8 /* Resources */,
+				1D1BF9335FEBA57C7FFA4EF5 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Purchase2;
+			productName = Purchase2;
+			productReference = 56EB2C2122FF89D9003B51A8 /* Purchase2 */;
+			productType = "com.apple.product-type.in-app-purchase-content";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -242,6 +333,12 @@
 							};
 						};
 					};
+					56EB2C1222FF85A5003B51A8 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					56EB2C2022FF89D9003B51A8 = {
+						CreatedOnToolsVersion = 10.1;
+					};
 				};
 			};
 			buildConfigurationList = 56DB88ED224966E6000F7D3C /* Build configuration list for PBXProject "PodcastsApp" */;
@@ -258,6 +355,8 @@
 			projectRoot = "";
 			targets = (
 				56DB88F1224966E6000F7D3C /* PodcastsApp */,
+				56EB2C1222FF85A5003B51A8 /* Purchase1 */,
+				56EB2C2022FF89D9003B51A8 /* Purchase2 */,
 			);
 		};
 /* End PBXProject section */
@@ -276,6 +375,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		56EB2C1122FF85A5003B51A8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				56EB2C1C22FF85E7003B51A8 /* DSC6.JPG in Resources */,
+				56EB2C1E22FF85E7003B51A8 /* pdftitle.pdf in Resources */,
+				56EB2C1D22FF85E7003B51A8 /* DSC8.JPG in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		56EB2C1F22FF89D9003B51A8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				56EB2C2C22FF89F8003B51A8 /* t03.jpg in Resources */,
+				56EB2C2B22FF89F8003B51A8 /* t02.jpg in Resources */,
+				56EB2C2A22FF89F8003B51A8 /* t01.jpg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -288,7 +407,10 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-PodcastsApp/Pods-PodcastsApp-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AXPhotoViewer/AXPhotoViewer.framework",
+				"${BUILT_PRODUCTS_DIR}/AXStateButton/AXStateButton.framework",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
 				"${BUILT_PRODUCTS_DIR}/FeedKit/FeedKit.framework",
 				"${BUILT_PRODUCTS_DIR}/ReachabilitySwift/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
@@ -297,7 +419,10 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AXPhotoViewer.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AXStateButton.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FeedKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
@@ -336,6 +461,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56EB2C2E22FF8C6E003B51A8 /* IAPManager.swift in Sources */,
 				56C11AAC22D1529E009E3B56 /* InfoSlider.swift in Sources */,
 				566B0FDD22B646A700097A70 /* DownloadsController.swift in Sources */,
 				563DE40222862D73002AAB8A /* RSSFeed.swift in Sources */,
@@ -536,6 +662,54 @@
 			};
 			name = Release;
 		};
+		56EB2C1622FF85A5003B51A8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LC7P3687MC;
+				INFOPLIST_FILE = Purchase1/ContentInfo.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = "";
+			};
+			name = Debug;
+		};
+		56EB2C1722FF85A5003B51A8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LC7P3687MC;
+				INFOPLIST_FILE = Purchase1/ContentInfo.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = "";
+			};
+			name = Release;
+		};
+		56EB2C2522FF89D9003B51A8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LC7P3687MC;
+				INFOPLIST_FILE = Purchase2/ContentInfo.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = "";
+			};
+			name = Debug;
+		};
+		56EB2C2622FF89D9003B51A8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LC7P3687MC;
+				INFOPLIST_FILE = Purchase2/ContentInfo.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -553,6 +727,24 @@
 			buildConfigurations = (
 				56DB8905224966E8000F7D3C /* Debug */,
 				56DB8906224966E8000F7D3C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		56EB2C1822FF85A5003B51A8 /* Build configuration list for PBXNativeTarget "Purchase1" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56EB2C1622FF85A5003B51A8 /* Debug */,
+				56EB2C1722FF85A5003B51A8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		56EB2C2422FF89D9003B51A8 /* Build configuration list for PBXNativeTarget "Purchase2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56EB2C2522FF89D9003B51A8 /* Debug */,
+				56EB2C2622FF89D9003B51A8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

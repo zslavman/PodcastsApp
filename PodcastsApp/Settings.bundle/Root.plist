@@ -26,7 +26,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Просто switcher</string>
+			<string>Открывать фото альбомов</string>
 			<key>Key</key>
 			<string>enabled_preference</string>
 			<key>DefaultValue</key>

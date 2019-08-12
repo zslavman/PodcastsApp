@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AXPhotoViewer
 
 
 struct SearchResult: Decodable {
@@ -18,7 +19,7 @@ struct SearchResult: Decodable {
 *  NSCoding - for archive this class to Data
 *  NSObject - fix crach on try to encode
 */
-class Podcast: NSObject, Decodable, NSCoding {
+class Podcast: NSObject, Decodable, NSCoding  {
 	
 	// Equatable doesn't work with NSObject
 //	public static func == (lhs: Podcast, rhs: Podcast) -> Bool {
@@ -65,4 +66,29 @@ class Podcast: NSObject, Decodable, NSCoding {
 		trackCount = aDecoder.decodeObject(forKey: "trackCountKey") as? Int
 	}
 
+}
+
+extension Podcast: AXPhotoProtocol {
+	var imageData: Data? {
+		get {
+			return nil
+		}
+		set(newValue) {	}
+	}
+	
+	var image: UIImage? {
+		get {
+			return nil
+		}
+		set(newValue) {	}
+	}
+	
+	var url: URL? {
+		if let furl = feedUrl {
+			let link = URL(string: furl)
+			return link
+		}
+		return nil
+	}
+	
 }

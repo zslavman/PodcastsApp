@@ -10,13 +10,20 @@ import Foundation
 
 class SettingsBundleHelper {
 	
-	static let ASSEMBLE = "assemble_string"// this key must be in Root.plist
+	static let ASSEMBLE = "assemble_string" // this key must be in Root.plist
+	static let PREVIEW_IMAGE = "enabled_preference" // this key must be in Root.plist
+	
+	
+	init() {
+		setVersionAndBuildNumber()
+	}
 	
 	// fill version in Settings.bundle
-	class func setVersionAndBuildNumber() {
+	private func setVersionAndBuildNumber() {
 		let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
 		let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
 		let assemble = version + " (" + build + ")"
-		UserDefaults.standard.set(assemble, forKey: ASSEMBLE)
-	}	
+		UserDefaults.standard.set(assemble, forKey: SettingsBundleHelper.ASSEMBLE)
+	}
+	
 }
