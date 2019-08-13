@@ -202,9 +202,11 @@ class FavoritesController: UICollectionViewController {
 			return cell.imageView
 		}
 		
-		let customNetworkIntegration = ""
+		//let customNetworkIntegration = ""
 		let dataSource = AXPhotosDataSource(photos: favPodcastsArr, initialPhotoIndex: indexPath.item)
-		let photosViewController = AXPhotosViewController(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
+		let photosViewController = AXPhotosViewController.init(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
+		let pp = favPodcastsArr[indexPath.item].url
+		print(pp ?? "")
 		photosViewController.delegate = self
 		present(photosViewController, animated: true)
 	}
@@ -215,6 +217,10 @@ class FavoritesController: UICollectionViewController {
 	
 	
 	//MARK:- UICollectionView methods
+	
+	override func numberOfSections(in collectionView: UICollectionView) -> Int {
+		return 1
+	}
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		if favPodcastsArr.count == 0 {
@@ -263,12 +269,11 @@ class FavoritesController: UICollectionViewController {
 
 
 
-
+// Force touch implementation
 extension FavoritesController: AXPhotosViewControllerDelegate, UIViewControllerPreviewingDelegate {
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
 		guard let indexPath = self.collectionView.indexPathForItem(at: location),
-			let cell = self.collectionView.cellForItem(at: indexPath) as? FavoritePodcastCell
-			else {
+			let cell = self.collectionView.cellForItem(at: indexPath) as? FavoritePodcastCell else {
 				return nil
 		}
 		let imageView = cell.imageView

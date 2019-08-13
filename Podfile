@@ -13,8 +13,9 @@ target 'PodcastsApp' do
 	pod 'SDWebImage', '~> 5.0'
 	pod 'FeedKit', '~> 8.0'
 	pod 'ReachabilitySwift', '4.3.0'
-	# pod 'EmptyDataSet-Swift', '~> 4.2.0'
+	#pod 'EmptyDataSet-Swift', '~> 4.2.0'
 	pod 'AXPhotoViewer', '~> 1.6.1'
-#	pod 'AXPhotoViewer/PINRemoteImage', :path => '../../AXPhotoViewer.podspec'//
+	#pod 'AXPhotoViewer/SDWebImage', :path => '../../AXPhotoViewer.podspec'
+	pod 'AXPhotoViewer/SDWebImage'
 
 end

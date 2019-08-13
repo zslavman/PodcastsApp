@@ -84,8 +84,8 @@ extension Podcast: AXPhotoProtocol {
 	}
 	
 	var url: URL? {
-		if let furl = feedUrl {
-			let link = URL(string: furl)
+		if let artworkURL = artworkUrl600 {
+			let link = URL(string: artworkURL)
 			return link
 		}
 		return nil
