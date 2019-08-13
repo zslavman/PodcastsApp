@@ -8,7 +8,9 @@
 
 import UIKit
 import AXPhotoViewer
+import SDWebImage
 //import FLAnimatedImage
+
 
 
 class FavoritesController: UICollectionViewController {
@@ -183,6 +185,35 @@ class FavoritesController: UICollectionViewController {
 	}
 	
 	
+	/// open AXPhotosViewController
+	private func openQuickPreview(indexPath: IndexPath) {
+		let cell = collectionView.cellForItem(at: indexPath) as! FavoritePodcastCell
+		let imageView = cell.imageView
+		let transitionInfo = AXTransitionInfo(interactiveDismissalEnabled: true, startingView: imageView) {
+			[weak self] (photo, index) -> UIImageView? in
+			guard let `self` = self else {
+				return nil
+			}
+			let indexPath = IndexPath(row: index, section: 0)
+			guard let cell = self.collectionView.cellForItem(at: indexPath) as? FavoritePodcastCell else {
+				return nil
+			}
+			// adjusting the reference view attached to our transition info to allow for contextual animation
+			return cell.imageView
+		}
+		
+		let customNetworkIntegration = ""
+		let dataSource = AXPhotosDataSource(photos: favPodcastsArr, initialPhotoIndex: indexPath.item)
+		let photosViewController = AXPhotosViewController(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
+		photosViewController.delegate = self
+		present(photosViewController, animated: true)
+	}
+	
+	
+	
+	
+	
+	
 	//MARK:- UICollectionView methods
 	
 	override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -212,25 +243,7 @@ class FavoritesController: UICollectionViewController {
 			return
 		}
 		if isImagePreview {
-			let cell = collectionView.cellForItem(at: indexPath) as! FavoritePodcastCell
-			let imageView = cell.imageView
-			let transitionInfo = AXTransitionInfo(interactiveDismissalEnabled: true, startingView: imageView) {
-				[weak self] (photo, index) -> UIImageView? in
-				guard let `self` = self else {
-					return nil
-				}
-				let indexPath = IndexPath(row: index, section: 0)
-				guard let cell = self.collectionView.cellForItem(at: indexPath) as? FavoritePodcastCell else {
-					return nil
-				}
-				// adjusting the reference view attached to our transition info to allow for contextual animation
-				return cell.imageView
-			}
-			
-			let dataSource = AXPhotosDataSource(photos: favPodcastsArr, initialPhotoIndex: indexPath.item)
-			let photosViewController = AXPhotosViewController(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
-			photosViewController.delegate = self
-			present(photosViewController, animated: true)
+			openQuickPreview(indexPath: indexPath)
 		}
 		else {
 			let episodesVC = EpisodesController()
@@ -247,6 +260,8 @@ class FavoritesController: UICollectionViewController {
 	}
 	
 }
+
+
 
 
 extension FavoritesController: AXPhotosViewControllerDelegate, UIViewControllerPreviewingDelegate {

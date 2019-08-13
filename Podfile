@@ -15,5 +15,6 @@ target 'PodcastsApp' do
 	pod 'ReachabilitySwift', '4.3.0'
 	# pod 'EmptyDataSet-Swift', '~> 4.2.0'
 	pod 'AXPhotoViewer', '~> 1.6.1'
-	
+#	pod 'AXPhotoViewer/PINRemoteImage', :path => '../../AXPhotoViewer.podspec'//
+
 end
