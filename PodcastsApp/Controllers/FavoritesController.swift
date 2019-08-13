@@ -30,9 +30,11 @@ class FavoritesController: UICollectionViewController {
 		}
 	}
 
-	
+
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
 		setupEmty()
 		setupCollectionView()
 		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Редакт", style: .plain, target: self, action: #selector(onEditClick))
@@ -69,6 +71,8 @@ class FavoritesController: UICollectionViewController {
 	
 	
 	private func setupCollectionView() {
+		//collectionView.delegate = self
+		//collectionView.dataSource = self
 		collectionView.allowsMultipleSelection = true
 		collectionView.register(FavoritePodcastCell.self, forCellWithReuseIdentifier: FavoritePodcastCell.favCellIdentifier)
 		collectionView.alwaysBounceVertical = true
@@ -82,6 +86,12 @@ class FavoritesController: UICollectionViewController {
 		
 		let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPress))
 		collectionView.addGestureRecognizer(longGesture)
+		
+		// 3d Touch register
+		if traitCollection.forceTouchCapability == .available {
+			registerForPreviewing(with: self, sourceView: collectionView)
+			longGesture.isEnabled = false
+		}
 	}
 	
 	
@@ -288,7 +298,27 @@ extension FavoritesController: AXPhotosViewControllerDelegate, UIViewControllerP
 			self.present(AXPhotosViewController(from: previewingPhotosViewController), animated: false)
 		}
 	}
+	
+	override var previewActionItems: [UIPreviewActionItem] {
+		let likeAction = UIPreviewAction(title: "Like", style: .default) {
+			(action, viewController) -> Void in
+			print("You liked the photo")
+		}
+		let deleteAction = UIPreviewAction(title: "Delete", style: .destructive) {
+			(action, viewController) -> Void in
+			print("You deleted the photo")
+		}
+		//******
+		//guard let indexPath = collectionView.indexPathForItem(at: touchLocation) else { return }
+		//		let delAction = UIAlertAction(title: "Удалить", style: .destructive) {
+		//			(action) in
+		//			self.deleteItems(indexPathArr: [indexPath])
+		//		}
+		//		let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
 
+		return [likeAction, deleteAction]
+	}
+	
 }
 
 
@@ -335,10 +365,10 @@ extension FavoritesController: UIGestureRecognizerDelegate {
 	
 	private func didPanToSelectCells(panGesture: UIPanGestureRecognizer) {
 		guard isEditing else { return }
-		if panGesture.state == .began {
+		switch panGesture.state {
+		case .began:
 			collectionView.isScrollEnabled = false
-		}
-		else if panGesture.state == .changed {
+		case .changed:
 			let location: CGPoint = panGesture.location(in: collectionView)
 			if let indexPath: IndexPath = collectionView?.indexPathForItem(at: location) {
 				if indexPath != lastSelectedCell { // fix blinking on touched cell
@@ -346,8 +376,7 @@ extension FavoritesController: UIGestureRecognizerDelegate {
 					lastSelectedCell = indexPath
 				}
 			}
-		}
-		else if panGesture.state == .ended {
+		case .ended, .failed, .cancelled, .possible:
 			collectionView.isScrollEnabled = true
 		}
 	}
@@ -357,12 +386,12 @@ extension FavoritesController: UIGestureRecognizerDelegate {
 		if let cell = collectionView.cellForItem(at: indexPath) {
 			if cell.isSelected {
 				collectionView.deselectItem(at: indexPath, animated: true)
-				collectionView.scrollToItem(at: indexPath, at: UICollectionView.ScrollPosition.centeredVertically,
-											animated: true)
+				// automatic scroll-down after selection
+				//collectionView.scrollToItem(at: indexPath, at: UICollectionView.ScrollPosition.centeredVertically,
+					//						animated: true)
 			}
 			else {
-				collectionView.selectItem(at: indexPath, animated: true,
-										  scrollPosition: UICollectionView.ScrollPosition.centeredVertically)
+				collectionView.selectItem(at: indexPath, animated: true, scrollPosition: []) // .centeredVertically
 			}
 			pushElement(indexPath: indexPath)
 		}
