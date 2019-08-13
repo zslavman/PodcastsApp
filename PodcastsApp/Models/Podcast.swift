@@ -19,7 +19,13 @@ struct SearchResult: Decodable {
 *  NSCoding - for archive this class to Data
 *  NSObject - fix crach on try to encode
 */
-class Podcast: NSObject, Decodable, NSCoding  {
+class Podcast: NSObject, Decodable, NSCoding, AXPhotoProtocol  {
+	
+	// AXPhotoProtocol stubs
+	var imageData: Data?
+	//var image: UIImage? // UIImage type does not conform to protocol 'Decodable'
+	var dataForImage: Data?
+	var url: URL?
 	
 	// Equatable doesn't work with NSObject
 //	public static func == (lhs: Podcast, rhs: Podcast) -> Bool {
@@ -64,31 +70,27 @@ class Podcast: NSObject, Decodable, NSCoding  {
 		artworkUrl600 = aDecoder.decodeObject(forKey: "artworkUrl600Key") as? String
 		feedUrl = aDecoder.decodeObject(forKey: "feedUrlKey") as? String
 		trackCount = aDecoder.decodeObject(forKey: "trackCountKey") as? Int
+		
+		if let safeURL = artworkUrl600 {
+			url = URL(string: safeURL)
+		}
 	}
 
 }
 
-extension Podcast: AXPhotoProtocol {
-	var imageData: Data? {
-		get {
-			return nil
-		}
-		set(newValue) {	}
-	}
-	
+
+// ugly trick to confirm AXPhotoProtocol
+extension Podcast {
+
 	var image: UIImage? {
 		get {
+			if let dd = dataForImage {
+				return UIImage(data: dd)
+			}
 			return nil
 		}
-		set(newValue) {	}
-	}
-	
-	var url: URL? {
-		if let artworkURL = artworkUrl600 {
-			let link = URL(string: artworkURL)
-			return link
+		set {
+			dataForImage = newValue?.jpegData(compressionQuality: 1.0)
 		}
-		return nil
 	}
-	
 }
