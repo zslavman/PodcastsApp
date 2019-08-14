@@ -13,8 +13,8 @@ import SDWebImage
 
 
 
-class FavoritesController: UICollectionViewController {
-	
+class FavoritesController: UICollectionViewController, SomeM {
+
 	private var favPodcastsArr = UserDefaults.standard.fetchFavorites()
 	private var placeholder: PlaceholderView!
 	private var selectedIndexArr = [IndexPath]() // selected cell Index array
@@ -29,7 +29,8 @@ class FavoritesController: UICollectionViewController {
 			return false
 		}
 	}
-
+	public var savedIndexPath = IndexPath(item: 0, section: 0)
+	
 
 
 	override func viewDidLoad() {
@@ -117,8 +118,8 @@ class FavoritesController: UICollectionViewController {
 		onEditClick()
 	}
 	
-	
-	private func deleteItems(indexPathArr: [IndexPath]) {
+	// method of protocol SomeM
+	func deleteItems(indexPathArr: [IndexPath]) {
 		// remove multiple elements from array
 		let indexesToDelete = indexPathArr.map{ $0.row }
 		let resultArtr = favPodcastsArr
@@ -194,9 +195,9 @@ class FavoritesController: UICollectionViewController {
 		//collectionView.reloadData()
 	}
 	
-	
+
 	/// open AXPhotosViewController
-	private func openQuickPreview(indexPath: IndexPath) {
+	private func getPreviewController(indexPath: IndexPath) -> AXPhotosViewController {
 		let cell = collectionView.cellForItem(at: indexPath) as! FavoritePodcastCell
 		let imageView = cell.imageView
 		let transitionInfo = AXTransitionInfo(interactiveDismissalEnabled: true, startingView: imageView) {
@@ -211,19 +212,12 @@ class FavoritesController: UICollectionViewController {
 			// adjusting the reference view attached to our transition info to allow for contextual animation
 			return cell.imageView
 		}
-		
-		//let customNetworkIntegration = ""
 		let dataSource = AXPhotosDataSource(photos: favPodcastsArr, initialPhotoIndex: indexPath.item)
 		let photosViewController = AXPhotosViewController.init(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
-		let pp = favPodcastsArr[indexPath.item].url
-		print(pp ?? "")
 		photosViewController.delegate = self
-		present(photosViewController, animated: true)
+		
+		return photosViewController
 	}
-	
-	
-	
-	
 	
 	
 	//MARK:- UICollectionView methods
@@ -259,7 +253,8 @@ class FavoritesController: UICollectionViewController {
 			return
 		}
 		if isImagePreview {
-			openQuickPreview(indexPath: indexPath)
+			let previewController = getPreviewController(indexPath: indexPath)
+			present(previewController, animated: true)
 		}
 		else {
 			let episodesVC = EpisodesController()
@@ -281,42 +276,27 @@ class FavoritesController: UICollectionViewController {
 
 // Force touch implementation
 extension FavoritesController: AXPhotosViewControllerDelegate, UIViewControllerPreviewingDelegate {
+	
+	// fire on 1-st force touch
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
-		guard let indexPath = self.collectionView.indexPathForItem(at: location),
-			let cell = self.collectionView.cellForItem(at: indexPath) as? FavoritePodcastCell else {
+		guard let indexPath = collectionView.indexPathForItem(at: location),
+			let cell = collectionView.cellForItem(at: indexPath) as? FavoritePodcastCell else {
 				return nil
 		}
+		savedIndexPath = indexPath
 		let imageView = cell.imageView
 		previewingContext.sourceRect = self.collectionView.convert(imageView.frame, from: imageView.superview)
 		let dataSource = AXPhotosDataSource(photos: favPodcastsArr, initialPhotoIndex: indexPath.row)
-		let previewingPhotosViewController = AXPreviewingPhotosViewController(dataSource: dataSource)
+		let previewingPhotosViewController = AXPreviewingPhotosViewControllerM(dataSource: dataSource)
+		previewingPhotosViewController.delegate = self
 		return previewingPhotosViewController
 	}
 	
+	// fire on 2-nd force touch
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-		if let previewingPhotosViewController = viewControllerToCommit as? AXPreviewingPhotosViewController {
-			self.present(AXPhotosViewController(from: previewingPhotosViewController), animated: false)
-		}
-	}
-	
-	override var previewActionItems: [UIPreviewActionItem] {
-		let likeAction = UIPreviewAction(title: "Like", style: .default) {
-			(action, viewController) -> Void in
-			print("You liked the photo")
-		}
-		let deleteAction = UIPreviewAction(title: "Delete", style: .destructive) {
-			(action, viewController) -> Void in
-			print("You deleted the photo")
-		}
-		//******
-		//guard let indexPath = collectionView.indexPathForItem(at: touchLocation) else { return }
-		//		let delAction = UIAlertAction(title: "Удалить", style: .destructive) {
-		//			(action) in
-		//			self.deleteItems(indexPathArr: [indexPath])
-		//		}
-		//		let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
-
-		return [likeAction, deleteAction]
+		guard viewControllerToCommit is AXPreviewingPhotosViewControllerM  else { return }
+		let previewController: AXPhotosViewController = getPreviewController(indexPath: savedIndexPath)
+		present(previewController, animated: false)
 	}
 	
 }
@@ -399,4 +379,27 @@ extension FavoritesController: UIGestureRecognizerDelegate {
 	
 }
 
+protocol SomeM: class {
+	func deleteItems(indexPathArr: [IndexPath])
+	var savedIndexPath: IndexPath { get set }
+}
 
+
+class AXPreviewingPhotosViewControllerM: AXPreviewingPhotosViewController {
+	
+	weak var delegate: SomeM?
+	
+	open override var previewActionItems: [UIPreviewActionItem] {
+		let deleteAction = UIPreviewAction(title: "Удалить", style: .destructive) {
+			(action, viewController) -> Void in
+
+			guard let safeDelegate = self.delegate else { return }
+			safeDelegate.deleteItems(indexPathArr: [safeDelegate.savedIndexPath])
+		}
+		let cancelAction = UIPreviewAction(title: "Отмена", style: .default) {
+			(action, viewController) -> Void in
+		}
+		return [deleteAction, cancelAction] // cancelAction will be bottom
+	}
+	
+}
