@@ -216,6 +216,26 @@ class FavoritesController: UICollectionViewController, SomeM {
 		let photosViewController = AXPhotosViewController.init(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
 		photosViewController.delegate = self
 		
+		//bottomBar customisation
+		// --------
+		let flex = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+		let bottomView = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: 320, height: 44)))
+		let customView = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 80, height: 20)))
+		customView.text = "\(photosViewController.currentPhotoIndex + 1)"
+		customView.textColor = .white
+		customView.sizeToFit()
+		bottomView.items = [
+			UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil),
+			flex,
+			UIBarButtonItem(customView: customView),
+			flex,
+			UIBarButtonItem(barButtonSystemItem: .trash, target: nil, action: nil),
+		]
+		bottomView.backgroundColor = .clear
+		bottomView.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
+		photosViewController.overlayView.bottomStackContainer.insertSubview(bottomView, at: 0)
+		// --------
+		
 		return photosViewController
 	}
 	
