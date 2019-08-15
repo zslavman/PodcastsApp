@@ -226,8 +226,8 @@ class FavoritesController: UICollectionViewController, SomeM {
 		customView.sizeToFit()
 		bottomView.items = [
 			UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil),
-			flex,
-			UIBarButtonItem(customView: customView),
+//			flex,
+//			UIBarButtonItem(customView: customView),
 			flex,
 			UIBarButtonItem(barButtonSystemItem: .trash, target: nil, action: nil),
 		]

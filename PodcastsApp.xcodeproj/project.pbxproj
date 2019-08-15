@@ -84,7 +84,6 @@
 		56EB2C2D22FF8C6E003B51A8 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 		56F4E6E022C94BFE00E02892 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
 		56FA3C7123060ADB009E6951 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Info.strings; sourceTree = "<group>"; };
-		56FA3C7323060BE9009E6951 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		56FA3C7423060BE9009E6951 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Info.strings; sourceTree = "<group>"; };
 		56FA3C7923060D53009E6951 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		56FC323D22651B3E008E5DD7 /* SUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SUtils.swift; sourceTree = "<group>"; };
@@ -200,8 +199,6 @@
 				562E7EE322515D0C00D576F8 /* Controllers */,
 				56DB88F5224966E6000F7D3C /* AppDelegate.swift */,
 				56DB890922496865000F7D3C /* Supporting Files */,
-				56FA3C7A23060D53009E6951 /* Localizable.strings */,
-				56FA3C7223060ADB009E6951 /* Info.strings */,
 				CE31110022DE26630084C2C8 /* Settings.bundle */,
 			);
 			path = PodcastsApp;
@@ -243,6 +240,8 @@
 		56FA3C7723060D30009E6951 /* Locales */ = {
 			isa = PBXGroup;
 			children = (
+				56FA3C7A23060D53009E6951 /* Localizable.strings */,
+				56FA3C7223060ADB009E6951 /* Info.strings */,
 			);
 			path = Locales;
 			sourceTree = "<group>";
@@ -511,7 +510,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				56DB88FF224966E8000F7D3C /* Base */,
-				56FA3C7323060BE9009E6951 /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
