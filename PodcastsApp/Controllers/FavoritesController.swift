@@ -206,14 +206,14 @@ class FavoritesController: UICollectionViewController, SomeM {
 				return nil
 			}
 			let indexPath = IndexPath(row: index, section: 0)
-			guard let cell = self.collectionView.cellForItem(at: indexPath) as? FavoritePodcastCell else {
+			guard let lastViewedCell = self.collectionView.cellForItem(at: indexPath) as? FavoritePodcastCell else {
 				return nil
 			}
 			// adjusting the reference view attached to our transition info to allow for contextual animation
-			return cell.imageView
+			return lastViewedCell.imageView
 		}
 		let dataSource = AXPhotosDataSource(photos: favPodcastsArr, initialPhotoIndex: indexPath.item)
-		let photosViewController = AXPhotosViewController.init(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
+		let photosViewController = AXPhotosViewController(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
 		photosViewController.delegate = self
 		
 		//bottomBar customisation
