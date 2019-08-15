@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  PodcastsApp
+
+  Created by Zinko Viacheslav on 16.08.2019.
+  Copyright © 2019 Zinko Viacheslav. All rights reserved.
+*/
+"%d of %d" = "%d из %d";
+"Try again" = "Попробуйте еще раз";
+"An error occurred while loading this image" = "Произошла ошибка при загрузке изображения";

@@ -27,7 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		_ = SettingsBundleHelper()
 	}
-	// Это приложение требует доступ к фотографиям для возможности сохранения фотографий в Вашем фотоальбоме.
 	
 }
 
