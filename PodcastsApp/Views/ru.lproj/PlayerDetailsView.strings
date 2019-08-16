@@ -1,0 +1,27 @@
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "3fB-bQ-qgn"; */
+"3fB-bQ-qgn.normalTitle" = "Button";
+
+/* Class = "UIButton"; normalTitle = "55"; ObjectID = "Duu-Qn-st9"; */
+"Duu-Qn-st9.normalTitle" = "55";
+
+/* Class = "UILabel"; text = "Episode Title"; ObjectID = "FaJ-EI-IRE"; */
+"FaJ-EI-IRE.text" = "Episode Title";
+
+/* Class = "UILabel"; text = "Author"; ObjectID = "HEJ-lI-aH2"; */
+"HEJ-lI-aH2.text" = "Author";
+
+/* Class = "UILabel"; text = "--:--"; ObjectID = "P1f-bz-vGr"; */
+"P1f-bz-vGr.text" = "--:--";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "Rhg-qC-Pcn"; */
+"Rhg-qC-Pcn.normalTitle" = "Button";
+
+/* Class = "UIButton"; normalTitle = "Collapse"; ObjectID = "SQ6-9A-Cj4"; */
+"SQ6-9A-Cj4.normalTitle" = "Свернуть";
+
+/* Class = "UILabel"; text = "00:00"; ObjectID = "YQo-Uc-HkG"; */
+"YQo-Uc-HkG.text" = "00:00";
+
+/* Class = "UILabel"; text = "Episode Title"; ObjectID = "vQC-18-5wd"; */
+"vQC-18-5wd.text" = "Episode Title";

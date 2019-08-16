@@ -14,7 +14,6 @@
 		563DE3FF2286035E002AAB8A /* EpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DE3FD2286035E002AAB8A /* EpisodeCell.swift */; };
 		563DE4002286035E002AAB8A /* EpisodeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 563DE3FE2286035E002AAB8A /* EpisodeCell.xib */; };
 		563DE40222862D73002AAB8A /* RSSFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DE40122862D73002AAB8A /* RSSFeed.swift */; };
-		5645FAE4228701E0002740D1 /* PlayerDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5645FAE3228701E0002740D1 /* PlayerDetailsView.xib */; };
 		5645FAE6228705F0002740D1 /* PlayerDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5645FAE5228705F0002740D1 /* PlayerDetailsView.swift */; };
 		5648056922667F3E008CAD73 /* APIServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5648056822667F3E008CAD73 /* APIServices.swift */; };
 		5648056C226683BA008CAD73 /* PodcastCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5648056B226683BA008CAD73 /* PodcastCell.xib */; };
@@ -29,6 +28,7 @@
 		56DB88FD224966E8000F7D3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56DB88FC224966E8000F7D3C /* Assets.xcassets */; };
 		56DB8900224966E8000F7D3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56DB88FE224966E8000F7D3C /* LaunchScreen.storyboard */; };
 		56DB89082249674F000F7D3C /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DB89072249674F000F7D3C /* TabBarController.swift */; };
+		56E9100A2307704A002810FA /* PlayerDetailsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56E9100C2307704A002810FA /* PlayerDetailsView.xib */; };
 		56EAB05122E3CB9700BD2294 /* CustomSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EAB05022E3CB9700BD2294 /* CustomSlider.swift */; };
 		56EB2C1C22FF85E7003B51A8 /* DSC6.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56EB2C1922FF85E7003B51A8 /* DSC6.JPG */; };
 		56EB2C1D22FF85E7003B51A8 /* DSC8.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 56EB2C1A22FF85E7003B51A8 /* DSC8.JPG */; };
@@ -53,7 +53,6 @@
 		563DE3FD2286035E002AAB8A /* EpisodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeCell.swift; sourceTree = "<group>"; };
 		563DE3FE2286035E002AAB8A /* EpisodeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EpisodeCell.xib; sourceTree = "<group>"; };
 		563DE40122862D73002AAB8A /* RSSFeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSFeed.swift; sourceTree = "<group>"; };
-		5645FAE3228701E0002740D1 /* PlayerDetailsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlayerDetailsView.xib; sourceTree = "<group>"; };
 		5645FAE5228705F0002740D1 /* PlayerDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerDetailsView.swift; sourceTree = "<group>"; };
 		5648056822667F3E008CAD73 /* APIServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIServices.swift; sourceTree = "<group>"; };
 		5648056B226683BA008CAD73 /* PodcastCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PodcastCell.xib; sourceTree = "<group>"; };
@@ -70,6 +69,8 @@
 		56DB88FF224966E8000F7D3C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		56DB8901224966E8000F7D3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		56DB89072249674F000F7D3C /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		56E9100B2307704A002810FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PlayerDetailsView.xib; sourceTree = "<group>"; };
+		56E9100E2307704F002810FA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/PlayerDetailsView.strings; sourceTree = "<group>"; };
 		56EAB05022E3CB9700BD2294 /* CustomSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSlider.swift; sourceTree = "<group>"; };
 		56EB2C1322FF85A5003B51A8 /* Purchase1 */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = Purchase1; sourceTree = BUILT_PRODUCTS_DIR; };
 		56EB2C1522FF85A5003B51A8 /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
@@ -158,7 +159,7 @@
 				5645FAE5228705F0002740D1 /* PlayerDetailsView.swift */,
 				5648056B226683BA008CAD73 /* PodcastCell.xib */,
 				563DE3FE2286035E002AAB8A /* EpisodeCell.xib */,
-				5645FAE3228701E0002740D1 /* PlayerDetailsView.xib */,
+				56E9100C2307704A002810FA /* PlayerDetailsView.xib */,
 				565A11CD22B046420077996D /* FavoritePodcastCell.swift */,
 				56F4E6E022C94BFE00E02892 /* PlaceholderView.swift */,
 				56C11AAB22D1529E009E3B56 /* InfoSlider.swift */,
@@ -383,7 +384,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				56DB8900224966E8000F7D3C /* LaunchScreen.storyboard in Resources */,
-				5645FAE4228701E0002740D1 /* PlayerDetailsView.xib in Resources */,
+				56E9100A2307704A002810FA /* PlayerDetailsView.xib in Resources */,
 				56FA3C7023060ADB009E6951 /* InfoPlist.strings in Resources */,
 				563DE4002286035E002AAB8A /* EpisodeCell.xib in Resources */,
 				56DB88FD224966E8000F7D3C /* Assets.xcassets in Resources */,
@@ -512,6 +513,15 @@
 				56DB88FF224966E8000F7D3C /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		56E9100C2307704A002810FA /* PlayerDetailsView.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				56E9100B2307704A002810FA /* Base */,
+				56E9100E2307704F002810FA /* ru */,
+			);
+			name = PlayerDetailsView.xib;
 			sourceTree = "<group>";
 		};
 		56FA3C7223060ADB009E6951 /* InfoPlist.strings */ = {

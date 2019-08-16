@@ -242,7 +242,6 @@
             <viewLayoutGuide key="safeArea" id="bbg-3z-tcy"/>
             <connections>
                 <outlet property="authorLabel" destination="HEJ-lI-aH2" id="TnJ-Dt-Sqi"/>
-                <outlet property="collapseBtttn" destination="SQ6-9A-Cj4" id="PBj-8j-Fwv"/>
                 <outlet property="currentTimeSlider" destination="yAq-85-y7H" id="rhF-Nh-Dnw"/>
                 <outlet property="currentVolumeSlider" destination="0II-u5-fvh" id="udJ-c0-CKi"/>
                 <outlet property="maximizedStackView" destination="z0g-7C-KyH" id="2zp-5V-srw"/>
