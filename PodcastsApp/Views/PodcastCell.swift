@@ -16,12 +16,13 @@ class PodcastCell: UITableViewCell {
 	@IBOutlet weak var trackName: UILabel!
 	@IBOutlet weak var artistName: UILabel!
 	@IBOutlet weak var episodeName: UILabel!
+	private let episodeStr = "Episode".localized
 	
 	public var podcast: Podcast! {
 		didSet {
 			trackName.text = podcast.trackName
 			artistName.text = podcast.artistName
-			episodeName.text = "\(podcast.trackCount ?? 0) Эпизод."
+			episodeName.text = "\(podcast.trackCount ?? 0) \(episodeStr)"
 			guard let url = URL(string: podcast.artworkUrl600 ?? "") else { return }
 			podcastImageView.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [], context: nil)
 		}

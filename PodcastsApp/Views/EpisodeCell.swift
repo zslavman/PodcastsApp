@@ -61,7 +61,6 @@ class EpisodeCell: UITableViewCell {
 }
 
 
-
 class SmallProgressBar: UIProgressView {
 	
 	override func layoutSubviews() {

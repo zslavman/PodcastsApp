@@ -397,3 +397,12 @@ extension UIViewController {
 		vc.present(self, animated: true, completion: nil)
 	}
 }
+
+
+extension String {
+	
+	var localized: String {
+		return NSLocalizedString(self, comment: "")
+	}
+	
+}

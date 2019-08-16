@@ -57,7 +57,7 @@ class DownloadsController: UIViewController {
 	
 	/// configure empty collectionView
 	private func setupEmty() {
-		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_downloads"), title: "Нет файлов")
+		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_downloads"), title: "No files available".localized)
 		view.addSubview(placeholder)
 	}
 	
@@ -132,7 +132,7 @@ extension DownloadsController: UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-		let delAction = UITableViewRowAction(style: .destructive, title: "Удалить") {
+		let delAction = UITableViewRowAction(style: .destructive, title: "Delete".localized) {
 			(action, indexPath) in
 			self.downloadedEpArr.remove(at: indexPath.row)
 			UserDefaults.standard.saveEpisode(episodes: self.downloadedEpArr, addOperation: false)
@@ -144,8 +144,8 @@ extension DownloadsController: UITableViewDelegate, UITableViewDataSource {
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let selected = downloadedEpArr[indexPath.row]
 		if selected.fileUrl == nil {
-			let actionSheetVC = UIAlertController(title: "Ошибка!", message: "Невозможно найти локальный файл. Запустить  онлайн стрим?", preferredStyle: .actionSheet)
-			let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+			let actionSheetVC = UIAlertController(title: "Error!".localized, message: "Unable to find local file. Run online?".localized, preferredStyle: .actionSheet)
+			let cancelAction = UIAlertAction(title: "Cancel".localized, style: .cancel, handler: nil)
 			let okAction = UIAlertAction(title: "OK", style: .default) {
 				(action) in
 				UIApplication.tabBarVC()?.maximizePlayer(episode: selected, playlist: self.downloadedEpArr)

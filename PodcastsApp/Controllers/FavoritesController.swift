@@ -30,7 +30,9 @@ class FavoritesController: UICollectionViewController, SomeM {
 		}
 	}
 	public var savedIndexPath = IndexPath(item: 0, section: 0)
-	
+	private let editStr = "Edit".localized
+	private let deleteStr = "Delete".localized
+	private let cancelStr = "Cancel".localized
 
 
 	override func viewDidLoad() {
@@ -38,8 +40,8 @@ class FavoritesController: UICollectionViewController, SomeM {
 		
 		setupEmty()
 		setupCollectionView()
-		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Редакт", style: .plain, target: self, action: #selector(onEditClick))
-		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Удалить", style: .plain, target: self, action: #selector(onDeleteClick))
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: editStr, style: .plain, target: self, action: #selector(onEditClick))
+		navigationItem.leftBarButtonItem = UIBarButtonItem(title: deleteStr, style: .plain, target: self, action: #selector(onDeleteClick))
 		navigationItem.leftBarButtonItem?.isEnabled = false
 		panGesture.delegate = self
 	}
@@ -100,12 +102,12 @@ class FavoritesController: UICollectionViewController, SomeM {
 		guard let button = navigationItem.rightBarButtonItem else { return }
 		isEditing = !isEditing
 		if isEditing {
-			button.title = "Отмена"
+			button.title = cancelStr
 			panGesture.isEnabled = true
 		}
 		else {
 			panGesture.isEnabled = false
-			button.title = "Редакт."
+			button.title = editStr
 			navigationItem.leftBarButtonItem?.isEnabled = false
 			makeDeselect()
 		}
@@ -137,7 +139,7 @@ class FavoritesController: UICollectionViewController, SomeM {
 	
 	/// configure empty collectionView
 	private func setupEmty() {
-		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_favorites"), title: "Нет записей", onTapAction: {
+		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_favorites"), title: "No records".localized, onTapAction: {
 			guard let toView = UIApplication.tabBarVC()?.viewControllers?.first?.view else { return }
 			UIView.transition(from: self.view, to: toView, duration: 0.4, options: [.transitionCrossDissolve], completion: {
 				(bool) in
@@ -155,12 +157,12 @@ class FavoritesController: UICollectionViewController, SomeM {
 		guard let indexPath = collectionView.indexPathForItem(at: touchLocation) else { return }
 		SUtils.tapticFeedback()
 		
-		let actionSheetVC = UIAlertController(title: "Действия с подкастом", message: nil, preferredStyle: .actionSheet)
-		let delAction = UIAlertAction(title: "Удалить", style: .destructive) {
+		let actionSheetVC = UIAlertController(title: "Actions".localized, message: nil, preferredStyle: .actionSheet)
+		let delAction = UIAlertAction(title: deleteStr, style: .destructive) {
 			(action) in
 			self.deleteItems(indexPathArr: [indexPath])
 		}
-		let cancelAction = UIAlertAction(title: "Отмена", style: .cancel)
+		let cancelAction = UIAlertAction(title: cancelStr, style: .cancel)
 		
 		actionSheetVC.addAction(delAction)
 		actionSheetVC.addAction(cancelAction)
@@ -410,13 +412,13 @@ class AXPreviewingPhotosViewControllerM: AXPreviewingPhotosViewController {
 	weak var delegate: SomeM?
 	
 	open override var previewActionItems: [UIPreviewActionItem] {
-		let deleteAction = UIPreviewAction(title: "Удалить", style: .destructive) {
+		let deleteAction = UIPreviewAction(title: "Delete".localized, style: .destructive) {
 			(action, viewController) -> Void in
 
 			guard let safeDelegate = self.delegate else { return }
 			safeDelegate.deleteItems(indexPathArr: [safeDelegate.savedIndexPath])
 		}
-		let cancelAction = UIPreviewAction(title: "Отмена", style: .default) {
+		let cancelAction = UIPreviewAction(title: "Cancel".localized, style: .default) {
 			(action, viewController) -> Void in
 		}
 		return [deleteAction, cancelAction] // cancelAction will be bottom

@@ -206,7 +206,7 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 		}
 		let action: UIContextualAction
 		if allowEdit { // allow download
-			action = UIContextualAction(style: .normal, title: "Скачать", handler: {
+			action = UIContextualAction(style: .normal, title: "Download".localized, handler: {
 				(act, someView, completionHandler) in
 				self.prepareToFlightAnim(fromSender: someView, indexPath: indexPath, toTabBarItemNo: 2)
 				UserDefaults.standard.saveEpisode(episodes: [selectedPod], addOperation: true)
@@ -217,7 +217,7 @@ class EpisodesController: UITableViewController, UIGestureRecognizerDelegate {
 			action.image = #imageLiteral(resourceName: "downloads")
 		}
 		else { // show "Уже скачали"
-			action = UIContextualAction(style: .normal, title: "Скачано", handler: {
+			action = UIContextualAction(style: .normal, title: "Downloaded".localized, handler: {
 				(_, _, completionHandler) in
 				completionHandler(true)
 			})

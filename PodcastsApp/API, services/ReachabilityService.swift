@@ -44,10 +44,10 @@ class ReachabilityService {
 	
 	private func showNetAlert() {
 		ReachabilityService.isNetworkAvailable = false
-		let title = "Отсутствует подключени к сети"
-		let message = "Для доступа к данным включите передачу данных по сотовой сети или используйте Wi-Fi."
+		let title = "No network connection".localized
+		let message = "To access data, enable data transfer over a cellular network or use Wi-Fi.".localized
 		let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
-		let goToSettingsAction = UIAlertAction(title: "Настройки", style: .default) {
+		let goToSettingsAction = UIAlertAction(title: "Settings", style: .default) {
 			(action) in
 			//self.runUrlSheme(shemeName: UIApplication.openSettingsURLString)
 			self.runUrlSheme(shemeName: "App-prefs:root=General&path=Keyboard")

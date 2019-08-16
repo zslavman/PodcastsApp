@@ -56,7 +56,7 @@ class PSearchController: UIViewController {
 	
 	/// configure empty collectionView
 	private func setupEmty() {
-		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_search"), title: "Введите условия поиска")
+		placeholder = PlaceholderView(img: #imageLiteral(resourceName: "placeholder_search"), title: "Enter search terms".localized)
 		view.addSubview(placeholder)
 	}
 }
