@@ -382,3 +382,18 @@ extension UIImage { // bad - can see pixels
 		self.init(cgImage: image!.cgImage!)
 	}
 }
+
+
+extension UIViewController {
+	
+	// present VC on top level (above keyboard, eg.)
+	func presentAboveAll() {
+		let win = UIWindow(frame: UIScreen.main.bounds)
+		let vc = UIViewController()
+		vc.view.backgroundColor = .clear
+		win.rootViewController = vc
+		win.windowLevel = .alert + 1
+		win.makeKeyAndVisible()
+		vc.present(self, animated: true, completion: nil)
+	}
+}
