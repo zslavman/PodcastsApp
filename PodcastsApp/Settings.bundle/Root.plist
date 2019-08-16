@@ -10,13 +10,13 @@
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
-			<string>О приложении</string>
+			<string>About</string>
 		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSTitleValueSpecifier</string>
 			<key>Title</key>
-			<string>Версия</string>
+			<string>App version</string>
 			<key>Key</key>
 			<string>assemble_string</string>
 			<key>DefaultValue</key>
@@ -26,7 +26,7 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Title</key>
-			<string>Открывать фото альбомов</string>
+			<string>Preview albums artwork</string>
 			<key>Key</key>
 			<string>enabled_preference</string>
 			<key>DefaultValue</key>

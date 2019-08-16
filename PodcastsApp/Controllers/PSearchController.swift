@@ -51,7 +51,7 @@ class PSearchController: UIViewController {
 		navigationItem.hidesSearchBarWhenScrolling = false
 		searchController.dimsBackgroundDuringPresentation = false
 		searchController.searchBar.delegate = self
-		searchController.searchBar.placeholder = "Поиск"
+		//searchController.searchBar.placeholder = "Поиск"
 	}
 	
 	/// configure empty collectionView

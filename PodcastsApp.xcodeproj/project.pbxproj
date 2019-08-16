@@ -38,7 +38,7 @@
 		56EB2C2C22FF89F8003B51A8 /* t03.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 56EB2C2922FF89F8003B51A8 /* t03.jpg */; };
 		56EB2C2E22FF8C6E003B51A8 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56EB2C2D22FF8C6E003B51A8 /* IAPManager.swift */; };
 		56F4E6E122C94BFE00E02892 /* PlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F4E6E022C94BFE00E02892 /* PlaceholderView.swift */; };
-		56FA3C7023060ADB009E6951 /* Info.strings in Resources */ = {isa = PBXBuildFile; fileRef = 56FA3C7223060ADB009E6951 /* Info.strings */; };
+		56FA3C7023060ADB009E6951 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 56FA3C7223060ADB009E6951 /* InfoPlist.strings */; };
 		56FA3C7823060D53009E6951 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 56FA3C7A23060D53009E6951 /* Localizable.strings */; };
 		56FC323E22651B3E008E5DD7 /* SUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FC323D22651B3E008E5DD7 /* SUtils.swift */; };
 		AACD116CAFC13F12A38FA032 /* Pods_PodcastsApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D629AF9AC10498D8C87924D2 /* Pods_PodcastsApp.framework */; };
@@ -83,8 +83,8 @@
 		56EB2C2922FF89F8003B51A8 /* t03.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = t03.jpg; sourceTree = "<group>"; };
 		56EB2C2D22FF8C6E003B51A8 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 		56F4E6E022C94BFE00E02892 /* PlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceholderView.swift; sourceTree = "<group>"; };
-		56FA3C7123060ADB009E6951 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Info.strings; sourceTree = "<group>"; };
-		56FA3C7423060BE9009E6951 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Info.strings; sourceTree = "<group>"; };
+		56FA3C7123060ADB009E6951 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		56FA3C7423060BE9009E6951 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		56FA3C7923060D53009E6951 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		56FC323D22651B3E008E5DD7 /* SUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SUtils.swift; sourceTree = "<group>"; };
 		5D4D50EEF55E1512ECB06F22 /* Pods-PodcastsApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PodcastsApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-PodcastsApp/Pods-PodcastsApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -241,7 +241,7 @@
 			isa = PBXGroup;
 			children = (
 				56FA3C7A23060D53009E6951 /* Localizable.strings */,
-				56FA3C7223060ADB009E6951 /* Info.strings */,
+				56FA3C7223060ADB009E6951 /* InfoPlist.strings */,
 			);
 			path = Locales;
 			sourceTree = "<group>";
@@ -384,7 +384,7 @@
 			files = (
 				56DB8900224966E8000F7D3C /* LaunchScreen.storyboard in Resources */,
 				5645FAE4228701E0002740D1 /* PlayerDetailsView.xib in Resources */,
-				56FA3C7023060ADB009E6951 /* Info.strings in Resources */,
+				56FA3C7023060ADB009E6951 /* InfoPlist.strings in Resources */,
 				563DE4002286035E002AAB8A /* EpisodeCell.xib in Resources */,
 				56DB88FD224966E8000F7D3C /* Assets.xcassets in Resources */,
 				56FA3C7823060D53009E6951 /* Localizable.strings in Resources */,
@@ -514,13 +514,13 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
-		56FA3C7223060ADB009E6951 /* Info.strings */ = {
+		56FA3C7223060ADB009E6951 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				56FA3C7123060ADB009E6951 /* en */,
 				56FA3C7423060BE9009E6951 /* ru */,
 			);
-			name = Info.strings;
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 		56FA3C7A23060D53009E6951 /* Localizable.strings */ = {
