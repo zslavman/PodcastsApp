@@ -8,19 +8,25 @@
 
 import UIKit
 
-protocol FavoritesControllerDelegate:class {
+protocol FavoritesControllerDelegate: class {
 	func currentEditStatus() -> Bool
+	func didSelectItemAt(indexPath: IndexPath)
 }
 
 class FavoritePodcastCell: UICollectionViewCell {
 	
 	weak var delegate: FavoritesControllerDelegate?
 	public static let favCellIdentifier = "favCellIdentifier"
-	public let imageView = UIImageView(image: #imageLiteral(resourceName: "appicon"))
+	public let imageView: UIImageView = {
+		let iv = UIImageView(image: #imageLiteral(resourceName: "appicon"))
+		iv.isUserInteractionEnabled = false
+		return iv
+	}()
 	private let nameLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Podcast Name"
 		label.font = UIFont.boldSystemFont(ofSize: 15)
+		label.isUserInteractionEnabled = false
 		return label
 	}()
 	private let artistNameLabel: UILabel = {
@@ -28,6 +34,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 		label.text = "Artist Name"
 		label.font = UIFont.systemFont(ofSize: 14)
 		label.textColor = .lightGray
+		label.isUserInteractionEnabled = false
 		return label
 	}()
 	private let checkBox: UIView = {
@@ -38,6 +45,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 		box.layer.borderWidth = 1
 		box.translatesAutoresizingMaskIntoConstraints = false
 		box.alpha = 0
+		box.isUserInteractionEnabled = false
 		return box
 	}()
 	private let checkMark: UIImageView = {
@@ -46,6 +54,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 		checkmark.translatesAutoresizingMaskIntoConstraints = false
 		checkmark.contentMode = .scaleAspectFit
 		checkmark.isHidden = true
+		checkmark.isUserInteractionEnabled = false
 		return checkmark
 	}()
 	public var podcast: Podcast!
@@ -65,6 +74,9 @@ class FavoritePodcastCell: UICollectionViewCell {
 			}
 		}
 	}
+	private var indexPath: IndexPath!
+	private var stackView: UIStackView!
+	
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -75,7 +87,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 	
 	
 	private func setup() {
-		let stackView = UIStackView(arrangedSubviews: [
+		stackView = UIStackView(arrangedSubviews: [
 			imageView,
 			nameLabel,
 			artistNameLabel
@@ -85,6 +97,9 @@ class FavoritePodcastCell: UICollectionViewCell {
 		addSubview(stackView)
 		addSubview(checkBox)
 		addSubview(checkMark)
+		
+		let gesture = UITapGestureRecognizer(target: self, action: #selector(onTouch(event:)))
+		stackView.addGestureRecognizer(gesture)
 		
 		NSLayoutConstraint.activate([
 			imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),// picture must be square
@@ -106,11 +121,12 @@ class FavoritePodcastCell: UICollectionViewCell {
 	}
 	
 	
-	public func configure(passedPodcast: Podcast, hasSelection: Bool) {
+	public func configure(passedPodcast: Podcast, hasSelection: Bool, indexPath: IndexPath) {
 		if let delegate = delegate {
 			setCheckBox(delegate.currentEditStatus())
 			isSelected = hasSelection
 		}
+		self.indexPath = indexPath
 		podcast = passedPodcast
 		nameLabel.text = podcast.trackName
 		artistNameLabel.text = podcast.artistName
@@ -119,6 +135,12 @@ class FavoritePodcastCell: UICollectionViewCell {
 			imageView.layer.cornerRadius = 8
 			imageView.layer.masksToBounds = true
 		}
+	}
+	
+	
+	@objc private func onTouch(event: UITapGestureRecognizer) {
+		print("opa!")
+		delegate?.didSelectItemAt(indexPath: indexPath)
 	}
 	
 	

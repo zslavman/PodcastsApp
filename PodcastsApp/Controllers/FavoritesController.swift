@@ -263,21 +263,47 @@ class FavoritesController: UICollectionViewController, SomeM {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoritePodcastCell.favCellIdentifier, for: indexPath) as! FavoritePodcastCell
 		cell.delegate = self
 		let hasSelection = selectedIndexArr.contains(indexPath)
-		cell.configure(passedPodcast: favPodcastsArr[indexPath.row], hasSelection: hasSelection)
+		cell.configure(passedPodcast: favPodcastsArr[indexPath.row], hasSelection: hasSelection, indexPath: indexPath)
 		return cell
 	}
 	
 	
-	override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+	/// This method sometime is not registering touches!!!
+//	override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//
+//	}
+	
+//	override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+//		if isEditing {
+//			pushElement(indexPath: indexPath)
+//		}
+//	}
+	
+}
+
+
+extension FavoritesController: FavoritesControllerDelegate {
+	
+	func didSelectItemAt(indexPath: IndexPath) {
 		let selectedItem = favPodcastsArr[indexPath.item]
+		// select/deselect
 		if isEditing {
+			guard let cell = collectionView.cellForItem(at: indexPath) else { return }
+			if cell.isSelected {
+				collectionView.deselectItem(at: indexPath, animated: false)
+			}
+			else {
+				collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+			}
 			pushElement(indexPath: indexPath)
 			return
 		}
+		// preview
 		if isImagePreview {
 			let previewController = getPreviewController(indexPath: indexPath)
 			present(previewController, animated: true)
 		}
+		// start play
 		else {
 			let episodesVC = EpisodesController()
 			episodesVC.podcast = selectedItem
@@ -285,13 +311,9 @@ class FavoritesController: UICollectionViewController, SomeM {
 		}
 	}
 	
-	
-	override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-		if isEditing {
-			pushElement(indexPath: indexPath)
-		}
+	func currentEditStatus() -> Bool {
+		return isEditing
 	}
-	
 }
 
 
@@ -323,12 +345,6 @@ extension FavoritesController: AXPhotosViewControllerDelegate, UIViewControllerP
 	
 }
 
-
-extension FavoritesController: FavoritesControllerDelegate {
-	func currentEditStatus() -> Bool {
-		return isEditing
-	}
-}
 
 /// cells sizing
 extension FavoritesController: UICollectionViewDelegateFlowLayout {
