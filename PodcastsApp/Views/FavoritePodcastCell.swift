@@ -8,19 +8,27 @@
 
 import UIKit
 
-protocol FavoritesControllerDelegate:class {
+protocol FavoritesControllerDelegate: class {
 	func currentEditStatus() -> Bool
+	func didSelectItemAt(indexPath: IndexPath)
 }
 
 class FavoritePodcastCell: UICollectionViewCell {
 	
 	weak var delegate: FavoritesControllerDelegate?
 	public static let favCellIdentifier = "favCellIdentifier"
-	public let imageView = UIImageView(image: #imageLiteral(resourceName: "appicon"))
+	public let imageView: UIImageView = {
+		let iv = UIImageView(image: #imageLiteral(resourceName: "appicon"))
+		iv.translatesAutoresizingMaskIntoConstraints = false
+		iv.isUserInteractionEnabled = false
+		return iv
+	}()
 	private let nameLabel: UILabel = {
 		let label = UILabel()
 		label.text = "Podcast Name"
 		label.font = UIFont.boldSystemFont(ofSize: 15)
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.isUserInteractionEnabled = false
 		return label
 	}()
 	private let artistNameLabel: UILabel = {
@@ -28,6 +36,8 @@ class FavoritePodcastCell: UICollectionViewCell {
 		label.text = "Artist Name"
 		label.font = UIFont.systemFont(ofSize: 14)
 		label.textColor = .lightGray
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.isUserInteractionEnabled = false
 		return label
 	}()
 	private let checkBox: UIView = {
@@ -38,6 +48,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 		box.layer.borderWidth = 1
 		box.translatesAutoresizingMaskIntoConstraints = false
 		box.alpha = 0
+		box.isUserInteractionEnabled = false
 		return box
 	}()
 	private let checkMark: UIImageView = {
@@ -46,6 +57,7 @@ class FavoritePodcastCell: UICollectionViewCell {
 		checkmark.translatesAutoresizingMaskIntoConstraints = false
 		checkmark.contentMode = .scaleAspectFit
 		checkmark.isHidden = true
+		checkmark.isUserInteractionEnabled = false
 		return checkmark
 	}()
 	public var podcast: Podcast!
@@ -65,6 +77,9 @@ class FavoritePodcastCell: UICollectionViewCell {
 			}
 		}
 	}
+	private let containerView = UIView()
+	private var indexPath: IndexPath!
+	
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -74,30 +89,41 @@ class FavoritePodcastCell: UICollectionViewCell {
 	}
 	
 	
+	
 	private func setup() {
-		let stackView = UIStackView(arrangedSubviews: [
-			imageView,
-			nameLabel,
-			artistNameLabel
-		])
-		stackView.axis = .vertical
-		stackView.translatesAutoresizingMaskIntoConstraints = false
-		addSubview(stackView)
+		containerView.addSubview(imageView)
+		containerView.addSubview(nameLabel)
+		containerView.addSubview(artistNameLabel)
+		containerView.translatesAutoresizingMaskIntoConstraints = false
+
+		addSubview(containerView)
 		addSubview(checkBox)
 		addSubview(checkMark)
 		
+		let gesture = UITapGestureRecognizer(target: self, action: #selector(onTouch(event:)))
+		containerView.fillSuperView()
+		containerView.addGestureRecognizer(gesture)
+		
+		
 		NSLayoutConstraint.activate([
+			imageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+			imageView.topAnchor.constraint(equalTo: containerView.topAnchor),
+			imageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
 			imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor),// picture must be square
-			stackView.topAnchor.constraint(equalTo: topAnchor),
-			stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-			stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-			stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
 			
+			nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 3),
+			nameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+			nameLabel.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
+			
+			artistNameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 3),
+			artistNameLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor),
+			artistNameLabel.trailingAnchor.constraint(equalTo: imageView.trailingAnchor),
+		
 			checkBox.topAnchor.constraint(equalTo: topAnchor, constant: 7),
 			checkBox.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -7),
 			checkBox.widthAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.35),
 			checkBox.heightAnchor.constraint(equalTo: checkBox.widthAnchor),
-			
+
 			checkMark.centerXAnchor.constraint(equalTo: checkBox.centerXAnchor),
 			checkMark.centerYAnchor.constraint(equalTo: checkBox.centerYAnchor),
 			checkMark.widthAnchor.constraint(equalTo: checkBox.widthAnchor, multiplier: 0.6),
@@ -105,12 +131,18 @@ class FavoritePodcastCell: UICollectionViewCell {
 		])
 	}
 	
+	@objc private func onTouch(event: UITapGestureRecognizer) {
+		print("opa!")
+		delegate?.didSelectItemAt(indexPath: indexPath)
+	}
 	
-	public func configure(passedPodcast: Podcast, hasSelection: Bool) {
+	
+	public func configure(passedPodcast: Podcast, hasSelection: Bool, indexPath: IndexPath) {
 		if let delegate = delegate {
 			setCheckBox(delegate.currentEditStatus())
 			isSelected = hasSelection
 		}
+		self.indexPath = indexPath
 		podcast = passedPodcast
 		nameLabel.text = podcast.trackName
 		artistNameLabel.text = podcast.artistName

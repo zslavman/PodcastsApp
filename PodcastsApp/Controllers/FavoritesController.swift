@@ -20,7 +20,7 @@ class FavoritesController: UICollectionViewController, SomeM {
 	private var selectedIndexArr = [IndexPath]() // selected cell Index array
 	private var lastSelectedCell = IndexPath()
 	private var panGesture: UIPanGestureRecognizer!
-	private var isImagePreview: Bool {
+	private var isImagePreview: Bool { // if switcher turned on in settings
 		get {
 			let flag = UserDefaults.standard.value(forKey: SettingsBundleHelper.PREVIEW_IMAGE)
 			if let flag = flag as? Bool  {
@@ -263,27 +263,15 @@ class FavoritesController: UICollectionViewController, SomeM {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FavoritePodcastCell.favCellIdentifier, for: indexPath) as! FavoritePodcastCell
 		cell.delegate = self
 		let hasSelection = selectedIndexArr.contains(indexPath)
-		cell.configure(passedPodcast: favPodcastsArr[indexPath.row], hasSelection: hasSelection)
+		cell.configure(passedPodcast: favPodcastsArr[indexPath.row], hasSelection: hasSelection, indexPath: indexPath)
 		return cell
 	}
 	
 	
-	override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-		let selectedItem = favPodcastsArr[indexPath.item]
-		if isEditing {
-			pushElement(indexPath: indexPath)
-			return
-		}
-		if isImagePreview {
-			let previewController = getPreviewController(indexPath: indexPath)
-			present(previewController, animated: true)
-		}
-		else {
-			let episodesVC = EpisodesController()
-			episodesVC.podcast = selectedItem
-			navigationController?.pushViewController(episodesVC, animated: true)
-		}
-	}
+	/// This method sometime is not registering touches!!!
+//	override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//		
+//	}
 	
 	
 	override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
@@ -294,6 +282,32 @@ class FavoritesController: UICollectionViewController, SomeM {
 	
 }
 
+
+extension FavoritesController: FavoritesControllerDelegate {
+	
+	func didSelectItemAt(indexPath: IndexPath) {
+		let selectedItem = favPodcastsArr[indexPath.item]
+		print("touched")
+		if isEditing {
+			pushElement(indexPath: indexPath)
+			return
+		}
+		if isImagePreview {
+			let previewController = getPreviewController(indexPath: indexPath)
+			present(previewController, animated: true)
+			//previewController.presentAboveAll()
+		}
+		else {
+			let episodesVC = EpisodesController()
+			episodesVC.podcast = selectedItem
+			navigationController?.pushViewController(episodesVC, animated: true)
+		}
+	}
+	
+	func currentEditStatus() -> Bool {
+		return isEditing
+	}
+}
 
 
 // Force touch implementation
@@ -323,12 +337,6 @@ extension FavoritesController: AXPhotosViewControllerDelegate, UIViewControllerP
 	
 }
 
-
-extension FavoritesController: FavoritesControllerDelegate {
-	func currentEditStatus() -> Bool {
-		return isEditing
-	}
-}
 
 /// cells sizing
 extension FavoritesController: UICollectionViewDelegateFlowLayout {
