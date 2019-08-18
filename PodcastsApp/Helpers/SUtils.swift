@@ -422,6 +422,10 @@ class CustomIntensityVisualEffectView: UIVisualEffectView {
 		animator.fractionComplete = intensity
 	}
 	
+	init() {
+		super.init(effect: nil)
+	}
+	
 	required init?(coder aDecoder: NSCoder) {
 		fatalError()
 	}

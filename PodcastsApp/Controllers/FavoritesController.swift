@@ -33,8 +33,6 @@ class FavoritesController: UICollectionViewController, SomeM {
 	private let editStr = "Edit".localized
 	private let deleteStr = "Delete".localized
 	private let cancelStr = "Cancel".localized
-	private var blurEffectView: CustomIntensityVisualEffectView!
-	
 	
 
 
@@ -164,18 +162,24 @@ class FavoritesController: UICollectionViewController, SomeM {
 		let delAction = UIAlertAction(title: deleteStr, style: .destructive) {
 			(action) in
 			self.deleteItems(indexPathArr: [indexPath])
-			self.blurAnimate(needBlur: false)
+			self.animateWithBlur(needBlur: false)
 		}
 		let cancelAction = UIAlertAction(title: cancelStr, style: .cancel) {
 			_ in
-			self.blurAnimate(needBlur: false)
+			self.animateWithBlur(needBlur: false)
 		}
-		
+		let previewAction = UIAlertAction(title: "Preview album artwork".localized, style: .default) {
+			(_) in
+			let previewController = self.getPreviewController(indexPath: indexPath)
+			self.animateWithBlur(needBlur: false)
+			self.present(previewController, animated: true)
+		}
+		actionSheetVC.addAction(previewAction)
 		actionSheetVC.addAction(delAction)
 		actionSheetVC.addAction(cancelAction)
 		
 		// for iPad only
-		if (UIDevice.current.userInterfaceIdiom == .pad){
+		if (UIDevice.current.userInterfaceIdiom == .pad) {
 			if let popoverController = actionSheetVC.popoverPresentationController {
 				popoverController.sourceView = view
 				popoverController.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
@@ -183,33 +187,25 @@ class FavoritesController: UICollectionViewController, SomeM {
 				popoverController.permittedArrowDirections = [] // remove menu arrow
 			}
 		}
-		blurAnimate(needBlur: true)
+		animateWithBlur(needBlur: true)
 		present(actionSheetVC, animated: true)
 	}
 	
+
 	
-	
-	private func blurAnimate(needBlur: Bool) {
+	private func animateWithBlur(needBlur: Bool) {
 		if needBlur {
-			//blurEffectView = CustomIntensityVisualEffectView(effect: <#T##UIVisualEffect#>, intensity: 0.5)
-			blurEffectView.frame = view.bounds
-			blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-			view.addSubview(blurEffectView)
-			
-			UIView.animate(withDuration: 0.15) {
-				self.blurEffectView.effect = UIBlurEffect(style: UIBlurEffect.Style.regular)
-			}
+			let blurFilter = UIBlurEffect(style: UIBlurEffect.Style.dark)
+			let effect = CustomIntensityVisualEffectView (effect: blurFilter, intensity: 0.15)
+			effect.frame = view.bounds
+			effect.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+			view.addSubview(effect)
 		}
 		else {
 			view.subviews.forEach {
 				(subview) in
 				if subview is UIVisualEffectView {
-					UIView.animate(withDuration: 0.15, delay: 0, options: [], animations: {
-						self.blurEffectView.effect = nil
-					}, completion: {
-						(_) in
-						subview.removeFromSuperview()
-					})
+					subview.removeFromSuperview()
 				}
 			}
 		}
@@ -241,7 +237,6 @@ class FavoritesController: UICollectionViewController, SomeM {
 			(indexPath) in
 			collectionView.deselectItem(at: indexPath, animated: false)
 		}
-		//collectionView.reloadData()
 	}
 	
 
@@ -267,24 +262,23 @@ class FavoritesController: UICollectionViewController, SomeM {
 		
 		//bottomBar customisation
 		// --------
-		let flex = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-		let bottomView = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: 320, height: 44)))
-		let customView = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 80, height: 20)))
-		customView.text = "\(photosViewController.currentPhotoIndex + 1)"
-		customView.textColor = .white
-		customView.sizeToFit()
-		bottomView.items = [
-			UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil),
+//		let flex = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+//		let bottomView = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: 320, height: 44)))
+//		let customView = UILabel(frame: CGRect(origin: .zero, size: CGSize(width: 80, height: 20)))
+//		customView.text = "\(photosViewController.currentPhotoIndex + 1)"
+//		customView.textColor = .white
+//		customView.sizeToFit()
+//		bottomView.items = [
+//			UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil),
 //			flex,
 //			UIBarButtonItem(customView: customView),
-			flex,
-			UIBarButtonItem(barButtonSystemItem: .trash, target: nil, action: nil),
-		]
-		bottomView.backgroundColor = .clear
-		bottomView.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
-		photosViewController.overlayView.bottomStackContainer.insertSubview(bottomView, at: 0)
+//			flex,
+//			UIBarButtonItem(barButtonSystemItem: .trash, target: nil, action: nil),
+//		]
+//		bottomView.backgroundColor = .clear
+//		bottomView.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
+//		photosViewController.overlayView.bottomStackContainer.insertSubview(bottomView, at: 0)
 		// --------
-		
 		return photosViewController
 	}
 	
