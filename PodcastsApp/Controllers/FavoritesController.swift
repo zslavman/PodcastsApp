@@ -33,6 +33,9 @@ class FavoritesController: UICollectionViewController, SomeM {
 	private let editStr = "Edit".localized
 	private let deleteStr = "Delete".localized
 	private let cancelStr = "Cancel".localized
+	private var blurEffectView: CustomIntensityVisualEffectView!
+	
+	
 
 
 	override func viewDidLoad() {
@@ -161,9 +164,12 @@ class FavoritesController: UICollectionViewController, SomeM {
 		let delAction = UIAlertAction(title: deleteStr, style: .destructive) {
 			(action) in
 			self.deleteItems(indexPathArr: [indexPath])
+			self.blurAnimate(needBlur: false)
 		}
-		//let cancelAction = UIAlertAction(title: cancelStr, style: .cancel)
-		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+		let cancelAction = UIAlertAction(title: cancelStr, style: .cancel) {
+			_ in
+			self.blurAnimate(needBlur: false)
+		}
 		
 		actionSheetVC.addAction(delAction)
 		actionSheetVC.addAction(cancelAction)
@@ -171,15 +177,44 @@ class FavoritesController: UICollectionViewController, SomeM {
 		// for iPad only
 		if (UIDevice.current.userInterfaceIdiom == .pad){
 			if let popoverController = actionSheetVC.popoverPresentationController {
-				let location = gesture.location(in: collectionView)
-				popoverController.sourceView = self.view
-				popoverController.sourceRect = CGRect(x: location.x, y: location.y, width: 0, height: 0)
+				popoverController.sourceView = view
+				popoverController.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
 				popoverController.delegate = self
 				popoverController.permittedArrowDirections = [] // remove menu arrow
 			}
 		}
+		blurAnimate(needBlur: true)
 		present(actionSheetVC, animated: true)
 	}
+	
+	
+	
+	private func blurAnimate(needBlur: Bool) {
+		if needBlur {
+			//blurEffectView = CustomIntensityVisualEffectView(effect: <#T##UIVisualEffect#>, intensity: 0.5)
+			blurEffectView.frame = view.bounds
+			blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+			view.addSubview(blurEffectView)
+			
+			UIView.animate(withDuration: 0.15) {
+				self.blurEffectView.effect = UIBlurEffect(style: UIBlurEffect.Style.regular)
+			}
+		}
+		else {
+			view.subviews.forEach {
+				(subview) in
+				if subview is UIVisualEffectView {
+					UIView.animate(withDuration: 0.15, delay: 0, options: [], animations: {
+						self.blurEffectView.effect = nil
+					}, completion: {
+						(_) in
+						subview.removeFromSuperview()
+					})
+				}
+			}
+		}
+	}
+	
 	
 	
 	/// Append or delete element if array allready has element
