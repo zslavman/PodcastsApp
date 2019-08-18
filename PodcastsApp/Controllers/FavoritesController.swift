@@ -191,12 +191,12 @@ class FavoritesController: UICollectionViewController, SomeM {
 		present(actionSheetVC, animated: true)
 	}
 	
-
+	var effect: CustomIntensityVisualEffectView!
 	
 	private func animateWithBlur(needBlur: Bool) {
 		if needBlur {
 			let blurFilter = UIBlurEffect(style: UIBlurEffect.Style.dark)
-			let effect = CustomIntensityVisualEffectView (effect: blurFilter, intensity: 0.15)
+			effect = CustomIntensityVisualEffectView (effect: blurFilter, intensity: 0.15)
 			effect.frame = view.bounds
 			effect.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 			view.addSubview(effect)

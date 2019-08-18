@@ -409,28 +409,38 @@ extension String {
 
 
 
+/// Create visual effect view with given effect and its intensity
 class CustomIntensityVisualEffectView: UIVisualEffectView {
 	
-	/// Create visual effect view with given effect and its intensity
-	///
-	/// - Parameters:
+	var timer: Timer?
+	private var animator: UIViewPropertyAnimator!
+	
 	///   - effect: visual effect, eg UIBlurEffect(style: .dark)
 	///   - intensity: custom intensity from 0.0 (no effect) to 1.0 (full effect) using linear scale
 	init(effect: UIVisualEffect, intensity: CGFloat) {
 		super.init(effect: nil)
-		animator = UIViewPropertyAnimator(duration: 1, curve: .linear) { [unowned self] in self.effect = effect }
-		animator.fractionComplete = intensity
+		animator = UIViewPropertyAnimator(duration: 1, curve: .linear) {
+			[unowned self] in
+			self.effect = effect
+		}
+		let step = intensity / 10 // devide animation to 10 steps
+		
+		// run timer, vich will smoothly animate blur effect
+		timer = Timer.scheduledTimer(withTimeInterval: 0.02, repeats: true, block: {
+			(_) in
+			self.animator.fractionComplete += step
+			if self.animator.fractionComplete >= intensity {
+				self.timer?.invalidate()
+			}
+		})
 	}
 	
-	init() {
-		super.init(effect: nil)
+	deinit {
+		timer?.invalidate()
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
 		fatalError()
 	}
-	
-	// MARK: Private
-	private var animator: UIViewPropertyAnimator!
 	
 }
