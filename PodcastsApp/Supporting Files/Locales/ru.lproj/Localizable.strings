@@ -24,7 +24,7 @@
 "To access data, enable data transfer over a cellular network or use Wi-Fi." = "Для доступа к данным включите передачу данных по сотовой сети или используйте Wi-Fi.";
 "Settings" = "Настройки";
 "Episode" = "Эпизод";
-"Settings" = "Настройки"
+"Settings" = "Настройки";
 
 //PODs
 "%d of %d" = "%d из %d";

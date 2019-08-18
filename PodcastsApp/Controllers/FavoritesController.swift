@@ -162,10 +162,22 @@ class FavoritesController: UICollectionViewController, SomeM {
 			(action) in
 			self.deleteItems(indexPathArr: [indexPath])
 		}
-		let cancelAction = UIAlertAction(title: cancelStr, style: .cancel)
+		//let cancelAction = UIAlertAction(title: cancelStr, style: .cancel)
+		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
 		
 		actionSheetVC.addAction(delAction)
 		actionSheetVC.addAction(cancelAction)
+		
+		// for iPad only
+		if (UIDevice.current.userInterfaceIdiom == .pad){
+			if let popoverController = actionSheetVC.popoverPresentationController {
+				let location = gesture.location(in: collectionView)
+				popoverController.sourceView = self.view
+				popoverController.sourceRect = CGRect(x: location.x, y: location.y, width: 0, height: 0)
+				popoverController.delegate = self
+				popoverController.permittedArrowDirections = [] // remove menu arrow
+			}
+		}
 		present(actionSheetVC, animated: true)
 	}
 	
@@ -282,6 +294,14 @@ class FavoritesController: UICollectionViewController, SomeM {
 }
 
 
+// display popover (menu) in full screen
+extension FavoritesController: UIPopoverPresentationControllerDelegate {
+	func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+		return UIModalPresentationStyle.none
+	}
+}
+
+
 extension FavoritesController: FavoritesControllerDelegate {
 	
 	func didSelectItemAt(indexPath: IndexPath) {
@@ -364,7 +384,7 @@ extension FavoritesController: UICollectionViewDelegateFlowLayout {
 }
 
 
-/// for pangesture selection cells ///
+/// for cells selection via pangesture (horizontal swipe)
 extension FavoritesController: UIGestureRecognizerDelegate {
 	
 	// allow recognition of two gestures at the same time
