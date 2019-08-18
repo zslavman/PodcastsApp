@@ -47,7 +47,7 @@ class ReachabilityService {
 		let title = "No network connection".localized
 		let message = "To access data, enable data transfer over a cellular network or use Wi-Fi.".localized
 		let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
-		let goToSettingsAction = UIAlertAction(title: "Settings", style: .default) {
+		let goToSettingsAction = UIAlertAction(title: "Settings".localized, style: .default) {
 			(action) in
 			//self.runUrlSheme(shemeName: UIApplication.openSettingsURLString)
 			self.runUrlSheme(shemeName: "App-prefs:root=General&path=Keyboard")
@@ -72,9 +72,9 @@ class ReachabilityService {
 	
 	/*
 	*  URL-sheme implementation.
-	*  Don't forget add into info.plist an array LSApplicationQueriesSchemes with elements (appNames:String)
+	*  Next time don't forget add into info.plist an array LSApplicationQueriesSchemes with elements (appNames:String)
 	*  "chatapp://" - custom, "message://" - native mail client
-	*  In case of using transition to iOS paths - you don't need to add any info in playlist
+	*  In case of using transition to iOS paths - you don't need to add any info into plist
 	*/
 	private func runUrlSheme(shemeName: String) {
 		guard let appURL = URL(string: shemeName) else {
