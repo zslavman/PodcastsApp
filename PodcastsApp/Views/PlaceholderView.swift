@@ -56,7 +56,7 @@ class PlaceholderView: UIView {
 			relatedBy: .equal,
 			toItem: sv,
 			attribute: .height,
-			multiplier: 0.35,
+			multiplier: 0.3,
 			constant: 0
 		)
 		centerYConstraint = mainPicture.centerYAnchor.constraint(equalTo: sv.centerYAnchor, constant: 0)

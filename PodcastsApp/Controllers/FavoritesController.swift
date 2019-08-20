@@ -131,10 +131,15 @@ class FavoritesController: UICollectionViewController, SomeM {
 			.map { $0.element }
 		favPodcastsArr = resultArtr
 		
-		collectionView.deleteItems(at: indexPathArr)
-		// remove from UserDefaults
-		let data = NSKeyedArchiver.archivedData(withRootObject: self.favPodcastsArr)
-		UserDefaults.standard.set(data, forKey: "favPodKey")
+		collectionView.performBatchUpdates({
+			self.collectionView.deleteItems(at: indexPathArr)
+			// remove from UserDefaults
+			let data = NSKeyedArchiver.archivedData(withRootObject: self.favPodcastsArr)
+			UserDefaults.standard.set(data, forKey: "favPodKey")
+		}) {
+			(_) in
+			self.collectionView.reloadItems(at: self.collectionView.indexPathsForVisibleItems)
+		}
 	}
 	
 	
