@@ -399,7 +399,10 @@ extension FavoritesController: AXPhotosViewControllerDelegate, UIViewControllerP
 extension FavoritesController: UICollectionViewDelegateFlowLayout {
 	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-		let needWidth = (view.frame.width - 3 * 16) / 2
+		var needWidth = (view.frame.width - 3 * 16) / 2
+		if UIScreen.main.bounds.width > UIScreen.main.bounds.height {
+			needWidth = (view.frame.width - 5 * 16) / 3
+		}
 		return CGSize(width: needWidth, height: needWidth + 40) // 40 - footer height for labels
 	}
 	

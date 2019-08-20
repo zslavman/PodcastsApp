@@ -52,11 +52,11 @@ class PlaceholderView: UIView {
 		//tabBarHeight = tabBarVC?.tabBar.frame.size.height ?? 0
 		let picWidthAnchor = NSLayoutConstraint(
 			item: mainPicture,
-			attribute: .width,
+			attribute: .height,
 			relatedBy: .equal,
 			toItem: sv,
-			attribute: .width,
-			multiplier: 0.5,
+			attribute: .height,
+			multiplier: 0.35,
 			constant: 0
 		)
 		centerYConstraint = mainPicture.centerYAnchor.constraint(equalTo: sv.centerYAnchor, constant: 0)
