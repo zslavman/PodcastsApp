@@ -75,8 +75,8 @@ class FavoritesController: UICollectionViewController, SomeM {
 	
 	
 	private func setupCollectionView() {
-		//collectionView.delegate = self
-		//collectionView.dataSource = self
+		collectionView.delegate = self
+		collectionView.dataSource = self
 		collectionView.allowsMultipleSelection = true
 		collectionView.register(FavoritePodcastCell.self, forCellWithReuseIdentifier: FavoritePodcastCell.favCellIdentifier)
 		collectionView.alwaysBounceVertical = true

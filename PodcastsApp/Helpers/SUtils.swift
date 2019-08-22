@@ -253,6 +253,47 @@ struct SUtils {
 	}
 	
 	
+	/// Resize image proportionally
+	///
+	/// - Parameters:
+	///   - image: source
+	///   - firstOutSide: required size of the output side
+	///   - isMin: if true - firstOutSide will be min, else - max
+	public static func resizeImage(_ image: UIImage, firstOutSide: CGFloat, isMin: Bool) -> UIImage {
+		let size = image.size
+		let isLandscape = size.width > size.height
+		let origMinSide = min(size.width, size.height)
+		let origMaxSide = max(size.width, size.height)
+		let ratio = origMaxSide / origMinSide // > 0
+		var secondOutSide = ratio * firstOutSide
+		if !isMin {
+			secondOutSide = firstOutSide / ratio
+		}
+
+		var newSize: CGSize
+		if (isLandscape && isMin) || (!isLandscape && !isMin) {
+			newSize = CGSize(width: secondOutSide, height: firstOutSide)
+		}
+		else {
+			newSize = CGSize(width: firstOutSide,  height: secondOutSide)
+		}
+		
+		let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+		UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+		image.draw(in: rect)
+		let newImage = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		
+		return newImage!
+	}
+	
+	
+	public static func imageToBase64(img: UIImage) -> String? {
+		guard let imageData = img.pngData() else { return nil }
+		return imageData.base64EncodedString()
+	}
+	
+
 	public static func getPointForTabbarItemAt(_ itemIndex: Int) -> CGPoint {
 		guard let tabBar = UIApplication.tabBarVC()?.tabBar else { return CGPoint.zero }
 		var items = tabBar.subviews.compactMap { return $0 is UIControl ? $0 : nil }
