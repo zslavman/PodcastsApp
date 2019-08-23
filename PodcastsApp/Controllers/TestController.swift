@@ -19,13 +19,15 @@ class TestController: UIViewController {
 	}
 	
 	@objc private func onClick() {
-		let origImage = #imageLiteral(resourceName: "toApprove")
-		//let origImage = #imageLiteral(resourceName: "appicon")
+		//let origImage = #imageLiteral(resourceName: "toApprove")
+		let origImage = #imageLiteral(resourceName: "circle")
 		print(origImage.size)
 		let resizedImage = SUtils.resizeImage(origImage, firstOutSide: 64, isMin: true)
 		print(resizedImage.size)
 		
-		if let encoded = SUtils.imageToBase64(img: resizedImage) {
+		let cropedImg = SUtils.squareCropping(image: resizedImage)
+		
+		if let encoded = SUtils.imageToBase64(img: cropedImg) {
 			UIPasteboard.general.string = encoded
 			print(encoded)
 		}
