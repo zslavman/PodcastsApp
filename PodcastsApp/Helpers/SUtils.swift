@@ -452,6 +452,7 @@ extension MPVolumeView {
 }
 
 extension UIImage { // bad - can see pixels
+	
 	convenience init(view: UIView) {
 		UIGraphicsBeginImageContext(view.frame.size)
 		view.layer.render(in: UIGraphicsGetCurrentContext()!)
@@ -459,6 +460,23 @@ extension UIImage { // bad - can see pixels
 		UIGraphicsEndImageContext()
 		self.init(cgImage: image!.cgImage!)
 	}
+	
+	
+	/// fix issues with orientation (create copy of image without exif)
+	func fixOrientation() -> UIImage {
+		if self.imageOrientation == UIImage.Orientation.up {
+			return self
+		}
+		UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
+		draw(in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height))
+		if let normalizedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext() {
+			UIGraphicsEndImageContext()
+			return normalizedImage
+		}
+		return self
+	}
+
+	
 }
 
 
