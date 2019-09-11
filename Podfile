@@ -17,5 +17,6 @@ target 'PodcastsApp' do
 	pod 'AXPhotoViewer', '~> 1.6.1'
 	#pod 'AXPhotoViewer/SDWebImage', :path => '../../AXPhotoViewer.podspec'
 	pod 'AXPhotoViewer/SDWebImage'
+	pod 'SwiftyStoreKit', '~> 0.14.2'
 
 end
