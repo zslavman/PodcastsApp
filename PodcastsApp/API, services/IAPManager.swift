@@ -12,6 +12,7 @@ import Foundation
 enum IAPProducts: String, CaseIterable {
 	case purchase1 = "com.zslavman.Purchase1"
 	case purchase2 = "com.zslavman.Purchase2"
+	case purchase3 = "com.zslavman.Purchase3"
 	
 	// call "IAPProducts.allCases" to get an array of all cases
 }

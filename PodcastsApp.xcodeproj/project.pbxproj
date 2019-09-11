@@ -24,6 +24,7 @@
 		566B0FDF22B65E2400097A70 /* PSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566B0FDE22B65E2400097A70 /* PSearchController.swift */; };
 		566C242D230F39C80054A5E4 /* TestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566C242C230F39C80054A5E4 /* TestController.swift */; };
 		567153F022D7BEC5000C5E9A /* ReachabilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567153EF22D7BEC5000C5E9A /* ReachabilityService.swift */; };
+		56C100FA232982C4006E2711 /* pdftitle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 56C100F9232982C4006E2711 /* pdftitle.pdf */; };
 		56C11AAC22D1529E009E3B56 /* InfoSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C11AAB22D1529E009E3B56 /* InfoSlider.swift */; };
 		56DB88F6224966E6000F7D3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DB88F5224966E6000F7D3C /* AppDelegate.swift */; };
 		56DB88FD224966E8000F7D3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56DB88FC224966E8000F7D3C /* Assets.xcassets */; };
@@ -64,6 +65,9 @@
 		566B0FDE22B65E2400097A70 /* PSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PSearchController.swift; sourceTree = "<group>"; };
 		566C242C230F39C80054A5E4 /* TestController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestController.swift; sourceTree = "<group>"; };
 		567153EF22D7BEC5000C5E9A /* ReachabilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityService.swift; sourceTree = "<group>"; };
+		56C100F323298292006E2711 /* Purchase3 */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = Purchase3; sourceTree = BUILT_PRODUCTS_DIR; };
+		56C100F523298292006E2711 /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
+		56C100F9232982C4006E2711 /* pdftitle.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = pdftitle.pdf; sourceTree = "<group>"; };
 		56C11AAB22D1529E009E3B56 /* InfoSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSlider.swift; sourceTree = "<group>"; };
 		56DB88F2224966E6000F7D3C /* PodcastsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PodcastsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56DB88F5224966E6000F7D3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -171,12 +175,22 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		56C100F423298292006E2711 /* Purchase3 */ = {
+			isa = PBXGroup;
+			children = (
+				56C100F9232982C4006E2711 /* pdftitle.pdf */,
+				56C100F523298292006E2711 /* ContentInfo.plist */,
+			);
+			path = Purchase3;
+			sourceTree = "<group>";
+		};
 		56DB88E9224966E6000F7D3C = {
 			isa = PBXGroup;
 			children = (
 				56DB88F4224966E6000F7D3C /* PodcastsApp */,
 				56EB2C1422FF85A5003B51A8 /* Purchase1 */,
 				56EB2C2222FF89D9003B51A8 /* Purchase2 */,
+				56C100F423298292006E2711 /* Purchase3 */,
 				56DB88F3224966E6000F7D3C /* Products */,
 				DDE65EC7876B0F145325E419 /* Pods */,
 				97109C52D9140AF7C2DB1E22 /* Frameworks */,
@@ -189,6 +203,7 @@
 				56DB88F2224966E6000F7D3C /* PodcastsApp.app */,
 				56EB2C1322FF85A5003B51A8 /* Purchase1 */,
 				56EB2C2122FF89D9003B51A8 /* Purchase2 */,
+				56C100F323298292006E2711 /* Purchase3 */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -280,6 +295,21 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		56C100F223298292006E2711 /* Purchase3 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 56C100F823298292006E2711 /* Build configuration list for PBXNativeTarget "Purchase3" */;
+			buildPhases = (
+				56C100F123298292006E2711 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Purchase3;
+			productName = Purchase3;
+			productReference = 56C100F323298292006E2711 /* Purchase3 */;
+			productType = "com.apple.product-type.in-app-purchase-content";
+		};
 		56DB88F1224966E6000F7D3C /* PodcastsApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 56DB8904224966E8000F7D3C /* Build configuration list for PBXNativeTarget "PodcastsApp" */;
@@ -341,6 +371,9 @@
 				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = "Zinko Viacheslav";
 				TargetAttributes = {
+					56C100F223298292006E2711 = {
+						CreatedOnToolsVersion = 10.1;
+					};
 					56DB88F1224966E6000F7D3C = {
 						CreatedOnToolsVersion = 10.1;
 						SystemCapabilities = {
@@ -377,11 +410,20 @@
 				56DB88F1224966E6000F7D3C /* PodcastsApp */,
 				56EB2C1222FF85A5003B51A8 /* Purchase1 */,
 				56EB2C2022FF89D9003B51A8 /* Purchase2 */,
+				56C100F223298292006E2711 /* Purchase3 */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		56C100F123298292006E2711 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				56C100FA232982C4006E2711 /* pdftitle.pdf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		56DB88F0224966E6000F7D3C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -550,6 +592,30 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		56C100F623298292006E2711 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LC7P3687MC;
+				INFOPLIST_FILE = Purchase3/ContentInfo.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = "";
+			};
+			name = Debug;
+		};
+		56C100F723298292006E2711 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LC7P3687MC;
+				INFOPLIST_FILE = Purchase3/ContentInfo.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/InAppPurchaseContent";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = "";
+			};
+			name = Release;
+		};
 		56DB8902224966E8000F7D3C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -766,6 +832,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		56C100F823298292006E2711 /* Build configuration list for PBXNativeTarget "Purchase3" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				56C100F623298292006E2711 /* Debug */,
+				56C100F723298292006E2711 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		56DB88ED224966E6000F7D3C /* Build configuration list for PBXProject "PodcastsApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
