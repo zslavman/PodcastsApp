@@ -123,21 +123,7 @@ class TestController: UIViewController {
 				print("download completed! \(contentURLs)")
 				// process all downloaded files, then finish the transaction
 				SwiftyStoreKit.finishTransaction(downloads[0].transaction)
-				
-				
-				let fileManager = FileManager.default
-				var destPaths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-				guard let safeURL = contentURLs.first else { return }
-				let fileName = safeURL.lastPathComponent
-				destPaths.appendPathComponent(fileName)
-				if !fileManager.fileExists(atPath: destPaths.absoluteString) {
-					do {
-						try fileManager.moveItem(at: safeURL, to: destPaths)
-						print("Successfully moved file to documentDirectory!")
-					} catch let err {
-						print("Failed to move file", err.localizedDescription)
-					}
-				}
+				FilePathManager.shared.moveFileToDocumentsDir(tempURL: contentURLs[0])
 			}
 		}
 	}
@@ -149,30 +135,22 @@ class TestController: UIViewController {
 	
 	
 	@objc private func onExploreClick() {
-		let fm = FileManager.default
-		let dirPaths = fm.urls(for: .documentDirectory, in: .userDomainMask)
-		let docsDirPath = dirPaths[0]
-		var existsFilePaths = [URL]()
+		// get all URLs of files(dirs) in documentsDir
+		let filesPaths = FilePathManager.shared.exploreDocumentsDir()
+		print(filesPaths)
 		
-		do {
-			let items = try fm.contentsOfDirectory(atPath: docsDirPath.path)
-			for item in items {
-				print("\(item)")
-				let fileURL = docsDirPath.appendingPathComponent(item)
-				existsFilePaths.append(fileURL)
+		// try to create images from filesPaths
+		var images = [UIImage]()
+		filesPaths.forEach {
+			(fileURL) in
+			let fileExtension = fileURL.pathExtension.lowercased()
+			if fileExtension == "jpg" {
+				if let img = FilePathManager.shared.createImageFromURL(pathString: fileURL.absoluteString) {
+					images.append(img)
+				}
 			}
-			existsFilePaths.forEach {
-				(url) in
-				// load zip files
-				var tempArrayForContentsOfDirectory: [String]? = nil
-				do {
-					tempArrayForContentsOfDirectory = try fm.contentsOfDirectory(atPath: url.path)
-					print(tempArrayForContentsOfDirectory) // ["ContentInfo.plist", "Contents", "META-INF"]
-				} catch { }
-			}
-		} catch {
-			// failed to read directory – bad permissions, perhaps?
 		}
+		print(images)
 	}
 	
 	
