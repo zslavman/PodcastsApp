@@ -118,12 +118,11 @@ class TestController: UIViewController {
 				let progress = Int(skDownload.progress * 100)
 				print("\(skDownload.contentIdentifier) =", progress, "%")
 			}
-			
 			if contentURLs.count == downloads.count {
 				print("download completed! \(contentURLs)")
 				// process all downloaded files, then finish the transaction
 				SwiftyStoreKit.finishTransaction(downloads[0].transaction)
-				FilePathManager.shared.moveFileToDocumentsDir(tempURL: contentURLs[0])
+				FilePathManager.shared.moveFileToDocumentsDir(tempURL: contentURLs[0], newFileName: downloads[0].contentIdentifier)
 			}
 		}
 	}
@@ -136,7 +135,8 @@ class TestController: UIViewController {
 	
 	@objc private func onExploreClick() {
 		// get all URLs of files(dirs) in documentsDir
-		let filesPaths = FilePathManager.shared.exploreDocumentsDir()
+		let purchaseName = "com.zslavman.Purchase1/Contents"
+		let filesPaths = FilePathManager.shared.exploreDocumentsDir(withNextPath: purchaseName)
 		print(filesPaths)
 		
 		// try to create images from filesPaths
@@ -145,7 +145,7 @@ class TestController: UIViewController {
 			(fileURL) in
 			let fileExtension = fileURL.pathExtension.lowercased()
 			if fileExtension == "jpg" {
-				if let img = FilePathManager.shared.createImageFromURL(pathString: fileURL.absoluteString) {
+				if let img = FilePathManager.shared.createImageFromURL(pathString: fileURL.path) {
 					images.append(img)
 				}
 			}

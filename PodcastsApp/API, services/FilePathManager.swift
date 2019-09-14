@@ -26,11 +26,11 @@ class FilePathManager {
 	}
 	
 	
-	public func moveFileToDocumentsDir(tempURL: URL) {
-		var destPaths = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+	public func moveFileToDocumentsDir(tempURL: URL, newFileName: String) {
+		var destPaths = documentsDirPath
 		let fileName = tempURL.lastPathComponent
-		destPaths.appendPathComponent(fileName)
-		if !fileManager.fileExists(atPath: destPaths.absoluteString) {
+		destPaths.appendPathComponent(newFileName)
+//		if !fileManager.fileExists(atPath: destPaths.absoluteString) {
 			do {
 				try fileManager.moveItem(at: tempURL, to: destPaths)
 				print("Successfully moved file to documentDirectory!")
@@ -38,7 +38,7 @@ class FilePathManager {
 			catch let err {
 				print("Failed to move file:", err.localizedDescription)
 			}
-		}
+//		}
 	}
 	
 	
@@ -47,12 +47,12 @@ class FilePathManager {
 	}
 	
 	
-	public func exploreDir(dir: URL) -> [URL] {
+	public func exploreDir(atURL: URL) -> [URL] {
 		var existsFilePaths = [URL]()
 		do {
-			let fileNames = try fileManager.contentsOfDirectory(atPath: dir.path)
+			let fileNames = try fileManager.contentsOfDirectory(atPath: atURL.path)
 			for item in fileNames {
-				let fileURL = dir.appendingPathComponent(item)
+				let fileURL = atURL.appendingPathComponent(item)
 				existsFilePaths.append(fileURL)
 			}
 		}
@@ -63,8 +63,9 @@ class FilePathManager {
 	}
 	
 	
-	public func exploreDocumentsDir() -> [URL] {
-		return exploreDir(dir: documentsDirPath)
+	public func exploreDocumentsDir(withNextPath: String) -> [URL] {
+		let fullURL = documentsDirPath.appendingPathComponent(withNextPath)
+		return exploreDir(atURL: fullURL)
 	}
 	
 	
