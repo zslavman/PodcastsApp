@@ -71,6 +71,7 @@ class PurchaseCell: UITableViewCell {
 		label.numberOfLines = 0
 		return label
 	}()
+	private let progress: UILabel!
 	private var viewModel: SKProduct!
 	
 	
