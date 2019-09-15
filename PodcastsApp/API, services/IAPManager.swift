@@ -31,9 +31,10 @@ class IAPManager {
 	public var availablePurchases = [SKProduct]()
 	private var purchaseIDs: Set<String>
 	
-	
 	private init() {
+		//TODO: load JSON from my server
 		purchaseIDs = Set(IAPProducts.allCases.compactMap{ $0.rawValue })
+		getAvailablePurchases()
 	}
 	
 	
@@ -110,7 +111,7 @@ class IAPManager {
 	}
 	
 	
-	
+	/// finish purchase downloading
 	private func finishDownloadPurchase(purchases: [SKDownload]) {
 		purchases.forEach {
 			(purchase) in
@@ -118,7 +119,7 @@ class IAPManager {
 			SwiftyStoreKit.finishTransaction(purchase.transaction)
 			if let safeFileLocation = purchase.contentURL {
 				FilePathManager.shared.moveFileToDocumentsDir(tempURL: safeFileLocation, newFileName: purchase.contentIdentifier)
-				NotificationCenter.default.post(name: .purchaseDownloadingCompleted, object: nil)
+				NotificationCenter.default.post(name: .purchaseDownloadingCompleted, object: purchase)
 				//TODO: convert purchase to RealmObj & save, set flag "purchased" with version of content
 			}
 		}

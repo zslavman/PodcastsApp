@@ -14,7 +14,6 @@ import SwiftyStoreKit
 class TestController: UIViewController {
 
 	private var tableView: UITableView!
-	private let cellID = "id"
 	private var purchases = [SKProduct]()
 	
 	
@@ -28,9 +27,9 @@ class TestController: UIViewController {
 	private func setupController() {
 		navigationItem.title = "Встроенные покупки"
 		installTable()
-		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Восстановить", style: .plain, target: self,
+		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Восстан.", style: .plain, target: self,
 															action: #selector(onRestoreClick))
-		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Explore saved", style: .plain, target: self,
+		navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Explore", style: .plain, target: self,
 														   action: #selector(onExploreClick))
 		purchases = IAPManager.shared.availablePurchases
 		if purchases.isEmpty {
@@ -50,17 +49,11 @@ class TestController: UIViewController {
 		tableView = UITableView(frame: .zero, style: .plain)
 		tableView.delegate = self
 		tableView.dataSource = self
-		tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
+		tableView.register(PurchaseCell.self, forCellReuseIdentifier: PurchaseCell.identifier())
 		tableView.tableFooterView = UIView()
 		tableView.contentInset.top = 20
-		tableView.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(tableView)
-		NSLayoutConstraint.activate([
-			tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-			tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-			tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-			tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-		])
+		tableView.fillSuperView()
 	}
 	
 	
@@ -107,7 +100,8 @@ class TestController: UIViewController {
 extension TestController: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return purchases.count
+		//return purchases.count
+		return 1
 	}
 	
 	func numberOfSections(in tableView: UITableView) -> Int {
@@ -115,7 +109,7 @@ extension TestController: UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return 50
+		return 120
 	}
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -125,10 +119,14 @@ extension TestController: UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
-		let content = purchases[indexPath.row]
-		let str = content.localizedTitle + " - " + content.localizedPrice!
-		cell.textLabel?.text = str
+		let cell = tableView.dequeueReusableCell(withIdentifier: PurchaseCell.identifier(),
+												 for: indexPath) as! PurchaseCell
+//		let content = purchases[indexPath.row]
+//		let str = content.localizedTitle + " - " + content.localizedPrice!
+//		cell.textLabel?.text = str
+		
+		
+		
 		return cell
 	}
 	

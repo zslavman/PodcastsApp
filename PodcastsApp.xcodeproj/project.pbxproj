@@ -27,6 +27,7 @@
 		567153F022D7BEC5000C5E9A /* ReachabilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567153EF22D7BEC5000C5E9A /* ReachabilityService.swift */; };
 		56C100FA232982C4006E2711 /* pdftitle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 56C100F9232982C4006E2711 /* pdftitle.pdf */; };
 		56C11AAC22D1529E009E3B56 /* InfoSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C11AAB22D1529E009E3B56 /* InfoSlider.swift */; };
+		56C45018232E7BF800E6DA49 /* PurchaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C45017232E7BF800E6DA49 /* PurchaseCell.swift */; };
 		56DB88F6224966E6000F7D3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DB88F5224966E6000F7D3C /* AppDelegate.swift */; };
 		56DB88FD224966E8000F7D3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56DB88FC224966E8000F7D3C /* Assets.xcassets */; };
 		56DB8900224966E8000F7D3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56DB88FE224966E8000F7D3C /* LaunchScreen.storyboard */; };
@@ -71,6 +72,7 @@
 		56C100F523298292006E2711 /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
 		56C100F9232982C4006E2711 /* pdftitle.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = pdftitle.pdf; sourceTree = "<group>"; };
 		56C11AAB22D1529E009E3B56 /* InfoSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoSlider.swift; sourceTree = "<group>"; };
+		56C45017232E7BF800E6DA49 /* PurchaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseCell.swift; sourceTree = "<group>"; };
 		56DB88F2224966E6000F7D3C /* PodcastsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PodcastsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56DB88F5224966E6000F7D3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		56DB88FC224966E8000F7D3C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -174,6 +176,7 @@
 				56F4E6E022C94BFE00E02892 /* PlaceholderView.swift */,
 				56C11AAB22D1529E009E3B56 /* InfoSlider.swift */,
 				56EAB05022E3CB9700BD2294 /* CustomSlider.swift */,
+				56C45017232E7BF800E6DA49 /* PurchaseCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -538,6 +541,7 @@
 				5645FAE6228705F0002740D1 /* PlayerDetailsView.swift in Sources */,
 				566B0FDF22B65E2400097A70 /* PSearchController.swift in Sources */,
 				56FC323E22651B3E008E5DD7 /* SUtils.swift in Sources */,
+				56C45018232E7BF800E6DA49 /* PurchaseCell.swift in Sources */,
 				5648056E22668723008CAD73 /* PodcastCell.swift in Sources */,
 				563EB3DD232D6FD4005E0467 /* FilePathManager.swift in Sources */,
 				565A11CE22B046420077996D /* FavoritePodcastCell.swift in Sources */,
