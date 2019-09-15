@@ -7,21 +7,72 @@
 //
 
 import UIKit
-
+import StoreKit
 
 class PurchaseCell: UITableViewCell {
 	
-	
+	private let purchaseImage: UIImageView = {
+		let img = UIImageView(image: #imageLiteral(resourceName: "sample"))
+		img.translatesAutoresizingMaskIntoConstraints = false
+		img.contentMode = .scaleAspectFill
+		img.layer.cornerRadius = 8
+		img.clipsToBounds = true
+		return img
+	}()
+	private let mainTitle: UILabel = {
+		let label = UILabel()
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+		label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		label.textAlignment = .center
+		label.text = "Линия жизни"
+		label.numberOfLines = 0
+		return label
+	}()
 	private let descriptionText: UITextView = {
 		let textView = UITextView()
 		textView.translatesAutoresizingMaskIntoConstraints = false
-		textView.font = UIFont.systemFont(ofSize: 18, weight: .regular)
+		textView.font = UIFont.systemFont(ofSize: 13, weight: .regular)
 		textView.isEditable = false
+		textView.isSelectable = false
 		textView.isScrollEnabled = true
 		textView.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-		textView.text = "Will attempt to recover by breaking constraint <NSLayoutConstraint:0x600002c3f570 UIImageView:0x7fa1e9c0c1b0"
+		textView.text = "Исследование жизненного пути личности, осознания прошлых событий в жизни человека, а также планирования будущего."
 		return textView
 	}()
+	private let priceLabel: UILabel = {
+		let label = UILabel()
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+		label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+		label.textAlignment = .center
+		label.text = "1.99 $"
+		label.numberOfLines = 0
+		label.sizeToFit()
+		return label
+	}()
+	private let button: UIButton = {
+		let bttn = UIButton(type: .system)
+		bttn.translatesAutoresizingMaskIntoConstraints = false
+		bttn.backgroundColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
+		bttn.setTitle("Купить", for: .normal)
+		bttn.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		bttn.layer.cornerRadius = 5
+		bttn.clipsToBounds = true
+		return bttn
+	}()
+	private let sizeLabel: UILabel = {
+		let label = UILabel()
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.font = UIFont.systemFont(ofSize: 10, weight: .bold)
+		label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+		label.textAlignment = .center
+		label.text = "Размер: 8 Мб"
+		label.numberOfLines = 0
+		return label
+	}()
+	private var viewModel: SKProduct!
+	
 	
 	static func identifier() -> String {
 		return "\(self.classForCoder())"
@@ -29,7 +80,9 @@ class PurchaseCell: UITableViewCell {
 	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-		setup()
+		setupLayout()
+		selectionStyle = .none
+		button.addTarget(self, action: #selector(onButtonClick), for: .touchUpInside)
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -37,52 +90,54 @@ class PurchaseCell: UITableViewCell {
 	}
 	
 	
-	private func setup() {
-		let v1 = UIView()
-		v1.backgroundColor = #colorLiteral(red: 0.7254902124, green: 0.4784313738, blue: 0.09803921729, alpha: 1)
-		//v1.widthAnchor.constraint(equalToConstant: 80).isActive = true
-		
-		let v2 = UIView()
-		v2.backgroundColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
-		v2.heightAnchor.constraint(equalToConstant: 20).isActive = true
-		
-		let vertStack1 = UIStackView(arrangedSubviews: [v1, v2])
-		vertStack1.axis = .vertical
-		vertStack1.spacing = 3
-		vertStack1.widthAnchor.constraint(equalToConstant: 100).isActive = true
-		// ------------------------------
-		
-		let v3 = UIView()
-		v3.backgroundColor = #colorLiteral(red: 0.5725490451, green: 0, blue: 0.2313725501, alpha: 1)
-		v3.heightAnchor.constraint(equalToConstant: 25).isActive = true
-		
-		let v4 = UIView()
-		v4.backgroundColor = #colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1)
-		
-		let vertStack2 = UIStackView(arrangedSubviews: [v3, v4])
+	private func setupLayout() {
+		let vertStack2 = UIStackView(arrangedSubviews: [mainTitle, descriptionText])
 		vertStack2.axis = .vertical
 		vertStack2.spacing = 3
-		vertStack2.distribution = .fill
 
-		let third = UIView()
-		third.backgroundColor = #colorLiteral(red: 0.9098039269, green: 0.4784313738, blue: 0.6431372762, alpha: 1)
-		third.widthAnchor.constraint(equalToConstant: 80).isActive = true
+		let vertStack3 = UIStackView(arrangedSubviews: [priceLabel, button, sizeLabel])
+		vertStack3.axis = .vertical
+		vertStack3.spacing = 3
+		vertStack3.isLayoutMarginsRelativeArrangement = true
+		vertStack3.layoutMargins = .init(top: 10, left: 0, bottom: 0, right: 0)
+		vertStack3.distribution = .fillProportionally
 		
-		let mainHorStack = UIStackView(arrangedSubviews: [vertStack1, vertStack2, third])
+		let mainHorStack = UIStackView(arrangedSubviews: [purchaseImage, vertStack2, vertStack3])
 		mainHorStack.axis = .horizontal
 		mainHorStack.spacing = 5
 		mainHorStack.distribution = .fill
 		mainHorStack.isLayoutMarginsRelativeArrangement = true
-		mainHorStack.layoutMargins = .init(top: 0, left: 10, bottom: 0, right: 10)
-		addSubview(mainHorStack)
-		mainHorStack.fillSuperView()
-		// ------------------------------
+		mainHorStack.layoutMargins = .init(top: 5, left: 10, bottom: 5, right: 10)
 		
+		let fakeView = UIView()
 		
+		let mainVertStack = UIStackView(arrangedSubviews: [mainHorStack, fakeView])
+		mainVertStack.axis = .vertical
+		addSubview(mainVertStack)
+		mainVertStack.fillSuperView()
+		
+		NSLayoutConstraint.activate([
+			purchaseImage.widthAnchor.constraint(equalToConstant: 120),
+			purchaseImage.heightAnchor.constraint(equalToConstant: 110),
+			button.heightAnchor.constraint(equalToConstant: 40),
+			fakeView.heightAnchor.constraint(equalToConstant: 5),
+			vertStack3.widthAnchor.constraint(equalToConstant: 80),
+		])
 	}
 	
 	
+	public func configureWith(productViewModel: SKProduct) {
+		viewModel = productViewModel
+		priceLabel.text = viewModel.localizedPrice
+		mainTitle.text = viewModel.localizedTitle
+		descriptionText.text = viewModel.localizedDescription
+	}
 	
+	@objc private func onButtonClick() {
+		print("Did click Purchase!")
+		button.isEnabled = false
+		IAPManager.shared.purchaseProduct(productID: viewModel.productIdentifier)
+	}
 	
 	
 }

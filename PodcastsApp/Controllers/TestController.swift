@@ -20,6 +20,7 @@ class TestController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		view.backgroundColor = .white
+		navigationController?.navigationBar.isTranslucent = true
 		setupController()
 	}
 	
@@ -51,7 +52,7 @@ class TestController: UIViewController {
 		tableView.dataSource = self
 		tableView.register(PurchaseCell.self, forCellReuseIdentifier: PurchaseCell.identifier())
 		tableView.tableFooterView = UIView()
-		tableView.contentInset.top = 20
+		tableView.separatorStyle = .none
 		view.addSubview(tableView)
 		tableView.fillSuperView()
 	}
@@ -99,9 +100,24 @@ class TestController: UIViewController {
 
 extension TestController: UITableViewDelegate, UITableViewDataSource {
 	
+	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+		return 70
+	}
+	
+	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		let label = UILabel()
+		label.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+		label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+		label.textAlignment = .center
+		label.text = "Наборы ассоциативно метафорических карт психолога"
+		label.numberOfLines = 0
+		label.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1).withAlphaComponent(0.95)
+		return label
+	}
+	
+	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		//return purchases.count
-		return 1
+		return purchases.count
 	}
 	
 	func numberOfSections(in tableView: UITableView) -> Int {
@@ -109,24 +125,23 @@ extension TestController: UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return 120
+		return 125
 	}
 	
-	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		tableView.deselectRow(at: indexPath, animated: true)
-		let selectedProductID = purchases[indexPath.row].productIdentifier
-		IAPManager.shared.purchaseProduct(productID: selectedProductID)
-	}
+//	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//		tableView.deselectRow(at: indexPath, animated: true)
+//		let selectedProductID = purchases[indexPath.row].productIdentifier
+//		IAPManager.shared.purchaseProduct(productID: selectedProductID)
+//	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: PurchaseCell.identifier(),
 												 for: indexPath) as! PurchaseCell
-//		let content = purchases[indexPath.row]
+		
+		let content = purchases[indexPath.row]
+		cell.configureWith(productViewModel: content)
 //		let str = content.localizedTitle + " - " + content.localizedPrice!
 //		cell.textLabel?.text = str
-		
-		
-		
 		return cell
 	}
 	
