@@ -27,18 +27,24 @@ class FilePathManager {
 	
 	
 	public func moveFileToDocumentsDir(tempURL: URL, newFileName: String) {
-		var destPaths = documentsDirPath
+		var destURL = documentsDirPath
 		//let fileName = tempURL.lastPathComponent
-		destPaths.appendPathComponent(newFileName)
-		//if !fileManager.fileExists(atPath: destPaths.absoluteString) {
+		destURL.appendPathComponent(newFileName)
+		if fileManager.fileExists(atPath: destURL.path) {
 			do {
-				try fileManager.moveItem(at: tempURL, to: destPaths)
-				print("Successfully moved file to documentDirectory!")
+				try fileManager.removeItem(at: destURL)
 			}
 			catch let err {
-				print("Failed to move file:", err.localizedDescription)
+				print("Failed to remove file:", err.localizedDescription)
 			}
-		//}
+		}
+		do {
+			try fileManager.moveItem(at: tempURL, to: destURL)
+			print("Successfully moved file to documentDirectory!")
+		}
+		catch let err {
+			print("Failed to move file:", err.localizedDescription)
+		}
 	}
 	
 	

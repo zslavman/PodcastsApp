@@ -40,7 +40,7 @@ class TestController: UIViewController {
 		}
 		NotificationCenter.default.addObserver(self, selector: #selector(onReceiveDownloadCompleteEvent),
 											   name: .purchaseDownloadingCompleted, object: nil)
-		NotificationCenter.default.addObserver(self, selector: #selector(onReceiveDownloadCompleteEvent),
+		NotificationCenter.default.addObserver(self, selector: #selector(onReceiveError),
 											   name: .purchaseDownloadingError, object: nil)
 	}
 	
@@ -65,6 +65,12 @@ class TestController: UIViewController {
 	@objc private func onGotPurchasesList() {
 		//TODO: hide spiner
 		purchases = IAPManager.shared.availablePurchases
+		
+//		for _ in 0...5 {
+//			let copied = purchases.randomElement()!
+//			purchases.append(copied)
+//		}
+
 		// animated tableview output
 		let range = NSMakeRange(0, 1)
 		let sections = NSIndexSet(indexesIn: range)
@@ -77,8 +83,20 @@ class TestController: UIViewController {
 	/// reload cell with specific id
 	@objc private func onReceiveDownloadCompleteEvent(notif: Notification) {
 		guard let updateId = notif.object as? String else { return }
+		reloadCellByPurchaseID(id: updateId)
+	}
+	
+	
+	@objc private func onReceiveError(notif: Notification) {
+		guard let errorEntity = notif.object as? PurchaseErrorEntity else { return }
+		reloadCellByPurchaseID(id: errorEntity.purchaseID)
+		showAlert(message: errorEntity.error.localizedDescription)
+	}
+	
+	
+	private func reloadCellByPurchaseID(id: String) {
 		for (index, item) in purchases.enumerated() {
-			if item.productIdentifier == updateId {
+			if item.productIdentifier == id {
 				let indexPath = IndexPath(item: index, section: 0)
 				DispatchQueue.main.async {
 					self.tableView.reloadRows(at: [indexPath], with: .fade)
@@ -86,6 +104,14 @@ class TestController: UIViewController {
 				return
 			}
 		}
+	}
+	
+	
+	private func showAlert(message: String) {
+		let alertVC = UIAlertController(title: "Ошибка", message: message, preferredStyle: UIAlertController.Style.alert)
+		let OK_action = UIAlertAction(title: "OK", style: .default)
+		alertVC.addAction(OK_action)
+		present(alertVC, animated: true)
 	}
 	
 	

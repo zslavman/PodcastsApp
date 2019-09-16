@@ -24,6 +24,11 @@ extension Notification.Name {
 	static let purchaseDownloadingError = Notification.Name("purchaseDownloadingError")
 }
 
+struct PurchaseErrorEntity {
+	let purchaseID: String
+	let error: Error
+}
+
 
 class IAPManager {
 	
@@ -31,6 +36,7 @@ class IAPManager {
 	public var availablePurchases = [SKProduct]()
 	private var purchaseIDs: Set<String>
 	private var downloadsPool = [SKDownload]()
+	private let queue = DispatchQueue(label: "MultiAccessQueue", qos: .background) // avoid race condition
 	
 	private init() {
 		//TODO: load JSON from my server
@@ -90,7 +96,8 @@ class IAPManager {
 				case .cloudServiceRevoked: print("User has revoked permission to use this cloud service")
 				default: print((error as NSError).localizedDescription)
 				}
-				NotificationCenter.default.post(name: .purchaseDownloadingError, object: productID) // release locked button
+				let entity = PurchaseErrorEntity(purchaseID: productID, error: error)
+				NotificationCenter.default.post(name: .purchaseDownloadingError, object: entity) // release locked button
 			}
 		}
 	}
@@ -101,8 +108,10 @@ class IAPManager {
 		SwiftyStoreKit.updatedDownloadsHandler = {
 			[weak self] downloads in
 			
-			self?.downloadsPool = downloads
-			NotificationCenter.default.post(name: .purchaseDownloadsUpdated, object: downloads )
+			self?.queue.async(flags: .barrier) {
+				self?.downloadsPool = downloads
+				NotificationCenter.default.post(name: .purchaseDownloadsUpdated, object: downloads )
+			}
 			
 			// if purchase did finish downloading it will have field "contentURL" which is location file in local storage
 			// or contentURL is not nil if downloadState == .finished
@@ -118,12 +127,26 @@ class IAPManager {
 	private func finishDownloadPurchase(purchases: [SKDownload]) {
 		purchases.forEach {
 			(purchase) in
-			print("download completed for \(purchase.contentIdentifier)")
+			let id = purchase.contentIdentifier
+			print("download completed for \(id)")
 			SwiftyStoreKit.finishTransaction(purchase.transaction)
 			if let safeFileLocation = purchase.contentURL {
-				FilePathManager.shared.moveFileToDocumentsDir(tempURL: safeFileLocation, newFileName: purchase.contentIdentifier)
+				FilePathManager.shared.moveFileToDocumentsDir(tempURL: safeFileLocation, newFileName: id)
 				//TODO: convert purchase to RealmObj & save, set flag "purchased" with version of content
-				NotificationCenter.default.post(name: .purchaseDownloadingCompleted, object: purchase.contentIdentifier)
+				removeDownloadFromPool(id: id)
+			}
+		}
+	}
+	
+	
+	private func removeDownloadFromPool(id: String) {
+		for (index, item) in downloadsPool.enumerated() {
+			if item.contentIdentifier == id {
+				queue.async(flags: .barrier) {
+					self.downloadsPool.remove(at: index)
+					NotificationCenter.default.post(name: .purchaseDownloadingCompleted, object: id)
+				}
+				return
 			}
 		}
 	}

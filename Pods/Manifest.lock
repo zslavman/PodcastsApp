@@ -12,6 +12,7 @@ PODS:
   - AXStateButton (1.1.4)
   - FeedKit (8.1.1)
   - FLAnimatedImage (1.0.12)
+  - PKHUD (5.2.1)
   - ReachabilitySwift (4.3.0)
   - SDWebImage (5.0.0):
     - SDWebImage/Core (= 5.0.0)
@@ -23,6 +24,7 @@ DEPENDENCIES:
   - AXPhotoViewer (~> 1.6.1)
   - AXPhotoViewer/SDWebImage
   - FeedKit (~> 8.0)
+  - PKHUD (= 5.2.1)
   - ReachabilitySwift (= 4.3.0)
   - SDWebImage (~> 5.0)
   - SwiftyStoreKit (~> 0.14.2)
@@ -34,6 +36,7 @@ SPEC REPOS:
     - AXStateButton
     - FeedKit
     - FLAnimatedImage
+    - PKHUD
     - ReachabilitySwift
     - SDWebImage
     - SwiftyStoreKit
@@ -44,10 +47,11 @@ SPEC CHECKSUMS:
   AXStateButton: 6c515a433e37551505046429b5be04c12daa8c07
   FeedKit: 3418eed25f0b493b205b4de1b8511ac21d413fa9
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  PKHUD: 4e6162c4c39ac367c6934e9855c6b4762ee16256
   ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
   SDWebImage: 5de80a0302de9e377e62f47d2fa1304efff0e55f
   SwiftyStoreKit: cc399645796b094022fb650c148a0aed25995873
 
-PODFILE CHECKSUM: ec2512453d2c148d583b6dd0fd864fd21844bfd2
+PODFILE CHECKSUM: ecdfd5c77a46191656cdde259c4bd3705fd65f3c
 
 COCOAPODS: 1.5.3

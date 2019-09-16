@@ -175,17 +175,19 @@ class PurchaseCell: UITableViewCell {
 		priceLabel.text = viewModel.localizedPrice
 		mainTitle.text = viewModel.localizedTitle
 		descriptionText.text = viewModel.localizedDescription
-		setFileSize(number: viewModel.downloadContentLengths)
+		setFileSize()
 		let prog = IAPManager.shared.getProgressForIdentifier(id: viewModel.productIdentifier) // return -1 if not found
 		if prog >= 0 {
 			progressBar.progress = prog
 			button.isEnabled = false
+			setFileSizeWithProgress(curProgress: prog)
 			return
 		}
+		progressBar.isHidden = true
 		button.isEnabled = true
 		
 		//TODO: check id in already purchased dataBase
-		let purchased = true
+		let purchased = false
 		let purchasedVer = 1.0
 		guard purchased else { return }
 		
@@ -205,18 +207,33 @@ class PurchaseCell: UITableViewCell {
 		guard let updateObj = notif.object as? [SKDownload] else { return }
 		guard let desiredDownload = (updateObj.filter{ $0.contentIdentifier == viewModel.productIdentifier }).first
 		else { return }
-		progressBar.progress = Double(desiredDownload.progress)
+		let progress = Double(desiredDownload.progress)
+		DispatchQueue.main.async {
+			self.progressBar.progress = progress
+			self.setFileSizeWithProgress(curProgress: progress)
+		}
 	}
 	
 	
-	private func setFileSize(number: [NSNumber]) {
-		guard let fileSizeNumber = viewModel.downloadContentLengths.first else { return }
-		let fileSizeInt = fileSizeNumber.int64Value
+	private func setFileSize() {
+		guard let wholeSizeNumber = viewModel.downloadContentLengths.first else { return }
+		let fileSizeInt = wholeSizeNumber.int64Value
 		let formatter = ByteCountFormatter()
 		formatter.countStyle = .file
 		formatter.includesUnit = false
 		let formatedSize = formatter.string(fromByteCount: fileSizeInt)
 		sizeLabel.text = "Размер: \(formatedSize) МБ"
+	}
+	
+	private func setFileSizeWithProgress(curProgress: Double) {
+		guard let wholeFileSizeNumber = viewModel.downloadContentLengths.first else { return }
+		let wholeFileSizeInt = wholeFileSizeNumber.int64Value
+		let formatter = ByteCountFormatter()
+		formatter.countStyle = .file
+		let downloadedSize = Double(wholeFileSizeInt) * curProgress
+		let downloadedFormatedSize = formatter.string(fromByteCount: Int64(downloadedSize))
+		let wholeFormatedSize = formatter.string(fromByteCount: wholeFileSizeInt)
+		sizeLabel.text = "\(downloadedFormatedSize) / \(wholeFormatedSize)"
 	}
 	
 	
