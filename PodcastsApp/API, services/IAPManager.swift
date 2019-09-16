@@ -21,7 +21,7 @@ extension Notification.Name {
 	static let gotPurchasesList = Notification.Name("gotPurchasesList")
 	static let purchaseDownloadsUpdated = Notification.Name("purchaseDownloadsUpdated")
 	static let purchaseDownloadingCompleted = Notification.Name("purchaseDownloadingCompleted")
-	
+	static let purchaseDownloadingError = Notification.Name("purchaseDownloadingError")
 }
 
 
@@ -90,6 +90,7 @@ class IAPManager {
 				case .cloudServiceRevoked: print("User has revoked permission to use this cloud service")
 				default: print((error as NSError).localizedDescription)
 				}
+				NotificationCenter.default.post(name: .purchaseDownloadingError, object: productID) // release locked button
 			}
 		}
 	}
@@ -121,8 +122,8 @@ class IAPManager {
 			SwiftyStoreKit.finishTransaction(purchase.transaction)
 			if let safeFileLocation = purchase.contentURL {
 				FilePathManager.shared.moveFileToDocumentsDir(tempURL: safeFileLocation, newFileName: purchase.contentIdentifier)
-				NotificationCenter.default.post(name: .purchaseDownloadingCompleted, object: purchase)
 				//TODO: convert purchase to RealmObj & save, set flag "purchased" with version of content
+				NotificationCenter.default.post(name: .purchaseDownloadingCompleted, object: purchase.contentIdentifier)
 			}
 		}
 	}

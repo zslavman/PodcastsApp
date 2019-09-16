@@ -32,6 +32,7 @@ import UIKit
 			let temp = Int(progress * 100)
 			guard temp >= 0 else { return }
 			centerLabel.text = "\(temp) %"
+			self.isHidden = false
 		}
 	}
 	

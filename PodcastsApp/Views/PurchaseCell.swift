@@ -23,7 +23,7 @@ class PurchaseCell: UITableViewCell {
 	private let mainTitle: UILabelWithEdges = {
 		let label = UILabelWithEdges()
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
+		label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
 		label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		label.textAlignment = .left
 		label.numberOfLines = 0
@@ -47,8 +47,7 @@ class PurchaseCell: UITableViewCell {
 		label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
 		label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		label.textAlignment = .center
-		label.numberOfLines = 0
-		label.sizeToFit()
+		label.adjustsFontSizeToFitWidth = true
 		return label
 	}()
 	private let button: UIButton = {
@@ -59,6 +58,10 @@ class PurchaseCell: UITableViewCell {
 		bttn.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		bttn.layer.cornerRadius = 5
 		bttn.clipsToBounds = true
+		bttn.titleLabel?.numberOfLines = 1
+		bttn.titleLabel?.adjustsFontSizeToFitWidth = true
+		bttn.titleLabel?.lineBreakMode = .byClipping
+		bttn.titleLabel?.baselineAdjustment = .alignCenters
 		return bttn
 	}()
 	private let sizeLabel: UILabel = {
@@ -143,13 +146,12 @@ class PurchaseCell: UITableViewCell {
 		mainHorStack.isLayoutMarginsRelativeArrangement = true
 		mainHorStack.layoutMargins = .init(top: 5, left: 10, bottom: 5, right: 10)
 		
-		let fakeView = UIView()
+		let fakeView = UIView() // invisible view which help set a footer empty space
 		
 		let mainVertStack = UIStackView(arrangedSubviews: [mainHorStack, fakeView])
 		mainVertStack.axis = .vertical
 		addSubview(mainVertStack)
 		mainVertStack.fillSuperView()
-		// ---------------
 		
 		addSubview(progressBar)
 		
@@ -158,7 +160,7 @@ class PurchaseCell: UITableViewCell {
 			purchaseImage.heightAnchor.constraint(equalToConstant: 110),
 			button.heightAnchor.constraint(equalToConstant: 40),
 			fakeView.heightAnchor.constraint(equalToConstant: 5),
-			backViewForStack3.widthAnchor.constraint(equalToConstant: 80),
+			backViewForStack3.widthAnchor.constraint(equalToConstant: 85),
 			progressBar.widthAnchor.constraint(equalToConstant: PurchaseCell.PROGRESS_SIZE),
 			progressBar.heightAnchor.constraint(equalToConstant: PurchaseCell.PROGRESS_SIZE),
 			progressBar.centerXAnchor.constraint(equalTo: purchaseImage.centerXAnchor),
@@ -166,23 +168,44 @@ class PurchaseCell: UITableViewCell {
 		])
 	}
 	
-	
+	//MARK: configure cell
 	public func configureWith(productViewModel: SKProduct) {
+		purchaseImage.image = #imageLiteral(resourceName: "sample")
 		viewModel = productViewModel
 		priceLabel.text = viewModel.localizedPrice
 		mainTitle.text = viewModel.localizedTitle
 		descriptionText.text = viewModel.localizedDescription
 		setFileSize(number: viewModel.downloadContentLengths)
-		let prog = IAPManager.shared.getProgressForIdentifier(id: viewModel.productIdentifier)
+		let prog = IAPManager.shared.getProgressForIdentifier(id: viewModel.productIdentifier) // return -1 if not found
 		if prog >= 0 {
-			progressBar.isHidden = false
 			progressBar.progress = prog
+			button.isEnabled = false
+			return
+		}
+		button.isEnabled = true
+		
+		//TODO: check id in already purchased dataBase
+		let purchased = true
+		let purchasedVer = 1.0
+		guard purchased else { return }
+		
+		let newestVer = Double(viewModel.downloadContentVersion) ?? 0
+		if purchasedVer < newestVer {
+			button.setTitle("Обновить", for: .normal)
+			priceLabel.text = "Бесплатно"
+		}
+		else {
+			button.setTitle("Куплено", for: .normal)
+			button.isEnabled = false
 		}
 	}
 	
+	
 	@objc private func updateProgress(notif: Notification) {
 		guard let updateObj = notif.object as? [SKDownload] else { return }
-		
+		guard let desiredDownload = (updateObj.filter{ $0.contentIdentifier == viewModel.productIdentifier }).first
+		else { return }
+		progressBar.progress = Double(desiredDownload.progress)
 	}
 	
 	

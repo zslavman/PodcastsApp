@@ -38,6 +38,10 @@ class TestController: UIViewController {
 												   name: Notification.Name.gotPurchasesList, object: nil)
 			//TODO: add spiner
 		}
+		NotificationCenter.default.addObserver(self, selector: #selector(onReceiveDownloadCompleteEvent),
+											   name: .purchaseDownloadingCompleted, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(onReceiveDownloadCompleteEvent),
+											   name: .purchaseDownloadingError, object: nil)
 	}
 	
 	
@@ -61,8 +65,26 @@ class TestController: UIViewController {
 	@objc private func onGotPurchasesList() {
 		//TODO: hide spiner
 		purchases = IAPManager.shared.availablePurchases
+		// animated tableview output
+		let range = NSMakeRange(0, 1)
+		let sections = NSIndexSet(indexesIn: range)
 		DispatchQueue.main.async {
-			self.tableView.reloadData()
+			self.tableView.reloadSections(sections as IndexSet, with: .bottom)
+		}
+	}
+	
+	
+	/// reload cell with specific id
+	@objc private func onReceiveDownloadCompleteEvent(notif: Notification) {
+		guard let updateId = notif.object as? String else { return }
+		for (index, item) in purchases.enumerated() {
+			if item.productIdentifier == updateId {
+				let indexPath = IndexPath(item: index, section: 0)
+				DispatchQueue.main.async {
+					self.tableView.reloadRows(at: [indexPath], with: .fade)
+				}
+				return
+			}
 		}
 	}
 	
