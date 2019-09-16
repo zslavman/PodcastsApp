@@ -30,6 +30,7 @@ class IAPManager {
 	public static let shared = IAPManager()
 	public var availablePurchases = [SKProduct]()
 	private var purchaseIDs: Set<String>
+	private var downloadsPool = [SKDownload]()
 	
 	private init() {
 		//TODO: load JSON from my server
@@ -54,7 +55,7 @@ class IAPManager {
 			}
 			self.availablePurchases.sort(by: {
 				(pr1, pr2) -> Bool in
-				return pr1.localizedTitle < pr2.localizedTitle
+				return pr1.productIdentifier < pr2.productIdentifier
 			})
 			NotificationCenter.default.post(name: .gotPurchasesList, object: nil)
 		}
@@ -99,7 +100,8 @@ class IAPManager {
 		SwiftyStoreKit.updatedDownloadsHandler = {
 			[weak self] downloads in
 			
-			NotificationCenter.default.post(name: .purchaseDownloadsUpdated, object: downloads)
+			self?.downloadsPool = downloads
+			NotificationCenter.default.post(name: .purchaseDownloadsUpdated, object: downloads )
 			
 			// if purchase did finish downloading it will have field "contentURL" which is location file in local storage
 			// or contentURL is not nil if downloadState == .finished
@@ -123,6 +125,13 @@ class IAPManager {
 				//TODO: convert purchase to RealmObj & save, set flag "purchased" with version of content
 			}
 		}
+	}
+	
+	
+	public func getProgressForIdentifier(id: String) -> Double {
+		guard let desiredDownload = (downloadsPool.filter{ $0.contentIdentifier == id }).first else { return -1 }
+		let progress = Double(desiredDownload.progress)
+		return progress
 	}
 	
 	

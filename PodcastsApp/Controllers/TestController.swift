@@ -101,7 +101,7 @@ class TestController: UIViewController {
 extension TestController: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-		return 70
+		return purchases.isEmpty ? 0 : 70
 	}
 	
 	func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

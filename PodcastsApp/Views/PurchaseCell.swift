@@ -11,6 +11,7 @@ import StoreKit
 
 class PurchaseCell: UITableViewCell {
 	
+	static let PROGRESS_SIZE: CGFloat = 80
 	private let purchaseImage: UIImageView = {
 		let img = UIImageView(image: #imageLiteral(resourceName: "sample"))
 		img.translatesAutoresizingMaskIntoConstraints = false
@@ -19,14 +20,14 @@ class PurchaseCell: UITableViewCell {
 		img.clipsToBounds = true
 		return img
 	}()
-	private let mainTitle: UILabel = {
-		let label = UILabel()
+	private let mainTitle: UILabelWithEdges = {
+		let label = UILabelWithEdges()
 		label.translatesAutoresizingMaskIntoConstraints = false
 		label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
 		label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		label.textAlignment = .center
-		label.text = "Линия жизни"
+		label.textAlignment = .left
 		label.numberOfLines = 0
+		label.textInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
 		return label
 	}()
 	private let descriptionText: UITextView = {
@@ -46,7 +47,6 @@ class PurchaseCell: UITableViewCell {
 		label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
 		label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		label.textAlignment = .center
-		label.text = "1.99 $"
 		label.numberOfLines = 0
 		label.sizeToFit()
 		return label
@@ -64,14 +64,27 @@ class PurchaseCell: UITableViewCell {
 	private let sizeLabel: UILabel = {
 		let label = UILabel()
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.font = UIFont.systemFont(ofSize: 10, weight: .bold)
+		label.font = UIFont.systemFont(ofSize: 8, weight: .bold)
 		label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
 		label.textAlignment = .center
-		label.text = "Размер: 8 Мб"
 		label.numberOfLines = 0
 		return label
 	}()
-	private let progress: UILabel!
+	private var progressBar: CircleProgressBar = {
+		let proBar = CircleProgressBar(frame: .zero)
+		proBar.translatesAutoresizingMaskIntoConstraints = false
+		proBar.trackWidth = 3
+		proBar.trackBorderWidth = 3
+		proBar.trackFillColor = .white
+		proBar.roundedCap = true
+		proBar.trackBackgroundColor = .clear
+		proBar.centerFillColor = .clear
+		proBar.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+		proBar.layer.cornerRadius = PROGRESS_SIZE / 2
+		proBar.layer.masksToBounds = true
+		proBar.isHidden = true
+		return proBar
+	}()
 	private var viewModel: SKProduct!
 	
 	
@@ -84,12 +97,22 @@ class PurchaseCell: UITableViewCell {
 		setupLayout()
 		selectionStyle = .none
 		button.addTarget(self, action: #selector(onButtonClick), for: .touchUpInside)
+		NotificationCenter.default.addObserver(self, selector: #selector(updateProgress(notif:)),
+											   name: .purchaseDownloadsUpdated, object: nil)
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	deinit {
+		NotificationCenter.default.removeObserver(self)
+	}
+	
+	override func prepareForReuse() {
+		super.prepareForReuse()
+		purchaseImage.image = nil
+	}
 	
 	private func setupLayout() {
 		let vertStack2 = UIStackView(arrangedSubviews: [mainTitle, descriptionText])
@@ -100,10 +123,20 @@ class PurchaseCell: UITableViewCell {
 		vertStack3.axis = .vertical
 		vertStack3.spacing = 3
 		vertStack3.isLayoutMarginsRelativeArrangement = true
-		vertStack3.layoutMargins = .init(top: 10, left: 0, bottom: 0, right: 0)
+		vertStack3.layoutMargins = .init(top: 10, left: 5, bottom: 10, right: 5)
 		vertStack3.distribution = .fillProportionally
 		
-		let mainHorStack = UIStackView(arrangedSubviews: [purchaseImage, vertStack2, vertStack3])
+		let backViewForStack3 = UIView()
+		backViewForStack3.backgroundColor = #colorLiteral(red: 0.9402040993, green: 0.9402040993, blue: 0.9402040993, alpha: 1)
+		//backViewForStack3.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		backViewForStack3.layer.cornerRadius = 8
+		backViewForStack3.clipsToBounds = true
+		backViewForStack3.layer.borderWidth = 0.5
+		backViewForStack3.layer.borderColor = #colorLiteral(red: 0.8844061932, green: 0.8844061932, blue: 0.8844061932, alpha: 1).cgColor
+		backViewForStack3.addSubview(vertStack3)
+		vertStack3.fillSuperView()
+		
+		let mainHorStack = UIStackView(arrangedSubviews: [purchaseImage, vertStack2, backViewForStack3])
 		mainHorStack.axis = .horizontal
 		mainHorStack.spacing = 5
 		mainHorStack.distribution = .fill
@@ -116,13 +149,20 @@ class PurchaseCell: UITableViewCell {
 		mainVertStack.axis = .vertical
 		addSubview(mainVertStack)
 		mainVertStack.fillSuperView()
+		// ---------------
+		
+		addSubview(progressBar)
 		
 		NSLayoutConstraint.activate([
 			purchaseImage.widthAnchor.constraint(equalToConstant: 120),
 			purchaseImage.heightAnchor.constraint(equalToConstant: 110),
 			button.heightAnchor.constraint(equalToConstant: 40),
 			fakeView.heightAnchor.constraint(equalToConstant: 5),
-			vertStack3.widthAnchor.constraint(equalToConstant: 80),
+			backViewForStack3.widthAnchor.constraint(equalToConstant: 80),
+			progressBar.widthAnchor.constraint(equalToConstant: PurchaseCell.PROGRESS_SIZE),
+			progressBar.heightAnchor.constraint(equalToConstant: PurchaseCell.PROGRESS_SIZE),
+			progressBar.centerXAnchor.constraint(equalTo: purchaseImage.centerXAnchor),
+			progressBar.centerYAnchor.constraint(equalTo: purchaseImage.centerYAnchor),
 		])
 	}
 	
@@ -132,7 +172,30 @@ class PurchaseCell: UITableViewCell {
 		priceLabel.text = viewModel.localizedPrice
 		mainTitle.text = viewModel.localizedTitle
 		descriptionText.text = viewModel.localizedDescription
+		setFileSize(number: viewModel.downloadContentLengths)
+		let prog = IAPManager.shared.getProgressForIdentifier(id: viewModel.productIdentifier)
+		if prog >= 0 {
+			progressBar.isHidden = false
+			progressBar.progress = prog
+		}
 	}
+	
+	@objc private func updateProgress(notif: Notification) {
+		guard let updateObj = notif.object as? [SKDownload] else { return }
+		
+	}
+	
+	
+	private func setFileSize(number: [NSNumber]) {
+		guard let fileSizeNumber = viewModel.downloadContentLengths.first else { return }
+		let fileSizeInt = fileSizeNumber.int64Value
+		let formatter = ByteCountFormatter()
+		formatter.countStyle = .file
+		formatter.includesUnit = false
+		let formatedSize = formatter.string(fromByteCount: fileSizeInt)
+		sizeLabel.text = "Размер: \(formatedSize) МБ"
+	}
+	
 	
 	@objc private func onButtonClick() {
 		print("Did click Purchase!")

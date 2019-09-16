@@ -25,6 +25,7 @@
 		566B0FDF22B65E2400097A70 /* PSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566B0FDE22B65E2400097A70 /* PSearchController.swift */; };
 		566C242D230F39C80054A5E4 /* TestController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566C242C230F39C80054A5E4 /* TestController.swift */; };
 		567153F022D7BEC5000C5E9A /* ReachabilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567153EF22D7BEC5000C5E9A /* ReachabilityService.swift */; };
+		569A6894232FA50D0028FC4B /* CircularProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 569A6893232FA50D0028FC4B /* CircularProgressBar.swift */; };
 		56C100FA232982C4006E2711 /* pdftitle.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 56C100F9232982C4006E2711 /* pdftitle.pdf */; };
 		56C11AAC22D1529E009E3B56 /* InfoSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C11AAB22D1529E009E3B56 /* InfoSlider.swift */; };
 		56C45018232E7BF800E6DA49 /* PurchaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C45017232E7BF800E6DA49 /* PurchaseCell.swift */; };
@@ -68,6 +69,7 @@
 		566B0FDE22B65E2400097A70 /* PSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PSearchController.swift; sourceTree = "<group>"; };
 		566C242C230F39C80054A5E4 /* TestController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestController.swift; sourceTree = "<group>"; };
 		567153EF22D7BEC5000C5E9A /* ReachabilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityService.swift; sourceTree = "<group>"; };
+		569A6893232FA50D0028FC4B /* CircularProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBar.swift; sourceTree = "<group>"; };
 		56C100F323298292006E2711 /* Purchase3 */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = Purchase3; sourceTree = BUILT_PRODUCTS_DIR; };
 		56C100F523298292006E2711 /* ContentInfo.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ContentInfo.plist; sourceTree = "<group>"; };
 		56C100F9232982C4006E2711 /* pdftitle.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = pdftitle.pdf; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 				567153EF22D7BEC5000C5E9A /* ReachabilityService.swift */,
 				56EB2C2D22FF8C6E003B51A8 /* IAPManager.swift */,
 				563EB3DC232D6FD4005E0467 /* FilePathManager.swift */,
+				569A6893232FA50D0028FC4B /* CircularProgressBar.swift */,
 			);
 			path = "API, services";
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 				56C11AAC22D1529E009E3B56 /* InfoSlider.swift in Sources */,
 				566B0FDD22B646A700097A70 /* DownloadsController.swift in Sources */,
 				566C242D230F39C80054A5E4 /* TestController.swift in Sources */,
+				569A6894232FA50D0028FC4B /* CircularProgressBar.swift in Sources */,
 				563DE40222862D73002AAB8A /* RSSFeed.swift in Sources */,
 				5645FAE6228705F0002740D1 /* PlayerDetailsView.swift in Sources */,
 				566B0FDF22B65E2400097A70 /* PSearchController.swift in Sources */,
