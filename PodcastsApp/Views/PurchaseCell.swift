@@ -8,9 +8,15 @@
 
 import UIKit
 import StoreKit
+import PKHUD
+
+protocol PurchaseCellDelegate: class {
+	func showHUD()
+}
 
 class PurchaseCell: UITableViewCell {
 	
+	weak var delegate: PurchaseCellDelegate!
 	static let PROGRESS_SIZE: CGFloat = 80
 	private let purchaseImage: UIImageView = {
 		let img = UIImageView(image: #imageLiteral(resourceName: "sample"))
@@ -117,6 +123,7 @@ class PurchaseCell: UITableViewCell {
 		purchaseImage.image = nil
 	}
 	
+	
 	private func setupLayout() {
 		let vertStack2 = UIStackView(arrangedSubviews: [mainTitle, descriptionText])
 		vertStack2.axis = .vertical
@@ -168,6 +175,7 @@ class PurchaseCell: UITableViewCell {
 		])
 	}
 	
+	
 	//MARK: configure cell
 	public func configureWith(productViewModel: SKProduct) {
 		purchaseImage.image = #imageLiteral(resourceName: "sample")
@@ -184,7 +192,13 @@ class PurchaseCell: UITableViewCell {
 			return
 		}
 		progressBar.isHidden = true
-		button.isEnabled = true
+		
+		if IAPManager.shared.suspendedPurchaseIDs.contains(viewModel.productIdentifier) {
+			button.isEnabled = false
+		}
+		else {
+			button.isEnabled = true
+		}
 		
 		//TODO: check id in already purchased dataBase
 		let purchased = false
@@ -225,6 +239,7 @@ class PurchaseCell: UITableViewCell {
 		sizeLabel.text = "Размер: \(formatedSize) МБ"
 	}
 	
+	
 	private func setFileSizeWithProgress(curProgress: Double) {
 		guard let wholeFileSizeNumber = viewModel.downloadContentLengths.first else { return }
 		let wholeFileSizeInt = wholeFileSizeNumber.int64Value
@@ -241,6 +256,7 @@ class PurchaseCell: UITableViewCell {
 		print("Did click Purchase!")
 		button.isEnabled = false
 		IAPManager.shared.purchaseProduct(productID: viewModel.productIdentifier)
+		delegate?.showHUD()
 	}
 	
 	

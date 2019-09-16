@@ -10,11 +10,13 @@ import Foundation
 import UIKit
 import StoreKit
 import SwiftyStoreKit
+import PKHUD
 
 class TestController: UIViewController {
 
 	private var tableView: UITableView!
 	private var purchases = [SKProduct]()
+	private var timer: Timer!
 	
 	
 	override func viewDidLoad() {
@@ -36,7 +38,7 @@ class TestController: UIViewController {
 		if purchases.isEmpty {
 			NotificationCenter.default.addObserver(self, selector: #selector(onGotPurchasesList),
 												   name: Notification.Name.gotPurchasesList, object: nil)
-			//TODO: add spiner
+			TestController.showLoading()
 		}
 		NotificationCenter.default.addObserver(self, selector: #selector(onReceiveDownloadCompleteEvent),
 											   name: .purchaseDownloadingCompleted, object: nil)
@@ -63,9 +65,7 @@ class TestController: UIViewController {
 	
 	
 	@objc private func onGotPurchasesList() {
-		//TODO: hide spiner
 		purchases = IAPManager.shared.availablePurchases
-		
 //		for _ in 0...5 {
 //			let copied = purchases.randomElement()!
 //			purchases.append(copied)
@@ -74,6 +74,7 @@ class TestController: UIViewController {
 		// animated tableview output
 		let range = NSMakeRange(0, 1)
 		let sections = NSIndexSet(indexesIn: range)
+		HUD.hide()
 		DispatchQueue.main.async {
 			self.tableView.reloadSections(sections as IndexSet, with: .bottom)
 		}
@@ -104,6 +105,10 @@ class TestController: UIViewController {
 				return
 			}
 		}
+	}
+	
+	public static func showLoading() {
+		HUD.flash(.labeledProgress(title: "Загрузка..", subtitle: nil), delay: 3)
 	}
 	
 	
@@ -176,22 +181,20 @@ extension TestController: UITableViewDelegate, UITableViewDataSource {
 		return 125
 	}
 	
-//	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//		tableView.deselectRow(at: indexPath, animated: true)
-//		let selectedProductID = purchases[indexPath.row].productIdentifier
-//		IAPManager.shared.purchaseProduct(productID: selectedProductID)
-//	}
-	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: PurchaseCell.identifier(),
 												 for: indexPath) as! PurchaseCell
-		
 		let content = purchases[indexPath.row]
 		cell.configureWith(productViewModel: content)
-//		let str = content.localizedTitle + " - " + content.localizedPrice!
-//		cell.textLabel?.text = str
+		cell.delegate = self
 		return cell
 	}
 	
+}
+
+extension TestController: PurchaseCellDelegate {
+	func showHUD() {
+		HUD.flash(.progress, onView: nil, delay: 2, completion: nil)
+	}
 }
 

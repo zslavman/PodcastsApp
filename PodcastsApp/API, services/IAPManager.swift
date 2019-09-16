@@ -37,6 +37,11 @@ class IAPManager {
 	private var purchaseIDs: Set<String>
 	private var downloadsPool = [SKDownload]()
 	private let queue = DispatchQueue(label: "MultiAccessQueue", qos: .background) // avoid race condition
+	public var suspendedPurchaseIDs: Set<String> {
+		return _suspended
+	}
+	private var _suspended = Set<String>() // for purchases which just clicked "Buy"
+	
 	
 	private init() {
 		//TODO: load JSON from my server
@@ -70,6 +75,7 @@ class IAPManager {
 	
 	/// if click buy product
 	public func purchaseProduct(productID: String) {
+		_suspended.insert(productID)
 		SwiftyStoreKit.purchaseProduct(productID, quantity: 1, atomically: false) {
 			result in
 			switch result {
@@ -97,6 +103,7 @@ class IAPManager {
 				default: print((error as NSError).localizedDescription)
 				}
 				let entity = PurchaseErrorEntity(purchaseID: productID, error: error)
+				self._suspended.remove(productID)
 				NotificationCenter.default.post(name: .purchaseDownloadingError, object: entity) // release locked button
 			}
 		}
@@ -130,6 +137,7 @@ class IAPManager {
 			let id = purchase.contentIdentifier
 			print("download completed for \(id)")
 			SwiftyStoreKit.finishTransaction(purchase.transaction)
+			_suspended.remove(id)
 			if let safeFileLocation = purchase.contentURL {
 				FilePathManager.shared.moveFileToDocumentsDir(tempURL: safeFileLocation, newFileName: id)
 				//TODO: convert purchase to RealmObj & save, set flag "purchased" with version of content
@@ -157,6 +165,8 @@ class IAPManager {
 		let progress = Double(desiredDownload.progress)
 		return progress
 	}
+	
+	
 	
 	
 }
