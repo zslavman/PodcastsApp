@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		562E7EE822515E7500D576F8 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562E7EE722515E7500D576F8 /* Podcast.swift */; };
 		56346A3F2332D04900BA9581 /* JSONDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56346A3E2332D04900BA9581 /* JSONDownloadService.swift */; };
+		56346A412332D6F700BA9581 /* UserDefaultsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56346A402332D6F700BA9581 /* UserDefaultsData.swift */; };
 		563D8AA722DE56DF00C2F085 /* SettingsBundleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8AA622DE56DF00C2F085 /* SettingsBundleHelper.swift */; };
 		563D8EA8228460E300F2A6CA /* EpisodesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8EA7228460E300F2A6CA /* EpisodesController.swift */; };
 		563DE3FC2286021B002AAB8A /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DE3FB2286021B002AAB8A /* Episode.swift */; };
@@ -54,6 +55,7 @@
 /* Begin PBXFileReference section */
 		562E7EE722515E7500D576F8 /* Podcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
 		56346A3E2332D04900BA9581 /* JSONDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDownloadService.swift; sourceTree = "<group>"; };
+		56346A402332D6F700BA9581 /* UserDefaultsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsData.swift; sourceTree = "<group>"; };
 		563D8AA622DE56DF00C2F085 /* SettingsBundleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsBundleHelper.swift; sourceTree = "<group>"; };
 		563D8EA7228460E300F2A6CA /* EpisodesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesController.swift; sourceTree = "<group>"; };
 		563DE3FB2286021B002AAB8A /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 				563EB3DC232D6FD4005E0467 /* FilePathManager.swift */,
 				569A6893232FA50D0028FC4B /* CircularProgressBar.swift */,
 				56346A3E2332D04900BA9581 /* JSONDownloadService.swift */,
+				56346A402332D6F700BA9581 /* UserDefaultsData.swift */,
 			);
 			path = "API, services";
 			sourceTree = "<group>";
@@ -570,6 +573,7 @@
 				56DB89082249674F000F7D3C /* TabBarController.swift in Sources */,
 				5648056922667F3E008CAD73 /* APIServices.swift in Sources */,
 				56DB88F6224966E6000F7D3C /* AppDelegate.swift in Sources */,
+				56346A412332D6F700BA9581 /* UserDefaultsData.swift in Sources */,
 				565A11CA22B033C40077996D /* FavoritesController.swift in Sources */,
 				567153F022D7BEC5000C5E9A /* ReachabilityService.swift in Sources */,
 				562E7EE822515E7500D576F8 /* Podcast.swift in Sources */,
