@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		562E7EE822515E7500D576F8 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562E7EE722515E7500D576F8 /* Podcast.swift */; };
+		56346A3F2332D04900BA9581 /* JSONDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56346A3E2332D04900BA9581 /* JSONDownloadService.swift */; };
 		563D8AA722DE56DF00C2F085 /* SettingsBundleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8AA622DE56DF00C2F085 /* SettingsBundleHelper.swift */; };
 		563D8EA8228460E300F2A6CA /* EpisodesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563D8EA7228460E300F2A6CA /* EpisodesController.swift */; };
 		563DE3FC2286021B002AAB8A /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 563DE3FB2286021B002AAB8A /* Episode.swift */; };
@@ -52,6 +53,7 @@
 
 /* Begin PBXFileReference section */
 		562E7EE722515E7500D576F8 /* Podcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
+		56346A3E2332D04900BA9581 /* JSONDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDownloadService.swift; sourceTree = "<group>"; };
 		563D8AA622DE56DF00C2F085 /* SettingsBundleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsBundleHelper.swift; sourceTree = "<group>"; };
 		563D8EA7228460E300F2A6CA /* EpisodesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesController.swift; sourceTree = "<group>"; };
 		563DE3FB2286021B002AAB8A /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 				56EB2C2D22FF8C6E003B51A8 /* IAPManager.swift */,
 				563EB3DC232D6FD4005E0467 /* FilePathManager.swift */,
 				569A6893232FA50D0028FC4B /* CircularProgressBar.swift */,
+				56346A3E2332D04900BA9581 /* JSONDownloadService.swift */,
 			);
 			path = "API, services";
 			sourceTree = "<group>";
@@ -549,6 +552,7 @@
 				56EB2C2E22FF8C6E003B51A8 /* IAPManager.swift in Sources */,
 				56C11AAC22D1529E009E3B56 /* InfoSlider.swift in Sources */,
 				566B0FDD22B646A700097A70 /* DownloadsController.swift in Sources */,
+				56346A3F2332D04900BA9581 /* JSONDownloadService.swift in Sources */,
 				566C242D230F39C80054A5E4 /* TestController.swift in Sources */,
 				569A6894232FA50D0028FC4B /* CircularProgressBar.swift in Sources */,
 				563DE40222862D73002AAB8A /* RSSFeed.swift in Sources */,
