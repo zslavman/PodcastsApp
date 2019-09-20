@@ -15,9 +15,16 @@ class JSONDownloadService {
 	private let json = "https://drive.google.com/uc?export=download&id=1Rbk49RDjWffwbs-nMA9WaMjsaOAKWg_r"
 	private var downloadTask: URLSessionDataTask?
 	private let allovedUpdateInterval: TimeInterval = 3600 // not more than 1 per hour
+	public var parsed = [SPurchase]()
+	
 	
 	
 	private init() { }
+	
+	
+	public func getSome() {
+		
+	}
 	
 	
 	public func downloadJSON(callback: (() -> Void)? = nil) {
