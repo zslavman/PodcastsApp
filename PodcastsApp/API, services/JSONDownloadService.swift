@@ -9,26 +9,29 @@
 import UIKit
 
 
-class JSONDownloadService {
+class JSONDownloadService: NSObject {
 	
 	public static let shared = JSONDownloadService()
 	private let json = "https://drive.google.com/uc?export=download&id=1LZrlmX3mrl8lSYq-gYa9v5xrVfYRG3GU"
+	//private let json = "https://drive.google.com/file/d/1LZrlmX3mrl8lSYq-gYa9v5xrVfYRG3GU?alt=media"
+	
 	private var downloadTask: URLSessionDataTask?
 	private let allovedUpdateInterval: TimeInterval = 3600 // not more than 1 per hour
 	public var parsed = [PurchModel]()
+	private let session = URLSession(configuration: .default)
 	
 	
-	
-	private init() { }
+	private init(test: String = "") { }
 	
 	
 	public func downloadNewJSON() {
 		let delta = Date().timeIntervalSince1970 - UserDefaultsData.lastTimeJSONUpdated
-		guard parsed.isEmpty || delta >= allovedUpdateInterval || downloadTask == nil else {
+		guard parsed.isEmpty || delta >= allovedUpdateInterval else {
 			return
 		}
+		if downloadTask != nil { return }
 		guard let jsonURL = URL(string: json) else { return }
-		downloadTask = URLSession.shared.dataTask(with: jsonURL) {
+		downloadTask = session.dataTask(with: jsonURL) {
 			(data, response, error) in
 			if let error = error {
 				print(error.localizedDescription)
@@ -47,11 +50,22 @@ class JSONDownloadService {
 			catch let err {
 				print("Failed to serealize JSON", err.localizedDescription)
 			}
-			self.downloadTask!.cancel()
+			self.downloadTask?.cancel()
 			self.downloadTask = nil
 		}
 		downloadTask!.resume()
 		print("Started URLSession with: \(jsonURL)")
+	}
+	
+}
+
+
+extension JSONDownloadService: URLSessionTaskDelegate {
+	
+	func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+		if let err = error {
+			print("Error 50000:", err.localizedDescription)
+		}
 	}
 	
 }

@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		_ = SettingsBundleHelper()
+		JSONDownloadService.shared.downloadNewJSON()
 	}
 	
 }

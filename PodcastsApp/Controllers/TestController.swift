@@ -37,7 +37,7 @@ class TestController: UIViewController {
 		purchases = IAPManager.shared.availablePurchases
 		if purchases.isEmpty {
 			NotificationCenter.default.addObserver(self, selector: #selector(onGotPurchasesList),
-												   name: Notification.Name.gotPurchasesList, object: nil)
+												   name: .gotPurchasesList, object: nil)
 			TestController.showLoading()
 		}
 		NotificationCenter.default.addObserver(self, selector: #selector(onReceiveDownloadCompleteEvent),
@@ -65,19 +65,24 @@ class TestController: UIViewController {
 	
 	
 	@objc private func onGotPurchasesList() {
+		let tableWasEmpty: Bool = purchases.isEmpty
 		purchases = IAPManager.shared.availablePurchases
 //		for _ in 0...5 {
 //			let copied = purchases.randomElement()!
 //			purchases.append(copied)
 //		}
-
 		print("onGotPurchasesList triggered!")
 		// animated tableview output
 		let range = NSMakeRange(0, 1)
 		let sections = NSIndexSet(indexesIn: range)
 		HUD.hide()
 		DispatchQueue.main.async {
-			self.tableView.reloadSections(sections as IndexSet, with: .bottom)
+			if tableWasEmpty {
+				self.tableView.reloadSections(sections as IndexSet, with: .bottom)
+			}
+			else {
+				self.tableView.reloadSections(sections as IndexSet, with: .fade)
+			}
 		}
 	}
 	

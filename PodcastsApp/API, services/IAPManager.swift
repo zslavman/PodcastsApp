@@ -65,6 +65,7 @@ class IAPManager {
 			if !result.invalidProductIDs.isEmpty {
 				print("Invalid products: \(result.invalidProductIDs)")
 			}
+			self.availablePurchases.removeAll()
 			for product in result.retrievedProducts {
 				self.availablePurchases.append(product)
 			}
