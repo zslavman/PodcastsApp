@@ -17,8 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication,
 					 didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-		JSONDownloadService.shared.downloadJSON()
+		reachabilityService = ReachabilityService()
 		IAPManager.shared.setDownloadsHandler() // init IAPManager
+		JSONDownloadService.shared.downloadNewJSON()
 		SwiftyStoreKit.completeTransactions {
 			(pupchases) in
 			print("did complete transaction \(pupchases)")
@@ -27,7 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.makeKeyAndVisible()
 		window?.rootViewController = TabBarController()
-		reachabilityService = ReachabilityService()
 		return true
 	}
 

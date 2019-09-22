@@ -177,12 +177,16 @@ class PurchaseCell: UITableViewCell {
 	
 	
 	//MARK: configure cell
-	public func configureWith(productViewModel: SKProduct) {
-		purchaseImage.image = #imageLiteral(resourceName: "sample")
+	public func configureWith(productViewModel: SKProduct, jsonModel: PurchModel?) {
+		guard let safeJSONModel = jsonModel else {
+			fatalError("Error: Can't get necessary PurchModel from parsed JSON!")
+		}
+		let imageURL = URL(string: safeJSONModel.imageURL)!
+		purchaseImage.sd_setImage(with: imageURL, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [], context: nil)
 		viewModel = productViewModel
 		priceLabel.text = viewModel.localizedPrice
-		mainTitle.text = viewModel.localizedTitle
-		descriptionText.text = viewModel.localizedDescription
+		mainTitle.text = safeJSONModel.title.ru
+		descriptionText.text = safeJSONModel.descript_short.ru
 		setFileSize()
 		let prog = IAPManager.shared.getProgressForIdentifier(id: viewModel.productIdentifier) // return -1 if not found
 		if prog >= 0 {

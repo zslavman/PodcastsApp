@@ -71,6 +71,7 @@ class TestController: UIViewController {
 //			purchases.append(copied)
 //		}
 
+		print("onGotPurchasesList triggered!")
 		// animated tableview output
 		let range = NSMakeRange(0, 1)
 		let sections = NSIndexSet(indexesIn: range)
@@ -185,7 +186,8 @@ extension TestController: UITableViewDelegate, UITableViewDataSource {
 		let cell = tableView.dequeueReusableCell(withIdentifier: PurchaseCell.identifier(),
 												 for: indexPath) as! PurchaseCell
 		let content = purchases[indexPath.row]
-		cell.configureWith(productViewModel: content)
+		let jsonModel = JSONDownloadService.shared.parsed.filter{ $0.purchaseID == content.productIdentifier}.first
+		cell.configureWith(productViewModel: content, jsonModel: jsonModel)
 		cell.delegate = self
 		return cell
 	}

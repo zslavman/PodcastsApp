@@ -22,6 +22,7 @@ extension Notification.Name {
 	static let purchaseDownloadsUpdated = Notification.Name("purchaseDownloadsUpdated")
 	static let purchaseDownloadingCompleted = Notification.Name("purchaseDownloadingCompleted")
 	static let purchaseDownloadingError = Notification.Name("purchaseDownloadingError")
+	static let gotNewJSON = Notification.Name("gotJSON")
 }
 
 struct PurchaseErrorEntity {
@@ -34,7 +35,7 @@ class IAPManager {
 	
 	public static let shared = IAPManager()
 	public var availablePurchases = [SKProduct]()
-	private var purchaseIDs: Set<String>
+	private var purchaseIDs = Set<String>()
 	private var downloadsPool = [SKDownload]()
 	private let queue = DispatchQueue(label: "MultiAccessQueue", qos: .background) // avoid race condition
 	public var suspendedPurchaseIDs: Set<String> {
@@ -44,14 +45,17 @@ class IAPManager {
 	
 	
 	private init() {
-		//TODO: load JSON from my server
-		purchaseIDs = Set(IAPProducts.allCases.compactMap{ $0.rawValue })
-		getAvailablePurchases()
+		NotificationCenter.default.addObserver(self, selector: #selector(getAvailablePurchases), name: .gotNewJSON,
+											   object: nil)
 	}
 	
 	
 	/// get all available purchases for application
-	private func getAvailablePurchases() {
+	@objc private func getAvailablePurchases() {
+		let parsedJSON = JSONDownloadService.shared.parsed
+		purchaseIDs = Set(parsedJSON.compactMap{ $0.purchaseID })
+		print("getAvailablePurchases triggered!")
+		
 		SwiftyStoreKit.retrieveProductsInfo(purchaseIDs) {
 			result in
 			if let error = result.error {
@@ -69,6 +73,7 @@ class IAPManager {
 				return pr1.productIdentifier < pr2.productIdentifier
 			})
 			NotificationCenter.default.post(name: .gotPurchasesList, object: nil)
+			print("Successfully got PurchasesList!")
 		}
 	}
 	
