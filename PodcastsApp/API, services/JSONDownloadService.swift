@@ -12,11 +12,10 @@ import UIKit
 class JSONDownloadService: NSObject {
 	
 	public static let shared = JSONDownloadService()
-	private let json = "https://drive.google.com/uc?export=download&id=1LZrlmX3mrl8lSYq-gYa9v5xrVfYRG3GU"
-	//private let json = "https://drive.google.com/file/d/1LZrlmX3mrl8lSYq-gYa9v5xrVfYRG3GU?alt=media"
-	
+	//private let json = "https://drive.google.com/uc?export=download&id=1LZrlmX3mrl8lSYq-gYa9v5xrVfYRG3GU"
+	private let json = "https://drive.google.com/uc?export=view&id=1LZrlmX3mrl8lSYq-gYa9v5xrVfYRG3GU"
 	private var downloadTask: URLSessionDataTask?
-	private let allovedUpdateInterval: TimeInterval = 3600 // not more than 1 per hour
+	private let allovedUpdateInterval: TimeInterval = 1800 // not more than 1 per hour
 	public var parsed = [PurchModel]()
 	private let session = URLSession(configuration: .default)
 	
