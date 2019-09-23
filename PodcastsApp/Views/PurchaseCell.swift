@@ -44,7 +44,6 @@ class PurchaseCell: UITableViewCell {
 		textView.isSelectable = false
 		textView.isScrollEnabled = true
 		textView.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-		textView.text = "Исследование жизненного пути личности, осознания прошлых событий в жизни человека, а также планирования будущего."
 		return textView
 	}()
 	private let priceLabel: UILabel = {
@@ -68,6 +67,7 @@ class PurchaseCell: UITableViewCell {
 		bttn.titleLabel?.adjustsFontSizeToFitWidth = true
 		bttn.titleLabel?.lineBreakMode = .byClipping
 		bttn.titleLabel?.baselineAdjustment = .alignCenters
+		bttn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
 		return bttn
 	}()
 	private let sizeLabel: UILabel = {
@@ -129,7 +129,7 @@ class PurchaseCell: UITableViewCell {
 		vertStack2.axis = .vertical
 		vertStack2.spacing = 3
 
-		let vertStack3 = UIStackView(arrangedSubviews: [priceLabel, button, sizeLabel])
+		let vertStack3 = UIStackView(arrangedSubviews: [button, sizeLabel])
 		vertStack3.axis = .vertical
 		vertStack3.spacing = 3
 		vertStack3.isLayoutMarginsRelativeArrangement = true
@@ -163,9 +163,9 @@ class PurchaseCell: UITableViewCell {
 		addSubview(progressBar)
 		
 		NSLayoutConstraint.activate([
-			purchaseImage.widthAnchor.constraint(equalToConstant: 120),
+			purchaseImage.widthAnchor.constraint(equalToConstant: 110),
 			purchaseImage.heightAnchor.constraint(equalToConstant: 110),
-			button.heightAnchor.constraint(equalToConstant: 40),
+			button.heightAnchor.constraint(equalToConstant: 30),
 			fakeView.heightAnchor.constraint(equalToConstant: 5),
 			backViewForStack3.widthAnchor.constraint(equalToConstant: 85),
 			progressBar.widthAnchor.constraint(equalToConstant: PurchaseCell.PROGRESS_SIZE),
@@ -184,7 +184,8 @@ class PurchaseCell: UITableViewCell {
 		let imageURL = URL(string: safeJSONModel.imageURL)!
 		purchaseImage.sd_setImage(with: imageURL, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [], context: nil)
 		viewModel = productViewModel
-		priceLabel.text = viewModel.localizedPrice
+		//priceLabel.text = viewModel.localizedPrice
+		button.setTitle(viewModel.localizedPrice, for: .normal)
 		mainTitle.text = safeJSONModel.title.ru
 		descriptionText.text = safeJSONModel.descript_short.ru
 		setFileSize()
