@@ -200,8 +200,15 @@ extension TestController: UITableViewDelegate, UITableViewDataSource {
 }
 
 extension TestController: PurchaseCellDelegate {
+
 	func showHUD() {
 		HUD.flash(.progress, onView: nil, delay: 2, completion: nil)
+	}
+	
+	func showDetail(purchID: String) {
+		let detailVC = PurchaseDetailController()
+		detailVC.initWith(productID: purchID)
+		navigationController?.pushViewController(detailVC, animated: true)
 	}
 }
 

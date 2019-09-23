@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5624D79823396B2C0015E895 /* PurchaseDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5624D79723396B2C0015E895 /* PurchaseDetailController.swift */; };
 		562E7EE822515E7500D576F8 /* Podcast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562E7EE722515E7500D576F8 /* Podcast.swift */; };
 		56346A3F2332D04900BA9581 /* JSONDownloadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56346A3E2332D04900BA9581 /* JSONDownloadService.swift */; };
 		56346A412332D6F700BA9581 /* UserDefaultsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56346A402332D6F700BA9581 /* UserDefaultsData.swift */; };
@@ -53,6 +54,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5624D79723396B2C0015E895 /* PurchaseDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDetailController.swift; sourceTree = "<group>"; };
 		562E7EE722515E7500D576F8 /* Podcast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Podcast.swift; sourceTree = "<group>"; };
 		56346A3E2332D04900BA9581 /* JSONDownloadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDownloadService.swift; sourceTree = "<group>"; };
 		56346A402332D6F700BA9581 /* UserDefaultsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsData.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 				565A11C922B033C40077996D /* FavoritesController.swift */,
 				566B0FDC22B646A700097A70 /* DownloadsController.swift */,
 				566C242C230F39C80054A5E4 /* TestController.swift */,
+				5624D79723396B2C0015E895 /* PurchaseDetailController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -575,6 +578,7 @@
 				56DB88F6224966E6000F7D3C /* AppDelegate.swift in Sources */,
 				56346A412332D6F700BA9581 /* UserDefaultsData.swift in Sources */,
 				565A11CA22B033C40077996D /* FavoritesController.swift in Sources */,
+				5624D79823396B2C0015E895 /* PurchaseDetailController.swift in Sources */,
 				567153F022D7BEC5000C5E9A /* ReachabilityService.swift in Sources */,
 				562E7EE822515E7500D576F8 /* Podcast.swift in Sources */,
 				56F4E6E122C94BFE00E02892 /* PlaceholderView.swift in Sources */,

@@ -12,6 +12,7 @@ import PKHUD
 
 protocol PurchaseCellDelegate: class {
 	func showHUD()
+	func showDetail(purchID: String)
 }
 
 class PurchaseCell: UITableViewCell {
@@ -33,7 +34,9 @@ class PurchaseCell: UITableViewCell {
 		label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
 		label.textAlignment = .left
 		label.numberOfLines = 0
-		label.textInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+		label.textInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+//		label.adjustsFontSizeToFitWidth = true
+//		label.lineBreakMode = .byWordWrapping
 		return label
 	}()
 	private let descriptionText: UITextView = {
@@ -42,20 +45,20 @@ class PurchaseCell: UITableViewCell {
 		textView.font = UIFont.systemFont(ofSize: 13, weight: .regular)
 		textView.isEditable = false
 		textView.isSelectable = false
-		textView.isScrollEnabled = true
+		textView.isScrollEnabled = false
 		textView.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
 		return textView
 	}()
-	private let priceLabel: UILabel = {
-		let label = UILabel()
-		label.translatesAutoresizingMaskIntoConstraints = false
-		label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-		label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-		label.textAlignment = .center
-		label.adjustsFontSizeToFitWidth = true
-		return label
-	}()
-	private let button: UIButton = {
+//	private let priceLabel: UILabel = {
+//		let label = UILabel()
+//		label.translatesAutoresizingMaskIntoConstraints = false
+//		label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+//		label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+//		label.textAlignment = .center
+//		label.adjustsFontSizeToFitWidth = true
+//		return label
+//	}()
+	private let buyButton: UIButton = {
 		let bttn = UIButton(type: .system)
 		bttn.translatesAutoresizingMaskIntoConstraints = false
 		bttn.backgroundColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
@@ -70,13 +73,14 @@ class PurchaseCell: UITableViewCell {
 		bttn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
 		return bttn
 	}()
-	private let sizeLabel: UILabel = {
+	private let arrowLabel: UILabel = {
 		let label = UILabel()
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.font = UIFont.systemFont(ofSize: 8, weight: .bold)
+		label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
 		label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
 		label.textAlignment = .center
-		label.numberOfLines = 0
+		//label.numberOfLines = 0
+		label.text = "〉" // 〉〉
 		return label
 	}()
 	private var progressBar: CircleProgressBar = {
@@ -94,6 +98,15 @@ class PurchaseCell: UITableViewCell {
 		proBar.isHidden = true
 		return proBar
 	}()
+	private let arrowButton: UIButton = {
+		let arrowBut = UIButton()
+		arrowBut.backgroundColor = #colorLiteral(red: 0.9402040993, green: 0.9402040993, blue: 0.9402040993, alpha: 1)
+		arrowBut.layer.cornerRadius = 5
+		arrowBut.clipsToBounds = true
+		arrowBut.layer.borderWidth = 0.5
+		arrowBut.layer.borderColor = #colorLiteral(red: 0.8844061932, green: 0.8844061932, blue: 0.8844061932, alpha: 1).cgColor
+		return arrowBut
+	}()
 	private var viewModel: SKProduct!
 	
 	
@@ -105,9 +118,10 @@ class PurchaseCell: UITableViewCell {
 		super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
 		setupLayout()
 		selectionStyle = .none
-		button.addTarget(self, action: #selector(onButtonClick), for: .touchUpInside)
+		buyButton.addTarget(self, action: #selector(onBuyClick), for: .touchUpInside)
 		NotificationCenter.default.addObserver(self, selector: #selector(updateProgress(notif:)),
 											   name: .purchaseDownloadsUpdated, object: nil)
+		arrowButton.addTarget(self, action: #selector(onArrowClick), for: .touchUpInside)
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -125,28 +139,19 @@ class PurchaseCell: UITableViewCell {
 	
 	
 	private func setupLayout() {
-		let vertStack2 = UIStackView(arrangedSubviews: [mainTitle, descriptionText])
+		let horStackTitleButton = UIStackView(arrangedSubviews: [mainTitle, buyButton])
+		horStackTitleButton.axis = .horizontal
+		horStackTitleButton.spacing = 3
+		
+		let vertStack2 = UIStackView(arrangedSubviews: [horStackTitleButton, descriptionText])
 		vertStack2.axis = .vertical
 		vertStack2.spacing = 3
+		vertStack2.isLayoutMarginsRelativeArrangement = true
+		vertStack2.layoutMargins.right = 5
 
-		let vertStack3 = UIStackView(arrangedSubviews: [button, sizeLabel])
-		vertStack3.axis = .vertical
-		vertStack3.spacing = 3
-		vertStack3.isLayoutMarginsRelativeArrangement = true
-		vertStack3.layoutMargins = .init(top: 10, left: 5, bottom: 10, right: 5)
-		vertStack3.distribution = .fillProportionally
+		arrowButton.addSubview(arrowLabel)
 		
-		let backViewForStack3 = UIView()
-		backViewForStack3.backgroundColor = #colorLiteral(red: 0.9402040993, green: 0.9402040993, blue: 0.9402040993, alpha: 1)
-		//backViewForStack3.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-		backViewForStack3.layer.cornerRadius = 8
-		backViewForStack3.clipsToBounds = true
-		backViewForStack3.layer.borderWidth = 0.5
-		backViewForStack3.layer.borderColor = #colorLiteral(red: 0.8844061932, green: 0.8844061932, blue: 0.8844061932, alpha: 1).cgColor
-		backViewForStack3.addSubview(vertStack3)
-		vertStack3.fillSuperView()
-		
-		let mainHorStack = UIStackView(arrangedSubviews: [purchaseImage, vertStack2, backViewForStack3])
+		let mainHorStack = UIStackView(arrangedSubviews: [purchaseImage, vertStack2, arrowButton])
 		mainHorStack.axis = .horizontal
 		mainHorStack.spacing = 5
 		mainHorStack.distribution = .fill
@@ -165,13 +170,17 @@ class PurchaseCell: UITableViewCell {
 		NSLayoutConstraint.activate([
 			purchaseImage.widthAnchor.constraint(equalToConstant: 110),
 			purchaseImage.heightAnchor.constraint(equalToConstant: 110),
-			button.heightAnchor.constraint(equalToConstant: 30),
+			buyButton.heightAnchor.constraint(equalToConstant: 30),
+			buyButton.widthAnchor.constraint(equalToConstant: 60),
 			fakeView.heightAnchor.constraint(equalToConstant: 5),
-			backViewForStack3.widthAnchor.constraint(equalToConstant: 85),
+			arrowButton.widthAnchor.constraint(equalToConstant: 15),
 			progressBar.widthAnchor.constraint(equalToConstant: PurchaseCell.PROGRESS_SIZE),
 			progressBar.heightAnchor.constraint(equalToConstant: PurchaseCell.PROGRESS_SIZE),
 			progressBar.centerXAnchor.constraint(equalTo: purchaseImage.centerXAnchor),
 			progressBar.centerYAnchor.constraint(equalTo: purchaseImage.centerYAnchor),
+			arrowLabel.centerXAnchor.constraint(equalTo: arrowButton.centerXAnchor, constant: 5),
+			arrowLabel.centerYAnchor.constraint(equalTo: arrowButton.centerYAnchor),
+			arrowLabel.widthAnchor.constraint(equalToConstant: 15),
 		])
 	}
 	
@@ -184,27 +193,24 @@ class PurchaseCell: UITableViewCell {
 		let imageURL = URL(string: safeJSONModel.imageURL)!
 		purchaseImage.sd_setImage(with: imageURL, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [], context: nil)
 		viewModel = productViewModel
-		//priceLabel.text = viewModel.localizedPrice
-		button.setTitle(viewModel.localizedPrice, for: .normal)
+		buyButton.setTitle(viewModel.localizedPrice, for: .normal)
 		mainTitle.text = safeJSONModel.title.ru
 		descriptionText.text = safeJSONModel.descript_short.ru
-		setFileSize()
 		let prog = IAPManager.shared.getProgressForIdentifier(id: viewModel.productIdentifier) // return -1 if not found
 		if prog >= 0 {
 			progressBar.progress = prog
-			button.isEnabled = false
-			setFileSizeWithProgress(curProgress: prog)
+			buyButton.isEnabled = false
+			//setFileSizeWithProgress(curProgress: prog)
 			return
 		}
 		progressBar.isHidden = true
 		
 		if IAPManager.shared.suspendedPurchaseIDs.contains(viewModel.productIdentifier) {
-			button.isEnabled = false
+			buyButton.isEnabled = false
 		}
 		else {
-			button.isEnabled = true
+			buyButton.isEnabled = true
 		}
-		
 		//TODO: check id in already purchased dataBase
 		let purchased = false
 		let purchasedVer = 1.0
@@ -212,12 +218,11 @@ class PurchaseCell: UITableViewCell {
 		
 		let newestVer = Double(viewModel.downloadContentVersion) ?? 0
 		if purchasedVer < newestVer {
-			button.setTitle("Обновить", for: .normal)
-			priceLabel.text = "Бесплатно"
+			buyButton.setTitle("Обновить", for: .normal)
 		}
 		else {
-			button.setTitle("Куплено", for: .normal)
-			button.isEnabled = false
+			buyButton.setTitle("Куплено", for: .normal)
+			buyButton.isEnabled = false
 		}
 	}
 	
@@ -229,39 +234,42 @@ class PurchaseCell: UITableViewCell {
 		let progress = Double(desiredDownload.progress)
 		DispatchQueue.main.async {
 			self.progressBar.progress = progress
-			self.setFileSizeWithProgress(curProgress: progress)
+			//self.setFileSizeWithProgress(curProgress: progress)
 		}
 	}
 	
 	
-	private func setFileSize() {
-		guard let wholeSizeNumber = viewModel.downloadContentLengths.first else { return }
-		let fileSizeInt = wholeSizeNumber.int64Value
-		let formatter = ByteCountFormatter()
-		formatter.countStyle = .file
-		formatter.includesUnit = false
-		let formatedSize = formatter.string(fromByteCount: fileSizeInt)
-		sizeLabel.text = "Размер: \(formatedSize) МБ"
-	}
+//	private func setFileSize() {
+//		guard let wholeSizeNumber = viewModel.downloadContentLengths.first else { return }
+//		let fileSizeInt = wholeSizeNumber.int64Value
+//		let formatter = ByteCountFormatter()
+//		formatter.countStyle = .file
+//		formatter.includesUnit = false
+//		let formatedSize = formatter.string(fromByteCount: fileSizeInt)
+//		sizeLabel.text = "Размер: \(formatedSize) МБ"
+//	}
 	
 	
-	private func setFileSizeWithProgress(curProgress: Double) {
-		guard let wholeFileSizeNumber = viewModel.downloadContentLengths.first else { return }
-		let wholeFileSizeInt = wholeFileSizeNumber.int64Value
-		let formatter = ByteCountFormatter()
-		formatter.countStyle = .file
-		let downloadedSize = Double(wholeFileSizeInt) * curProgress
-		let downloadedFormatedSize = formatter.string(fromByteCount: Int64(downloadedSize))
-		let wholeFormatedSize = formatter.string(fromByteCount: wholeFileSizeInt)
-		sizeLabel.text = "\(downloadedFormatedSize) / \(wholeFormatedSize)"
-	}
+//	private func setFileSizeWithProgress(curProgress: Double) {
+//		guard let wholeFileSizeNumber = viewModel.downloadContentLengths.first else { return }
+//		let wholeFileSizeInt = wholeFileSizeNumber.int64Value
+//		let formatter = ByteCountFormatter()
+//		formatter.countStyle = .file
+//		let downloadedSize = Double(wholeFileSizeInt) * curProgress
+//		let downloadedFormatedSize = formatter.string(fromByteCount: Int64(downloadedSize))
+//		let wholeFormatedSize = formatter.string(fromByteCount: wholeFileSizeInt)
+//		sizeLabel.text = "\(downloadedFormatedSize) / \(wholeFormatedSize)"
+//	}
 	
 	
-	@objc private func onButtonClick() {
-		print("Did click Purchase!")
-		button.isEnabled = false
+	@objc private func onBuyClick() {
+		buyButton.isEnabled = false
 		IAPManager.shared.purchaseProduct(productID: viewModel.productIdentifier)
 		delegate?.showHUD()
+	}
+	
+	@objc private func onArrowClick() {
+		delegate?.showDetail(purchID: viewModel.productIdentifier)
 	}
 	
 	
