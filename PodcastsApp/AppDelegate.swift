@@ -24,7 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			(pupchases) in
 			print("did complete transaction \(pupchases)")
 		}
-		
 		window = UIWindow(frame: UIScreen.main.bounds)
 		window?.makeKeyAndVisible()
 		window?.rootViewController = TabBarController()

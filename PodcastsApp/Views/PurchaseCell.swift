@@ -143,7 +143,7 @@ class PurchaseCell: UITableViewCell {
 		vertStack2.axis = .vertical
 		vertStack2.spacing = 3
 		vertStack2.isLayoutMarginsRelativeArrangement = true
-		vertStack2.layoutMargins.right = 5
+		vertStack2.layoutMargins = .init(top: 0, left: 5, bottom: 0, right: 5)
 
 		arrowButton.addSubview(arrowLabel)
 		

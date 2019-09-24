@@ -22,14 +22,14 @@ class PurchasesController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		view.backgroundColor = .white
-		navigationController?.navigationBar.isTranslucent = true
+		extendedLayoutIncludesOpaqueBars = true
 		setupController()
 		addRefreshControl()
 	}
 	
 	
 	private func setupController() {
-		navigationItem.title = "Встроенные покупки"
+		navigationItem.title = "Покупки"
 		installTable()
 		navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Восстан.", style: .plain, target: self,
 															action: #selector(onRestoreClick))
