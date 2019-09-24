@@ -26,6 +26,8 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<false/>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>

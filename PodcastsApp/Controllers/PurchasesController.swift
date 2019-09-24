@@ -12,18 +12,19 @@ import StoreKit
 import SwiftyStoreKit
 import PKHUD
 
-class TestController: UIViewController {
+class PurchasesController: UIViewController {
 
 	private var tableView: UITableView!
 	private var purchases = [SKProduct]()
 	private var timer: Timer!
-	
+	private let refreshControl = UIRefreshControl()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		view.backgroundColor = .white
 		navigationController?.navigationBar.isTranslucent = true
 		setupController()
+		addRefreshControl()
 	}
 	
 	
@@ -38,7 +39,7 @@ class TestController: UIViewController {
 		if purchases.isEmpty {
 			NotificationCenter.default.addObserver(self, selector: #selector(onGotPurchasesList),
 												   name: .gotPurchasesList, object: nil)
-			TestController.showLoading()
+			PurchasesController.showLoading()
 		}
 		NotificationCenter.default.addObserver(self, selector: #selector(onReceiveDownloadCompleteEvent),
 											   name: .purchaseDownloadingCompleted, object: nil)
@@ -58,9 +59,24 @@ class TestController: UIViewController {
 		tableView.dataSource = self
 		tableView.register(PurchaseCell.self, forCellReuseIdentifier: PurchaseCell.identifier())
 		tableView.tableFooterView = UIView()
-		tableView.separatorStyle = .none
 		view.addSubview(tableView)
 		tableView.fillSuperView()
+	}
+	
+	
+	private func addRefreshControl() {
+		refreshControl.addTarget(self, action: #selector(didPullDownToUpdate),for: .valueChanged)
+		tableView.refreshControl = refreshControl
+	}
+	
+	
+	@objc func didPullDownToUpdate() {
+		JSONDownloadService.shared.downloadNewJSON(forced: true)
+		DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: DispatchTime.now() + 2) {
+			DispatchQueue.main.async {
+				self.refreshControl.endRefreshing()
+			}
+		}
 	}
 	
 	
@@ -157,7 +173,7 @@ class TestController: UIViewController {
 
 
 
-extension TestController: UITableViewDelegate, UITableViewDataSource {
+extension PurchasesController: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
 		return purchases.isEmpty ? 0 : 70
@@ -184,7 +200,7 @@ extension TestController: UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return 125
+		return 130
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -197,18 +213,20 @@ extension TestController: UITableViewDelegate, UITableViewDataSource {
 		return cell
 	}
 	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		let id = purchases[indexPath.row].productIdentifier
+		let detailVC = PurchaseDetailController()
+		detailVC.initWith(productID: id)
+		navigationController?.pushViewController(detailVC, animated: true)
+	}
+	
 }
 
-extension TestController: PurchaseCellDelegate {
+extension PurchasesController: PurchaseCellDelegate {
 
 	func showHUD() {
 		HUD.flash(.progress, onView: nil, delay: 2, completion: nil)
 	}
-	
-	func showDetail(purchID: String) {
-		let detailVC = PurchaseDetailController()
-		detailVC.initWith(productID: purchID)
-		navigationController?.pushViewController(detailVC, animated: true)
-	}
+
 }
 

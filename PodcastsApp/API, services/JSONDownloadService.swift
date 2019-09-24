@@ -23,10 +23,12 @@ class JSONDownloadService: NSObject {
 	private init(test: String = "") { }
 	
 	
-	public func downloadNewJSON() {
+	public func downloadNewJSON(forced: Bool = false) {
 		let delta = Date().timeIntervalSince1970 - UserDefaultsData.lastTimeJSONUpdated
-		guard parsed.isEmpty || delta >= allovedUpdateInterval else {
-			return
+		if !forced {
+			guard parsed.isEmpty || delta >= allovedUpdateInterval else {
+				return
+			}
 		}
 		if downloadTask != nil { return }
 		guard let jsonURL = URL(string: json) else { return }

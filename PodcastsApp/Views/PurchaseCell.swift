@@ -12,7 +12,6 @@ import PKHUD
 
 protocol PurchaseCellDelegate: class {
 	func showHUD()
-	func showDetail(purchID: String)
 }
 
 class PurchaseCell: UITableViewCell {
@@ -39,15 +38,13 @@ class PurchaseCell: UITableViewCell {
 //		label.lineBreakMode = .byWordWrapping
 		return label
 	}()
-	private let descriptionText: UITextView = {
-		let textView = UITextView()
-		textView.translatesAutoresizingMaskIntoConstraints = false
-		textView.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-		textView.isEditable = false
-		textView.isSelectable = false
-		textView.isScrollEnabled = false
-		textView.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-		return textView
+	private let descriptionText: UILabel = {
+		let label = UILabel()
+		label.translatesAutoresizingMaskIntoConstraints = false
+		label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
+		label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+		label.numberOfLines = 0
+		return label
 	}()
 //	private let priceLabel: UILabel = {
 //		let label = UILabel()
@@ -121,7 +118,6 @@ class PurchaseCell: UITableViewCell {
 		buyButton.addTarget(self, action: #selector(onBuyClick), for: .touchUpInside)
 		NotificationCenter.default.addObserver(self, selector: #selector(updateProgress(notif:)),
 											   name: .purchaseDownloadsUpdated, object: nil)
-		arrowButton.addTarget(self, action: #selector(onArrowClick), for: .touchUpInside)
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -158,9 +154,10 @@ class PurchaseCell: UITableViewCell {
 		mainHorStack.isLayoutMarginsRelativeArrangement = true
 		mainHorStack.layoutMargins = .init(top: 5, left: 10, bottom: 5, right: 10)
 		
-		let fakeView = UIView() // invisible view which help set a footer empty space
+		let emptyTopView = UIView() // invisible view which help set a footer empty space
+		let emptyBotView = UIView()
 		
-		let mainVertStack = UIStackView(arrangedSubviews: [mainHorStack, fakeView])
+		let mainVertStack = UIStackView(arrangedSubviews: [emptyTopView, mainHorStack, emptyBotView])
 		mainVertStack.axis = .vertical
 		addSubview(mainVertStack)
 		mainVertStack.fillSuperView()
@@ -172,7 +169,8 @@ class PurchaseCell: UITableViewCell {
 			purchaseImage.heightAnchor.constraint(equalToConstant: 110),
 			buyButton.heightAnchor.constraint(equalToConstant: 30),
 			buyButton.widthAnchor.constraint(equalToConstant: 60),
-			fakeView.heightAnchor.constraint(equalToConstant: 5),
+			emptyTopView.heightAnchor.constraint(equalToConstant: 5),
+			emptyBotView.heightAnchor.constraint(equalToConstant: 5),
 			arrowButton.widthAnchor.constraint(equalToConstant: 15),
 			progressBar.widthAnchor.constraint(equalToConstant: PurchaseCell.PROGRESS_SIZE),
 			progressBar.heightAnchor.constraint(equalToConstant: PurchaseCell.PROGRESS_SIZE),
@@ -267,10 +265,5 @@ class PurchaseCell: UITableViewCell {
 		IAPManager.shared.purchaseProduct(productID: viewModel.productIdentifier)
 		delegate?.showHUD()
 	}
-	
-	@objc private func onArrowClick() {
-		delegate?.showDetail(purchID: viewModel.productIdentifier)
-	}
-	
 	
 }

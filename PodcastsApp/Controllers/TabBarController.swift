@@ -127,7 +127,7 @@ class TabBarController: UITabBarController {
 	private func setupTabs() {
 		let favVC = FavoritesController(collectionViewLayout: UICollectionViewFlowLayout())
 		viewControllers = [
-			createNavController(rootVC: TestController(), title: "Test", img: #imageLiteral(resourceName: "downloads")),
+			createNavController(rootVC: PurchasesController(), title: "Test", img: #imageLiteral(resourceName: "downloads")),
 			createNavController(rootVC: PSearchController(), title: "Search".localized, img: #imageLiteral(resourceName: "search")),
 			createNavController(rootVC: favVC, title: "Favorites".localized, img: #imageLiteral(resourceName: "favorites")),
 			createNavController(rootVC: DownloadsController(), title: "Downloads".localized, img: #imageLiteral(resourceName: "downloads")),
