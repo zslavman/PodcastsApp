@@ -171,13 +171,13 @@
 		5648056722667EF8008CAD73 /* API, services */ = {
 			isa = PBXGroup;
 			children = (
-				5648056822667F3E008CAD73 /* APIServices.swift */,
 				567153EF22D7BEC5000C5E9A /* ReachabilityService.swift */,
-				56EB2C2D22FF8C6E003B51A8 /* IAPManager.swift */,
 				563EB3DC232D6FD4005E0467 /* FilePathManager.swift */,
 				569A6893232FA50D0028FC4B /* CircularProgressBar.swift */,
-				56346A3E2332D04900BA9581 /* JSONDownloadService.swift */,
+				5648056822667F3E008CAD73 /* APIServices.swift */,
 				56346A402332D6F700BA9581 /* UserDefaultsData.swift */,
+				56EB2C2D22FF8C6E003B51A8 /* IAPManager.swift */,
+				56346A3E2332D04900BA9581 /* JSONDownloadService.swift */,
 			);
 			path = "API, services";
 			sourceTree = "<group>";

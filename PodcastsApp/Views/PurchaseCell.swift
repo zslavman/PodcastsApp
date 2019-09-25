@@ -237,17 +237,6 @@ class PurchaseCell: UITableViewCell {
 	}
 	
 	
-//	private func setFileSize() {
-//		guard let wholeSizeNumber = viewModel.downloadContentLengths.first else { return }
-//		let fileSizeInt = wholeSizeNumber.int64Value
-//		let formatter = ByteCountFormatter()
-//		formatter.countStyle = .file
-//		formatter.includesUnit = false
-//		let formatedSize = formatter.string(fromByteCount: fileSizeInt)
-//		sizeLabel.text = "Размер: \(formatedSize) МБ"
-//	}
-	
-	
 //	private func setFileSizeWithProgress(curProgress: Double) {
 //		guard let wholeFileSizeNumber = viewModel.downloadContentLengths.first else { return }
 //		let wholeFileSizeInt = wholeFileSizeNumber.int64Value

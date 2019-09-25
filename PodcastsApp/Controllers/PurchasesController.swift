@@ -28,6 +28,12 @@ class PurchasesController: UIViewController {
 	}
 	
 	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		// for remove backBarButton title on next screen (DetailVC)
+		navigationItem.backBarButtonItem = UIBarButtonItem(title: "Назад", style: .plain, target: nil, action: nil)
+	}
+	
 	private func setupController() {
 		navigationItem.title = "Покупки"
 		installTable()
