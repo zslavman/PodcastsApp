@@ -55,6 +55,8 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	private var purchModel: PurchModel!
 	private var skProduct: SKProduct!
 	private var mainVertStackView: UIStackView!
+	private var scroll: UIScrollView!
+	
 	
 	
 	override func viewDidLoad() {
@@ -66,7 +68,14 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		setContentHeight()
+		//setContentHeight()
+		
+		let contentViewHeight = scroll.contentSize.height + 200 + 20
+		let offsetY = contentViewHeight - scroll.bounds.height
+		if (offsetY > 0) {
+			//scroll.setContentOffset(CGPoint(x: scroll.contentOffset.x, y: offsetY), animated: true)
+			scroll.contentSize = CGSize(width: 20, height: offsetY)
+		}
 	}
 	
 	
@@ -118,11 +127,22 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	
 	
 	private func installLayout2() {
+		scroll = UIScrollView()
+		scroll.translatesAutoresizingMaskIntoConstraints = false
+		scroll.alwaysBounceVertical = true
+		view.addSubview(scroll)
+		scroll.fillSuperView()
+		
 		let p1 = UIView()
+		p1.translatesAutoresizingMaskIntoConstraints = false
 		p1.backgroundColor = .red
+		p1.heightAnchor.constraint(equalToConstant: 200).isActive = true
+		p1.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 10).isActive = true
 		
 		let p2 = UIView()
+		p2.translatesAutoresizingMaskIntoConstraints = false
 		p2.backgroundColor = .green
+		p2.heightAnchor.constraint(equalToConstant: 1900).isActive = true
 		
 		mainVertStackView = UIStackView(arrangedSubviews: [p1, p2])
 		mainVertStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -130,22 +150,18 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		mainVertStackView.spacing = 15
 		mainVertStackView.isLayoutMarginsRelativeArrangement = true
 		mainVertStackView.layoutMargins = .init(top: 5, left: 5, bottom: 5, right: 5)
-		mainVertStackView.distribution = .fillEqually
 		
-		view.addSubview(mainVertStackView)
+		scroll.addSubview(mainVertStackView)
 	
 		NSLayoutConstraint.activate([
-			mainVertStackView.topAnchor.constraint(equalTo: collectionView.topAnchor),
-			mainVertStackView.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
-			mainVertStackView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
-//			mainVertStackView.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor),
-//			mainVertStackView.heightAnchor.constraint(equalTo: collectionView.heightAnchor),
+			mainVertStackView.topAnchor.constraint(equalTo: scroll.topAnchor),
+			mainVertStackView.leadingAnchor.constraint(equalTo: scroll.leadingAnchor),
+			mainVertStackView.trailingAnchor.constraint(equalTo: scroll.trailingAnchor),
+			mainVertStackView.bottomAnchor.constraint(equalTo: scroll.bottomAnchor),
+			mainVertStackView.heightAnchor.constraint(greaterThanOrEqualTo: scroll.heightAnchor),
 		])
+		
 	}
-	
-	
-	
-	
 	
 	
 	private func installConstraints() {
