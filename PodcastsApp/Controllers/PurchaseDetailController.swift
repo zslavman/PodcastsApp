@@ -11,7 +11,7 @@ import PKHUD
 import StoreKit
 
 
-class PurchaseDetailController: UIViewController {
+class PurchaseDetailController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
 	
 	private var productID: String!
 	private let productImg: UIImageView = {
@@ -52,15 +52,14 @@ class PurchaseDetailController: UIViewController {
 		bttn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
 		return bttn
 	}()
-	private let scrollView = UIScrollView()
 	private var purchModel: PurchModel!
 	private var skProduct: SKProduct!
-	
+	private var mainVertStackView: UIStackView!
 	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		collectionView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		navigationItem.title = purchModel.title.ru
 	}
 	
@@ -79,22 +78,19 @@ class PurchaseDetailController: UIViewController {
 		self.purchModel = purchModel
 		self.skProduct = skProduct
 		
-		installLayout()
-		installConstraints()
+		installLayout2()
+		//installConstraints()
 	}
 	
 	
 	private func installLayout() {
+		collectionView.alwaysBounceVertical = true
+		
 		// buyButton
 		buyButton.setTitle(skProduct.localizedPrice, for: .normal)
 		let rButton = UIBarButtonItem(customView: buyButton)
 		navigationItem.rightBarButtonItem = rButton
 		buyButton.addTarget(self, action: #selector(onBuyClick), for: .touchUpInside)
-		
-		// scrollView
-		scrollView.alwaysBounceVertical = true
-		view.addSubview(scrollView)
-		scrollView.fillSuperView()
 		
 		// productImg & descriptionText
 		if let url = URL(string: purchModel.imageURL) {
@@ -105,28 +101,67 @@ class PurchaseDetailController: UIViewController {
 		// size label
 		sizeLabel.text = getConvertedSize()
 		
-		scrollView.addSubview(productImg)
-		scrollView.addSubview(descriptionText)
-		scrollView.addSubview(sizeLabel)
+		let sizeDescriptStack = UIStackView(arrangedSubviews: [descriptionText, sizeLabel])
+		sizeDescriptStack.axis = .vertical
+		sizeDescriptStack.spacing = 15
+		//sizeDescriptStack.distribution = .fill
+		
+		mainVertStackView = UIStackView(arrangedSubviews: [productImg, sizeDescriptStack])
+		mainVertStackView.axis = .vertical
+		mainVertStackView.spacing = 15
+		mainVertStackView.isLayoutMarginsRelativeArrangement = true
+		mainVertStackView.layoutMargins = .init(top: 5, left: 5, bottom: 15, right: 5)
+		//mainVertStackView.distribution = .fill
+		
+		collectionView.addSubview(mainVertStackView)
 	}
+	
+	
+	private func installLayout2() {
+		let p1 = UIView()
+		p1.backgroundColor = .red
+		
+		let p2 = UIView()
+		p2.backgroundColor = .green
+		
+		mainVertStackView = UIStackView(arrangedSubviews: [p1, p2])
+		mainVertStackView.translatesAutoresizingMaskIntoConstraints = false
+		mainVertStackView.axis = .vertical
+		mainVertStackView.spacing = 15
+		mainVertStackView.isLayoutMarginsRelativeArrangement = true
+		mainVertStackView.layoutMargins = .init(top: 5, left: 5, bottom: 5, right: 5)
+		mainVertStackView.distribution = .fillEqually
+		
+		view.addSubview(mainVertStackView)
+	
+		NSLayoutConstraint.activate([
+			mainVertStackView.topAnchor.constraint(equalTo: collectionView.topAnchor),
+			mainVertStackView.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
+			mainVertStackView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
+//			mainVertStackView.bottomAnchor.constraint(equalTo: collectionView.bottomAnchor),
+//			mainVertStackView.heightAnchor.constraint(equalTo: collectionView.heightAnchor),
+		])
+	}
+	
+	
+	
+	
 	
 	
 	private func installConstraints() {
 		NSLayoutConstraint.activate([
 			buyButton.heightAnchor.constraint(equalToConstant: 28),
 			buyButton.widthAnchor.constraint(equalToConstant: 60),
-			scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-			scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-			scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-			scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-			productImg.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 5),
-			productImg.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 5),
-			productImg.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
-			productImg.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 10),
-			descriptionText.topAnchor.constraint(equalTo: productImg.bottomAnchor, constant: 15),
-			descriptionText.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
-			descriptionText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-			sizeLabel.topAnchor.constraint(equalTo: descriptionText.bottomAnchor, constant: 15),
+			
+			descriptionText.heightAnchor.constraint(equalToConstant: 200),
+			
+			mainVertStackView.topAnchor.constraint(equalTo: collectionView.topAnchor),
+			mainVertStackView.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
+			mainVertStackView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
+			
+			productImg.heightAnchor.constraint(equalToConstant: 280),
+			productImg.widthAnchor.constraint(equalToConstant: 280),
+
 			sizeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
 		])
 	}
@@ -140,13 +175,15 @@ class PurchaseDetailController: UIViewController {
 	
 	private func setContentHeight() {
 		var contentRect = CGRect.zero
-		scrollView.subviews.forEach {
+		collectionView.subviews.forEach {
 			(subview) in
 			contentRect = contentRect.union(subview.frame)
 		}
 		let blankIntervalsSumm: CGFloat = 35
 		let finalSize = CGSize(width: contentRect.width, height: contentRect.height + blankIntervalsSumm)
-		scrollView.contentSize = finalSize
+		collectionView.contentSize = finalSize
+//		mainVertStackView.bottomAnchor.constraint(equalTo: collectionView.topAnchor, constant: finalSize.height).isActive = true
+		mainVertStackView.heightAnchor.constraint(equalToConstant: finalSize.height).isActive = true
 	}
 	
 	
