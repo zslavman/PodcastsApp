@@ -68,14 +68,14 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		//setContentHeight()
+		setContentHeight()
 		
-		let contentViewHeight = scroll.contentSize.height + 200 + 20
-		let offsetY = contentViewHeight - scroll.bounds.height
-		if (offsetY > 0) {
-			//scroll.setContentOffset(CGPoint(x: scroll.contentOffset.x, y: offsetY), animated: true)
-			scroll.contentSize = CGSize(width: 20, height: offsetY)
-		}
+//		let contentViewHeight = scroll.contentSize.height + 200 + 20
+//		let offsetY = contentViewHeight - scroll.bounds.height
+//		if (offsetY > 0) {
+//			//scroll.setContentOffset(CGPoint(x: scroll.contentOffset.x, y: offsetY), animated: true)
+//			scroll.contentSize = CGSize(width: 20, height: offsetY)
+//		}
 	}
 	
 	
@@ -144,7 +144,12 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		p2.backgroundColor = .green
 		p2.heightAnchor.constraint(equalToConstant: 1900).isActive = true
 		
-		mainVertStackView = UIStackView(arrangedSubviews: [p1, p2])
+		let p3 = UIView()
+		p3.translatesAutoresizingMaskIntoConstraints = false
+		p3.backgroundColor = .blue
+		p3.heightAnchor.constraint(equalToConstant: 500).isActive = true
+		
+		mainVertStackView = UIStackView(arrangedSubviews: [p1, p2, p3])
 		mainVertStackView.translatesAutoresizingMaskIntoConstraints = false
 		mainVertStackView.axis = .vertical
 		mainVertStackView.spacing = 15
@@ -198,8 +203,6 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		let blankIntervalsSumm: CGFloat = 35
 		let finalSize = CGSize(width: contentRect.width, height: contentRect.height + blankIntervalsSumm)
 		collectionView.contentSize = finalSize
-//		mainVertStackView.bottomAnchor.constraint(equalTo: collectionView.topAnchor, constant: finalSize.height).isActive = true
-		mainVertStackView.heightAnchor.constraint(equalToConstant: finalSize.height).isActive = true
 	}
 	
 	
