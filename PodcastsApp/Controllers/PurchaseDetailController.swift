@@ -68,7 +68,7 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		setContentHeight()
+		//setContentHeight()
 		
 //		let contentViewHeight = scroll.contentSize.height + 200 + 20
 //		let offsetY = contentViewHeight - scroll.bounds.height
@@ -163,7 +163,7 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 			mainVertStackView.leadingAnchor.constraint(equalTo: scroll.leadingAnchor),
 			mainVertStackView.trailingAnchor.constraint(equalTo: scroll.trailingAnchor),
 			mainVertStackView.bottomAnchor.constraint(equalTo: scroll.bottomAnchor),
-			mainVertStackView.heightAnchor.constraint(greaterThanOrEqualTo: scroll.heightAnchor),
+			//mainVertStackView.heightAnchor.constraint(greaterThanOrEqualTo: scroll.heightAnchor),
 		])
 		
 	}
@@ -221,9 +221,11 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
 		if traitCollection.verticalSizeClass == .compact {
 			print("Hotizontal device position")
+			mainVertStackView.axis = .horizontal
 		}
 		else {
 			print("Vertical device position")
+			mainVertStackView.axis = .vertical
 		}
 	}
 	
