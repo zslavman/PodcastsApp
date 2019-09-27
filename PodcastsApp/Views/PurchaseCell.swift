@@ -9,6 +9,8 @@
 import UIKit
 import StoreKit
 import PKHUD
+import MaterialComponents.MaterialActivityIndicator
+
 
 protocol PurchaseCellDelegate: class {
 	func showHUD()
@@ -46,15 +48,6 @@ class PurchaseCell: UITableViewCell {
 		label.numberOfLines = 0
 		return label
 	}()
-//	private let priceLabel: UILabel = {
-//		let label = UILabel()
-//		label.translatesAutoresizingMaskIntoConstraints = false
-//		label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-//		label.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-//		label.textAlignment = .center
-//		label.adjustsFontSizeToFitWidth = true
-//		return label
-//	}()
 	private let buyButton: UIButton = {
 		let bttn = UIButton(type: .system)
 		bttn.translatesAutoresizingMaskIntoConstraints = false
@@ -104,6 +97,17 @@ class PurchaseCell: UITableViewCell {
 		arrowBut.layer.borderColor = #colorLiteral(red: 0.8844061932, green: 0.8844061932, blue: 0.8844061932, alpha: 1).cgColor
 		return arrowBut
 	}()
+	private let activityIndicator: MDCActivityIndicator = {
+		let ind = MDCActivityIndicator()
+		ind.translatesAutoresizingMaskIntoConstraints = false
+		ind.sizeToFit()
+		ind.indicatorMode = .indeterminate
+		ind.cycleColors = [UIColor.white.withAlphaComponent(1)]
+		ind.radius = 8
+		ind.strokeWidth = 1.5
+		ind.isHidden = true
+		return ind
+	}()
 	private var viewModel: SKProduct!
 	
 	
@@ -118,6 +122,10 @@ class PurchaseCell: UITableViewCell {
 		buyButton.addTarget(self, action: #selector(onBuyClick), for: .touchUpInside)
 		NotificationCenter.default.addObserver(self, selector: #selector(updateProgress(notif:)),
 											   name: .purchaseDownloadsUpdated, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(purchaseDidChangeStatus(notif:)),
+											   name: .purchaseDownloadingCompleted, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(purchaseDidChangeStatus(notif:)),
+											   name: .purchaseDownloadingError, object: nil)
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -164,6 +172,8 @@ class PurchaseCell: UITableViewCell {
 		
 		addSubview(progressBar)
 		
+		buyButton.addSubview(activityIndicator)
+		
 		NSLayoutConstraint.activate([
 			purchaseImage.widthAnchor.constraint(equalToConstant: 110),
 			purchaseImage.heightAnchor.constraint(equalToConstant: 110),
@@ -179,7 +189,23 @@ class PurchaseCell: UITableViewCell {
 			arrowLabel.centerXAnchor.constraint(equalTo: arrowButton.centerXAnchor, constant: 5),
 			arrowLabel.centerYAnchor.constraint(equalTo: arrowButton.centerYAnchor),
 			arrowLabel.widthAnchor.constraint(equalToConstant: 15),
+			activityIndicator.centerXAnchor.constraint(equalTo: buyButton.centerXAnchor),
+			activityIndicator.centerYAnchor.constraint(equalTo: buyButton.centerYAnchor),
 		])
+	}
+	
+	
+	private func setActivityIndicator(isActive: Bool) {
+		if isActive {
+			buyButton.isEnabled = false
+			activityIndicator.isHidden = false
+			activityIndicator.startAnimating()
+		}
+		else {
+			buyButton.isEnabled = true
+			activityIndicator.isHidden = true
+			activityIndicator.stopAnimating()
+		}
 	}
 	
 	
@@ -204,10 +230,10 @@ class PurchaseCell: UITableViewCell {
 		progressBar.isHidden = true
 		
 		if IAPManager.shared.suspendedPurchaseIDs.contains(viewModel.productIdentifier) {
-			buyButton.isEnabled = false
+			setActivityIndicator(isActive: true)
 		}
 		else {
-			buyButton.isEnabled = true
+			setActivityIndicator(isActive: false)
 		}
 		//TODO: check id in already purchased dataBase
 		let purchased = false
@@ -232,27 +258,28 @@ class PurchaseCell: UITableViewCell {
 		let progress = Double(desiredDownload.progress)
 		DispatchQueue.main.async {
 			self.progressBar.progress = progress
-			//self.setFileSizeWithProgress(curProgress: progress)
 		}
 	}
 	
 	
-//	private func setFileSizeWithProgress(curProgress: Double) {
-//		guard let wholeFileSizeNumber = viewModel.downloadContentLengths.first else { return }
-//		let wholeFileSizeInt = wholeFileSizeNumber.int64Value
-//		let formatter = ByteCountFormatter()
-//		formatter.countStyle = .file
-//		let downloadedSize = Double(wholeFileSizeInt) * curProgress
-//		let downloadedFormatedSize = formatter.string(fromByteCount: Int64(downloadedSize))
-//		let wholeFormatedSize = formatter.string(fromByteCount: wholeFileSizeInt)
-//		sizeLabel.text = "\(downloadedFormatedSize) / \(wholeFormatedSize)"
-//	}
+	/// purchase did change status notification observer
+	@objc private func purchaseDidChangeStatus(notif: Notification) {
+		var purchID: String?
+		if let comleteID = notif.object as? String {
+			purchID = comleteID
+		}
+		else if let errorEntity = notif.object as? PurchaseErrorEntity {
+			purchID = errorEntity.purchaseID
+		}
+		guard let safeID = purchID, safeID == viewModel.productIdentifier else { return }
+		setActivityIndicator(isActive: false)
+	}
 	
 	
 	@objc private func onBuyClick() {
-		buyButton.isEnabled = false
 		IAPManager.shared.purchaseProduct(productID: viewModel.productIdentifier)
-		delegate?.showHUD()
+		//delegate?.showHUD()
+		setActivityIndicator(isActive: true)
 	}
 	
 }

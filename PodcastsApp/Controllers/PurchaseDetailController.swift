@@ -9,6 +9,7 @@
 import UIKit
 import PKHUD
 import StoreKit
+import MaterialComponents.MaterialActivityIndicator
 
 
 class PurchaseDetailController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
@@ -52,6 +53,17 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		bttn.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
 		return bttn
 	}()
+	private let activityIndicator: MDCActivityIndicator = {
+		let ind = MDCActivityIndicator()
+		ind.translatesAutoresizingMaskIntoConstraints = false
+		ind.sizeToFit()
+		ind.indicatorMode = .indeterminate
+		ind.cycleColors = [UIColor.white.withAlphaComponent(1)]
+		ind.radius = 8
+		ind.strokeWidth = 1.5
+		ind.isHidden = true
+		return ind
+	}()
 	private var purchModel: PurchModel!
 	private var skProduct: SKProduct!
 	private var mainVertStackView: UIStackView!
@@ -63,6 +75,11 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		super.viewDidLoad()
 		collectionView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		navigationItem.title = purchModel.title.ru
+		NotificationCenter.default.addObserver(self, selector: #selector(purchaseDidChangeStatus(notif:)),
+											   name: .purchaseDownloadingCompleted, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(purchaseDidChangeStatus(notif:)),
+											   name: .purchaseDownloadingError, object: nil)
+		checkBuyStatus()
 	}
 	
 	
@@ -87,20 +104,59 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		self.purchModel = purchModel
 		self.skProduct = skProduct
 		
+		installBuyBttnWithActivity()
+		
 		installLayout2()
-		//installConstraints()
 	}
 	
 	
-	private func installLayout() {
-		collectionView.alwaysBounceVertical = true
-		
+	/// purchase did change status notification observer
+	@objc private func purchaseDidChangeStatus(notif: Notification) {
+		var purchID: String?
+		if let comleteID = notif.object as? String {
+			purchID = comleteID
+		}
+		else if let errorEntity = notif.object as? PurchaseErrorEntity {
+			purchID = errorEntity.purchaseID
+		}
+		guard let safeID = purchID, safeID == purchModel.purchaseID else { return }
+		setActivityIndicator(isActive: false)
+	}
+	
+	
+	private func checkBuyStatus() {
+		if IAPManager.shared.suspendedPurchaseIDs.contains(purchModel.purchaseID) {
+			setActivityIndicator(isActive: true)
+		}
+		else {
+			//TODO: check if already buy, if need update
+		}
+	}
+	
+	
+	
+	private func installBuyBttnWithActivity() {
 		// buyButton
 		buyButton.setTitle(skProduct.localizedPrice, for: .normal)
 		let rButton = UIBarButtonItem(customView: buyButton)
 		navigationItem.rightBarButtonItem = rButton
 		buyButton.addTarget(self, action: #selector(onBuyClick), for: .touchUpInside)
 		
+		buyButton.addSubview(activityIndicator)
+		
+		NSLayoutConstraint.activate([
+			buyButton.heightAnchor.constraint(equalToConstant: 28),
+			buyButton.widthAnchor.constraint(equalToConstant: 60),
+			activityIndicator.centerXAnchor.constraint(equalTo: buyButton.centerXAnchor),
+			activityIndicator.centerYAnchor.constraint(equalTo: buyButton.centerYAnchor),
+		])
+	}
+	
+	
+	
+	private func installLayout() {
+		collectionView.alwaysBounceVertical = true
+
 		// productImg & descriptionText
 		if let url = URL(string: purchModel.imageURL) {
 			productImg.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
@@ -190,7 +246,22 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	
 	@objc private func onBuyClick() {
 		IAPManager.shared.purchaseProduct(productID: productID)
-		HUD.flash(.progress, onView: nil, delay: 2, completion: nil)
+		//HUD.flash(.progress, onView: nil, delay: 2, completion: nil)
+		setActivityIndicator(isActive: true)
+	}
+	
+	
+	private func setActivityIndicator(isActive: Bool) {
+		if isActive {
+			buyButton.isEnabled = false
+			activityIndicator.isHidden = false
+			activityIndicator.startAnimating()
+		}
+		else {
+			buyButton.isEnabled = true
+			activityIndicator.isHidden = true
+			activityIndicator.stopAnimating()
+		}
 	}
 	
 	

@@ -19,5 +19,6 @@ target 'PodcastsApp' do
 	pod 'AXPhotoViewer/SDWebImage'
 	pod 'SwiftyStoreKit', '~> 0.14.2'
 	pod 'PKHUD', '5.2.1'
+	pod 'MaterialComponents/ActivityIndicator', '~> 85.10.0'
 
 end

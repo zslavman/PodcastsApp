@@ -12,6 +12,17 @@ PODS:
   - AXStateButton (1.1.4)
   - FeedKit (8.1.1)
   - FLAnimatedImage (1.0.12)
+  - MaterialComponents/ActivityIndicator (85.10.0):
+    - MaterialComponents/Palettes
+    - MaterialComponents/private/Application
+    - MDFInternationalization
+    - MotionAnimator (~> 2.0)
+  - MaterialComponents/Palettes (85.10.0)
+  - MaterialComponents/private/Application (85.10.0)
+  - MDFInternationalization (2.0.0)
+  - MotionAnimator (2.8.1):
+    - MotionInterchange (~> 1.6)
+  - MotionInterchange (1.6.0)
   - PKHUD (5.2.1)
   - ReachabilitySwift (4.3.0)
   - SDWebImage (5.0.0):
@@ -24,6 +35,7 @@ DEPENDENCIES:
   - AXPhotoViewer (~> 1.6.1)
   - AXPhotoViewer/SDWebImage
   - FeedKit (~> 8.0)
+  - MaterialComponents/ActivityIndicator
   - PKHUD (= 5.2.1)
   - ReachabilitySwift (= 4.3.0)
   - SDWebImage (~> 5.0)
@@ -36,6 +48,10 @@ SPEC REPOS:
     - AXStateButton
     - FeedKit
     - FLAnimatedImage
+    - MaterialComponents
+    - MDFInternationalization
+    - MotionAnimator
+    - MotionInterchange
     - PKHUD
     - ReachabilitySwift
     - SDWebImage
@@ -47,11 +63,15 @@ SPEC CHECKSUMS:
   AXStateButton: 6c515a433e37551505046429b5be04c12daa8c07
   FeedKit: 3418eed25f0b493b205b4de1b8511ac21d413fa9
   FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  MaterialComponents: 91f8a1d5b56b0e0f7dce0eb1c5d279595610480b
+  MDFInternationalization: 010097556d6b09d2c4ea38e0820ea6d37be6a314
+  MotionAnimator: ee16aa30567c5bae0fb2750c132915829cfaaf8a
+  MotionInterchange: ead0e3ae1f3a5fb539e289debbc7ae036160a10d
   PKHUD: 4e6162c4c39ac367c6934e9855c6b4762ee16256
   ReachabilitySwift: 408477d1b6ed9779dba301953171e017c31241f3
   SDWebImage: 5de80a0302de9e377e62f47d2fa1304efff0e55f
   SwiftyStoreKit: cc399645796b094022fb650c148a0aed25995873
 
-PODFILE CHECKSUM: ecdfd5c77a46191656cdde259c4bd3705fd65f3c
+PODFILE CHECKSUM: 4d3b95c7385e594c821040ae53dd3e3a7a6bb16a
 
 COCOAPODS: 1.5.3
