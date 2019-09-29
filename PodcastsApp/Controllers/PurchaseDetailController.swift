@@ -90,9 +90,7 @@ class PurchaseDetailController: UIViewController {
 	private var skProduct: SKProduct!
 	private var mainVertStackView: UIStackView!
 	private var headerViewHeight: NSLayoutConstraint?
-	private var headerViewWidth: NSLayoutConstraint?
-	private var bottomOfheaderView: NSLayoutConstraint?
-	
+	private var calculatedWidth: CGFloat = 0
 	
 	
 	override func viewDidLoad() {
@@ -170,13 +168,6 @@ class PurchaseDetailController: UIViewController {
 		sizeAndDescriptStack.isLayoutMarginsRelativeArrangement = true
 		sizeAndDescriptStack.layoutMargins = .init(top: 0, left: 15, bottom: 0, right: 15)
 		
-		let bars = UIScreen.main.bounds.height - (navigationController?.navigationBar.frame.height ?? 44) - 49
-		let picWidth = min(UIScreen.main.bounds.width - 10, bars)
-		headerView.widthAnchor.constraint(equalToConstant: picWidth).isActive = true
-		
-		headerViewHeight = headerView.heightAnchor.constraint(equalTo: headerView.widthAnchor)
-		headerViewHeight?.isActive = true
-		
 		mainVertStackView = UIStackView(arrangedSubviews: [headerView, sizeAndDescriptStack])
 		mainVertStackView.translatesAutoresizingMaskIntoConstraints = false
 		mainVertStackView.axis = .vertical
@@ -185,6 +176,20 @@ class PurchaseDetailController: UIViewController {
 		mainVertStackView.layoutMargins = .init(top: 5, left: 5, bottom: 15, right: 5)
 		
 		scroll.addSubview(mainVertStackView)
+		
+		let wid = calculateNecessaryWidth()
+		sizeAndDescriptStack.widthAnchor.constraint(equalToConstant: wid).isActive = true
+		headerViewHeight = headerView.heightAnchor.constraint(equalToConstant: wid)
+		headerViewHeight?.isActive = true
+		headerView.widthAnchor.constraint(equalToConstant: wid).isActive = true
+	}
+	
+	
+	private func calculateNecessaryWidth() -> CGFloat {
+		let bars = UIScreen.main.bounds.height - (navigationController?.navigationBar.frame.height ?? 44) - 49
+		let picWidth = min(UIScreen.main.bounds.width - 10, bars)
+		calculatedWidth = picWidth
+		return picWidth
 	}
 
 	
@@ -199,10 +204,6 @@ class PurchaseDetailController: UIViewController {
 			scroll.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 			scroll.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
 			scroll.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-			
-//			headerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
-//			headerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0),
-//			headerView.centerXAnchor.constraint(equalTo: scroll.centerXAnchor),
 			
 			mainVertStackView.topAnchor.constraint(equalTo: scroll.topAnchor),
 			mainVertStackView.leadingAnchor.constraint(equalTo: scroll.leadingAnchor),
@@ -277,34 +278,21 @@ class PurchaseDetailController: UIViewController {
 			print("Vertical device position")
 		}
 	}
-
-	
-//	private func stretchPicture() {
-//		guard let header = tableHeaderView else { return }
-//		guard let imageView = header.subviews.first as? UIImageView else { return }
-//
-//		headerViewHeight = imageView.constraints.filter{$0.identifier == "picHeight"}.first
-//		bottomOfPicture = header.constraints.filter{$0.identifier == "picBottom"}.first
-//
-//		let offsetY = -contentOffset.y
-//		bottomOfPicture?.constant = offsetY >= 0 ? 0 : offsetY / 2
-//		header.clipsToBounds = offsetY <= 0 // фикс пробела сверху
-//		headerViewHeight?.constant = max(header.bounds.height, header.bounds.height + offsetY)
-//	}
 	
 }
 
 
 extension PurchaseDetailController: UIScrollViewDelegate {
 	
-	func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		
+//	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//		guard headerView.frame.height > 0 else { return } // avoid enter on load, when constraints not ready
 //		let offsetY = -scrollView.contentOffset.y
-		//bottomOfPicture?.constant = offsetY >= 0 ? 0 : offsetY / 2
-		//headerView.clipsToBounds = offsetY <= 0 // фикс пробела сверху
-//		let delta = max(headerView.bounds.height, headerView.bounds.height + offsetY)
-//		print(offsetY, delta)
-		//headerViewHeight?.constant = delta
-	}
+//		let delta = max(headerView.frame.height, headerView.frame.height + offsetY)
+//		print(Int(offsetY), Int(delta))
+//		if delta < abs(calculatedWidth) / 3 { return }
+//		if delta > calculatedWidth { return }
+//		headerViewHeight?.constant += offsetY
+//		mainVertStackView.layoutIfNeeded()
+//	}
 
 }
