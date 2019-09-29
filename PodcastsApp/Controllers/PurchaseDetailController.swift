@@ -79,22 +79,24 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 											   name: .purchaseDownloadingCompleted, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(purchaseDidChangeStatus(notif:)),
 											   name: .purchaseDownloadingError, object: nil)
+		installLayout()
+		installConstraints()
 		checkBuyStatus()
 	}
 	
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		//setContentHeight()
-		
-//		let contentViewHeight = scroll.contentSize.height + 200 + 20
-//		let offsetY = contentViewHeight - scroll.bounds.height
-//		if (offsetY > 0) {
-//			//scroll.setContentOffset(CGPoint(x: scroll.contentOffset.x, y: offsetY), animated: true)
-//			scroll.contentSize = CGSize(width: 20, height: offsetY)
-//		}
+		setContentHeight()
 	}
 	
+	
+//	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//		return .portrait
+//	}
+//	override var shouldAutorotate: Bool {
+//		return false
+//	}
 	
 	public func initWith(productID: String) {
 		self.productID = productID
@@ -103,10 +105,6 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 			else { return }
 		self.purchModel = purchModel
 		self.skProduct = skProduct
-		
-		installBuyBttnWithActivity()
-		
-		installLayout2()
 	}
 	
 	
@@ -129,33 +127,20 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 			setActivityIndicator(isActive: true)
 		}
 		else {
-			//TODO: check if already buy, if need update
+			//TODO: check if already bought, if need update
 		}
 	}
 	
 	
-	
-	private func installBuyBttnWithActivity() {
+	private func installLayout() {
+		collectionView.alwaysBounceVertical = true
+		
 		// buyButton
 		buyButton.setTitle(skProduct.localizedPrice, for: .normal)
 		let rButton = UIBarButtonItem(customView: buyButton)
 		navigationItem.rightBarButtonItem = rButton
 		buyButton.addTarget(self, action: #selector(onBuyClick), for: .touchUpInside)
-		
 		buyButton.addSubview(activityIndicator)
-		
-		NSLayoutConstraint.activate([
-			buyButton.heightAnchor.constraint(equalToConstant: 28),
-			buyButton.widthAnchor.constraint(equalToConstant: 60),
-			activityIndicator.centerXAnchor.constraint(equalTo: buyButton.centerXAnchor),
-			activityIndicator.centerYAnchor.constraint(equalTo: buyButton.centerYAnchor),
-		])
-	}
-	
-	
-	
-	private func installLayout() {
-		collectionView.alwaysBounceVertical = true
 
 		// productImg & descriptionText
 		if let url = URL(string: purchModel.imageURL) {
@@ -169,75 +154,36 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		let sizeDescriptStack = UIStackView(arrangedSubviews: [descriptionText, sizeLabel])
 		sizeDescriptStack.axis = .vertical
 		sizeDescriptStack.spacing = 15
-		//sizeDescriptStack.distribution = .fill
+		sizeDescriptStack.heightAnchor.constraint(equalToConstant: 300).isActive = true
+		
+		let bars = UIScreen.main.bounds.height - (navigationController?.navigationBar.frame.height ?? 44) - 49
+		let picWidth = min(UIScreen.main.bounds.width - 10, bars)
+		productImg.widthAnchor.constraint(equalToConstant: picWidth).isActive = true
+		productImg.heightAnchor.constraint(equalTo: productImg.widthAnchor, multiplier: 1).isActive = true
 		
 		mainVertStackView = UIStackView(arrangedSubviews: [productImg, sizeDescriptStack])
 		mainVertStackView.axis = .vertical
 		mainVertStackView.spacing = 15
 		mainVertStackView.isLayoutMarginsRelativeArrangement = true
 		mainVertStackView.layoutMargins = .init(top: 5, left: 5, bottom: 15, right: 5)
-		//mainVertStackView.distribution = .fill
 		
 		collectionView.addSubview(mainVertStackView)
 	}
-	
-	
-	private func installLayout2() {
-		scroll = UIScrollView()
-		scroll.translatesAutoresizingMaskIntoConstraints = false
-		scroll.alwaysBounceVertical = true
-		view.addSubview(scroll)
-		scroll.fillSuperView()
-		
-		let p1 = UIView()
-		p1.translatesAutoresizingMaskIntoConstraints = false
-		p1.backgroundColor = .red
-		p1.heightAnchor.constraint(equalToConstant: 200).isActive = true
-		p1.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 10).isActive = true
-		
-		let p2 = UIView()
-		p2.translatesAutoresizingMaskIntoConstraints = false
-		p2.backgroundColor = .green
-		p2.heightAnchor.constraint(equalToConstant: 1900).isActive = true
-		
-		let p3 = UIView()
-		p3.translatesAutoresizingMaskIntoConstraints = false
-		p3.backgroundColor = .blue
-		p3.heightAnchor.constraint(equalToConstant: 500).isActive = true
-		
-		mainVertStackView = UIStackView(arrangedSubviews: [p1, p2, p3])
-		mainVertStackView.translatesAutoresizingMaskIntoConstraints = false
-		mainVertStackView.axis = .vertical
-		mainVertStackView.spacing = 15
-		mainVertStackView.isLayoutMarginsRelativeArrangement = true
-		mainVertStackView.layoutMargins = .init(top: 5, left: 5, bottom: 5, right: 5)
-		
-		scroll.addSubview(mainVertStackView)
-	
-		NSLayoutConstraint.activate([
-			mainVertStackView.topAnchor.constraint(equalTo: scroll.topAnchor),
-			mainVertStackView.leadingAnchor.constraint(equalTo: scroll.leadingAnchor),
-			mainVertStackView.trailingAnchor.constraint(equalTo: scroll.trailingAnchor),
-			mainVertStackView.bottomAnchor.constraint(equalTo: scroll.bottomAnchor),
-			//mainVertStackView.heightAnchor.constraint(greaterThanOrEqualTo: scroll.heightAnchor),
-		])
-		
-	}
-	
+
 	
 	private func installConstraints() {
 		NSLayoutConstraint.activate([
 			buyButton.heightAnchor.constraint(equalToConstant: 28),
 			buyButton.widthAnchor.constraint(equalToConstant: 60),
+			activityIndicator.centerXAnchor.constraint(equalTo: buyButton.centerXAnchor),
+			activityIndicator.centerYAnchor.constraint(equalTo: buyButton.centerYAnchor),
 			
 			descriptionText.heightAnchor.constraint(equalToConstant: 200),
 			
 			mainVertStackView.topAnchor.constraint(equalTo: collectionView.topAnchor),
 			mainVertStackView.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
 			mainVertStackView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
-			
-			productImg.heightAnchor.constraint(equalToConstant: 280),
-			productImg.widthAnchor.constraint(equalToConstant: 280),
+			mainVertStackView.heightAnchor.constraint(equalToConstant: 1000),
 
 			sizeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
 		])
@@ -292,11 +238,9 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
 		if traitCollection.verticalSizeClass == .compact {
 			print("Hotizontal device position")
-			mainVertStackView.axis = .horizontal
 		}
 		else {
 			print("Vertical device position")
-			mainVertStackView.axis = .vertical
 		}
 	}
 	

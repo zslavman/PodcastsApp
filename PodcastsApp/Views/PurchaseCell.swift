@@ -288,7 +288,6 @@ class PurchaseCell: UITableViewCell {
 		guard let jusBegunProcessingID = notif.object as? String else { return }
 		guard jusBegunProcessingID == viewModel.productIdentifier else { return }
 		setActivityIndicator(isActive: true)
-		
 	}
 	
 	
