@@ -121,11 +121,13 @@ class PurchaseCell: UITableViewCell {
 		selectionStyle = .none
 		buyButton.addTarget(self, action: #selector(onBuyClick), for: .touchUpInside)
 		NotificationCenter.default.addObserver(self, selector: #selector(updateProgress(notif:)),
-											   name: .purchaseDownloadsUpdated, object: nil)
+											   name: .purchaseDownloadsProgressUpdated, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(purchaseDidChangeStatus(notif:)),
 											   name: .purchaseDownloadingCompleted, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(purchaseDidChangeStatus(notif:)),
 											   name: .purchaseDownloadingError, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(purchaseDidBeginProcessing(notif:)),
+											   name: .purchaseProcessing, object: nil)
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -209,6 +211,16 @@ class PurchaseCell: UITableViewCell {
 	}
 	
 	
+	private func checkActivity() {
+		if IAPManager.shared.suspendedPurchaseIDs.contains(viewModel.productIdentifier) {
+			setActivityIndicator(isActive: true)
+		}
+		else {
+			setActivityIndicator(isActive: false)
+		}
+	}
+	
+	
 	//MARK: configure cell
 	public func configureWith(productViewModel: SKProduct, jsonModel: PurchModel?) {
 		guard let safeJSONModel = jsonModel else {
@@ -229,12 +241,8 @@ class PurchaseCell: UITableViewCell {
 		}
 		progressBar.isHidden = true
 		
-		if IAPManager.shared.suspendedPurchaseIDs.contains(viewModel.productIdentifier) {
-			setActivityIndicator(isActive: true)
-		}
-		else {
-			setActivityIndicator(isActive: false)
-		}
+		checkActivity()
+		
 		//TODO: check id in already purchased dataBase
 		let purchased = false
 		let purchasedVer = 1.0
@@ -262,17 +270,25 @@ class PurchaseCell: UITableViewCell {
 	}
 	
 	
-	/// purchase did change status notification observer
+	/// purchase did change status notification observer (for handling error & finish downloading)
 	@objc private func purchaseDidChangeStatus(notif: Notification) {
 		var purchID: String?
-		if let comleteID = notif.object as? String {
+		if let comleteID = notif.object as? String { // handling completed
 			purchID = comleteID
 		}
-		else if let errorEntity = notif.object as? PurchaseErrorEntity {
+		else if let errorEntity = notif.object as? PurchaseErrorEntity { // handling error
 			purchID = errorEntity.purchaseID
 		}
 		guard let safeID = purchID, safeID == viewModel.productIdentifier else { return }
 		setActivityIndicator(isActive: false)
+	}
+	
+	
+	@objc private func purchaseDidBeginProcessing(notif: Notification) {
+		guard let jusBegunProcessingID = notif.object as? String else { return }
+		guard jusBegunProcessingID == viewModel.productIdentifier else { return }
+		setActivityIndicator(isActive: true)
+		
 	}
 	
 	

@@ -19,7 +19,8 @@ enum IAPProducts: String, CaseIterable {
 
 extension Notification.Name {
 	static let gotPurchasesList = Notification.Name("gotPurchasesList")
-	static let purchaseDownloadsUpdated = Notification.Name("purchaseDownloadsUpdated")
+	static let purchaseDownloadsProgressUpdated = Notification.Name("purchaseDownloadsProgressUpdated")
+	static let purchaseProcessing = Notification.Name("purchaseProcessing")
 	static let purchaseDownloadingCompleted = Notification.Name("purchaseDownloadingCompleted")
 	static let purchaseDownloadingError = Notification.Name("purchaseDownloadingError")
 	static let gotNewJSON = Notification.Name("gotJSON")
@@ -28,6 +29,7 @@ extension Notification.Name {
 struct PurchaseErrorEntity {
 	let purchaseID: String
 	let error: Error
+	let errorCode: SKError.Code
 }
 
 
@@ -82,6 +84,7 @@ class IAPManager {
 	/// if click buy product
 	public func purchaseProduct(productID: String) {
 		_suspended.insert(productID)
+		NotificationCenter.default.post(name: .purchaseProcessing, object: productID)
 		SwiftyStoreKit.purchaseProduct(productID, quantity: 1, atomically: false) {
 			result in
 			switch result {
@@ -108,7 +111,7 @@ class IAPManager {
 				case .cloudServiceRevoked: print("User has revoked permission to use this cloud service")
 				default: print((error as NSError).localizedDescription)
 				}
-				let entity = PurchaseErrorEntity(purchaseID: productID, error: error)
+				let entity = PurchaseErrorEntity(purchaseID: productID, error: error, errorCode: error.code)
 				self._suspended.remove(productID)
 				NotificationCenter.default.post(name: .purchaseDownloadingError, object: entity) // release locked button
 			}
@@ -123,7 +126,7 @@ class IAPManager {
 			
 			self?.queue.async(flags: .barrier) {
 				self?.downloadsPool = downloads
-				NotificationCenter.default.post(name: .purchaseDownloadsUpdated, object: downloads )
+				NotificationCenter.default.post(name: .purchaseDownloadsProgressUpdated, object: downloads )
 			}
 			
 			// if purchase did finish downloading it will have field "contentURL" which is location file in local storage

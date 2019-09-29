@@ -119,7 +119,9 @@ class PurchasesController: UIViewController {
 	@objc private func onReceiveError(notif: Notification) {
 		guard let errorEntity = notif.object as? PurchaseErrorEntity else { return }
 		reloadCellByPurchaseID(id: errorEntity.purchaseID)
-		showAlert(message: errorEntity.error.localizedDescription)
+		if errorEntity.errorCode != .paymentCancelled {
+			showAlert(message: errorEntity.error.localizedDescription)
+		}
 	}
 	
 	
