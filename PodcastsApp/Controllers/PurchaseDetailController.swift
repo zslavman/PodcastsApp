@@ -166,14 +166,14 @@ class PurchaseDetailController: UIViewController {
 		sizeAndDescriptStack.axis = .vertical
 		sizeAndDescriptStack.spacing = 15
 		sizeAndDescriptStack.isLayoutMarginsRelativeArrangement = true
-		sizeAndDescriptStack.layoutMargins = .init(top: 0, left: 15, bottom: 0, right: 15)
+		sizeAndDescriptStack.layoutMargins = .init(top: 5, left: 15, bottom: 15, right: 15)
 		
 		mainVertStackView = UIStackView(arrangedSubviews: [headerView, sizeAndDescriptStack])
 		mainVertStackView.translatesAutoresizingMaskIntoConstraints = false
 		mainVertStackView.axis = .vertical
 		mainVertStackView.spacing = 15
 		mainVertStackView.isLayoutMarginsRelativeArrangement = true
-		mainVertStackView.layoutMargins = .init(top: 5, left: 5, bottom: 15, right: 5)
+		mainVertStackView.layoutMargins = .init(top: 0, left: 5, bottom: 15, right: 5)
 		
 		scroll.addSubview(mainVertStackView)
 		

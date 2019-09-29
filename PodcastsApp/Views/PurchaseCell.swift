@@ -231,7 +231,9 @@ class PurchaseCell: UITableViewCell {
 		viewModel = productViewModel
 		buyButton.setTitle(viewModel.localizedPrice, for: .normal)
 		mainTitle.text = safeJSONModel.title.ru
-		descriptionText.text = safeJSONModel.descript_short.ru
+		
+		setPurchaseDescrition(safeJSONModel)
+		
 		let prog = IAPManager.shared.getProgressForIdentifier(id: viewModel.productIdentifier) // return -1 if not found
 		if prog >= 0 {
 			progressBar.progress = prog
@@ -256,6 +258,16 @@ class PurchaseCell: UITableViewCell {
 			buyButton.setTitle("Куплено", for: .normal)
 			buyButton.isEnabled = false
 		}
+	}
+	
+	private func setPurchaseDescrition(_ model: PurchModel) {
+		let paragraphStyle = NSMutableParagraphStyle()
+		paragraphStyle.hyphenationFactor = 1
+		paragraphStyle.firstLineHeadIndent = 0
+		let hyphenAttribute = [NSAttributedString.Key.paragraphStyle : paragraphStyle]
+		let attributedString = NSMutableAttributedString(string: model.descript_short.ru, attributes: hyphenAttribute)
+		descriptionText.attributedText = attributedString
+		descriptionText.textAlignment = .justified
 	}
 	
 	
