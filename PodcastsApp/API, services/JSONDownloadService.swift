@@ -15,7 +15,7 @@ class JSONDownloadService: NSObject {
 //	private let json = "https://drive.google.com/uc?export=download&id=1LZrlmX3mrl8lSYq-gYa9v5xrVfYRG3GU"
 //	private let json = "https://drive.google.com/uc?export=view&id=1LZrlmX3mrl8lSYq-gYa9v5xrVfYRG3GU"
 //	private let json = "https://drive.google.com/uc?id=1LZrlmX3mrl8lSYq-gYa9v5xrVfYRG3GU"
-	private let json = "https://firebasestorage.googleapis.com/v0/b/chatapp-2222e.appspot.com/o/podcasts_index.json?alt=media&token=bdd6c998-87f0-422a-8fb1-1f282c14cc21"
+	private let json = "https://firebasestorage.googleapis.com/v0/b/chatapp-2222e.appspot.com/o/podcasts_index.json?alt=media&token=38d5dc1a-2391-4d8b-9029-ca463837187e"
 	private var downloadTask: URLSessionDataTask?
 	private let allovedUpdateInterval: TimeInterval = 1800 // not more than 1 request / per this interval
 	public var parsed = [PurchModel]()

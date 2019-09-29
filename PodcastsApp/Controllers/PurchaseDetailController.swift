@@ -15,7 +15,7 @@ import MaterialComponents.MaterialActivityIndicator
 class PurchaseDetailController: UIViewController {
 	
 	private var productID: String!
-	private let productImg: UIImageView = {
+	private let headerView: UIImageView = {
 		let img = UIImageView()
 		img.translatesAutoresizingMaskIntoConstraints = false
 		img.contentMode = .scaleAspectFill
@@ -49,7 +49,7 @@ class PurchaseDetailController: UIViewController {
 	private let sizeLabel: UILabel = {
 		let label = UILabel()
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.font = UIFont.systemFont(ofSize: 12, weight: .bold)
+		label.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.heavy)
 		label.textColor = #colorLiteral(red: 0.6614649429, green: 0.6614649429, blue: 0.6614649429, alpha: 1)
 		label.textAlignment = .right
 		return label
@@ -79,8 +79,9 @@ class PurchaseDetailController: UIViewController {
 		ind.isHidden = true
 		return ind
 	}()
-	private let scroll: UIScrollView = {
+	private lazy var scroll: UIScrollView = {
 		let scrv = UIScrollView()
+		scrv.delegate = self
 		scrv.translatesAutoresizingMaskIntoConstraints = false
 		scrv.alwaysBounceVertical = true
 		return scrv
@@ -88,6 +89,9 @@ class PurchaseDetailController: UIViewController {
 	private var purchModel: PurchModel!
 	private var skProduct: SKProduct!
 	private var mainVertStackView: UIStackView!
+	private var headerViewHeight: NSLayoutConstraint?
+	private var headerViewWidth: NSLayoutConstraint?
+	private var bottomOfheaderView: NSLayoutConstraint?
 	
 	
 	
@@ -104,19 +108,6 @@ class PurchaseDetailController: UIViewController {
 		checkBuyStatus()
 	}
 	
-	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		//setContentHeight()
-	}
-	
-	
-//	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-//		return .portrait
-//	}
-//	override var shouldAutorotate: Bool {
-//		return false
-//	}
 	
 	public func initWith(productID: String) {
 		self.productID = productID
@@ -164,32 +155,29 @@ class PurchaseDetailController: UIViewController {
 
 		// productImg & descriptionText
 		if let url = URL(string: purchModel.imageURL) {
-			productImg.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
+			headerView.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
 		}
 		
 		// set description text with hyphenation
-		let paragraphStyle = NSMutableParagraphStyle()
-		paragraphStyle.hyphenationFactor = 1.0
-		let hyphenAttribute = [NSAttributedString.Key.paragraphStyle : paragraphStyle]
-		let attributedString = NSMutableAttributedString(string: purchModel.descript_long.ru, attributes: hyphenAttribute)
-		descriptionText.attributedText = attributedString
-		descriptionText.textAlignment = .justified
+		setPurchaseDescrition()
 		
 		// size label
 		sizeLabel.text = getConvertedSize()
 		
-		let sizeDescriptStack = UIStackView(arrangedSubviews: [descriptionText, sizeLabel])
-		sizeDescriptStack.axis = .vertical
-		sizeDescriptStack.spacing = 15
-		sizeDescriptStack.isLayoutMarginsRelativeArrangement = true
-		sizeDescriptStack.layoutMargins = .init(top: 0, left: 10, bottom: 0, right: 10)
+		let sizeAndDescriptStack = UIStackView(arrangedSubviews: [descriptionText, sizeLabel])
+		sizeAndDescriptStack.axis = .vertical
+		sizeAndDescriptStack.spacing = 15
+		sizeAndDescriptStack.isLayoutMarginsRelativeArrangement = true
+		sizeAndDescriptStack.layoutMargins = .init(top: 0, left: 15, bottom: 0, right: 15)
 		
 		let bars = UIScreen.main.bounds.height - (navigationController?.navigationBar.frame.height ?? 44) - 49
 		let picWidth = min(UIScreen.main.bounds.width - 10, bars)
-		productImg.widthAnchor.constraint(equalToConstant: picWidth).isActive = true
-		productImg.heightAnchor.constraint(equalTo: productImg.widthAnchor, multiplier: 1).isActive = true
+		headerView.widthAnchor.constraint(equalToConstant: picWidth).isActive = true
 		
-		mainVertStackView = UIStackView(arrangedSubviews: [productImg, sizeDescriptStack])
+		headerViewHeight = headerView.heightAnchor.constraint(equalTo: headerView.widthAnchor)
+		headerViewHeight?.isActive = true
+		
+		mainVertStackView = UIStackView(arrangedSubviews: [headerView, sizeAndDescriptStack])
 		mainVertStackView.translatesAutoresizingMaskIntoConstraints = false
 		mainVertStackView.axis = .vertical
 		mainVertStackView.spacing = 15
@@ -211,6 +199,10 @@ class PurchaseDetailController: UIViewController {
 			scroll.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 			scroll.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
 			scroll.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+			
+//			headerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0),
+//			headerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0),
+//			headerView.centerXAnchor.constraint(equalTo: scroll.centerXAnchor),
 			
 			mainVertStackView.topAnchor.constraint(equalTo: scroll.topAnchor),
 			mainVertStackView.leadingAnchor.constraint(equalTo: scroll.leadingAnchor),
@@ -241,6 +233,7 @@ class PurchaseDetailController: UIViewController {
 	}
 	
 	
+	/// not used
 	private func setContentHeight() {
 		var contentRect = CGRect.zero
 		scroll.subviews.forEach {
@@ -265,6 +258,17 @@ class PurchaseDetailController: UIViewController {
 	}
 	
 	
+	private func setPurchaseDescrition() {
+		let paragraphStyle = NSMutableParagraphStyle()
+		paragraphStyle.hyphenationFactor = 1
+		paragraphStyle.firstLineHeadIndent = 25
+		let hyphenAttribute = [NSAttributedString.Key.paragraphStyle : paragraphStyle]
+		let attributedString = NSMutableAttributedString(string: purchModel.descript_long.ru, attributes: hyphenAttribute)
+		descriptionText.attributedText = attributedString
+		descriptionText.textAlignment = .justified
+	}
+	
+	
 	override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
 		if traitCollection.verticalSizeClass == .compact {
 			print("Hotizontal device position")
@@ -273,5 +277,34 @@ class PurchaseDetailController: UIViewController {
 			print("Vertical device position")
 		}
 	}
+
 	
+//	private func stretchPicture() {
+//		guard let header = tableHeaderView else { return }
+//		guard let imageView = header.subviews.first as? UIImageView else { return }
+//
+//		headerViewHeight = imageView.constraints.filter{$0.identifier == "picHeight"}.first
+//		bottomOfPicture = header.constraints.filter{$0.identifier == "picBottom"}.first
+//
+//		let offsetY = -contentOffset.y
+//		bottomOfPicture?.constant = offsetY >= 0 ? 0 : offsetY / 2
+//		header.clipsToBounds = offsetY <= 0 // фикс пробела сверху
+//		headerViewHeight?.constant = max(header.bounds.height, header.bounds.height + offsetY)
+//	}
+	
+}
+
+
+extension PurchaseDetailController: UIScrollViewDelegate {
+	
+	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		
+//		let offsetY = -scrollView.contentOffset.y
+		//bottomOfPicture?.constant = offsetY >= 0 ? 0 : offsetY / 2
+		//headerView.clipsToBounds = offsetY <= 0 // фикс пробела сверху
+//		let delta = max(headerView.bounds.height, headerView.bounds.height + offsetY)
+//		print(offsetY, delta)
+		//headerViewHeight?.constant = delta
+	}
+
 }
