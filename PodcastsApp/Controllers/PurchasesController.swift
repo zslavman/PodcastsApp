@@ -223,7 +223,7 @@ extension PurchasesController: UITableViewDelegate, UITableViewDataSource {
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let id = purchases[indexPath.row].productIdentifier
-		let detailVC = PurchaseDetailController(collectionViewLayout: UICollectionViewFlowLayout())
+		let detailVC = PurchaseDetailController()
 		detailVC.initWith(productID: id)
 		navigationController?.pushViewController(detailVC, animated: true)
 	}

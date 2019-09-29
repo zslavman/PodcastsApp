@@ -12,7 +12,7 @@ import StoreKit
 import MaterialComponents.MaterialActivityIndicator
 
 
-class PurchaseDetailController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class PurchaseDetailController: UIViewController {
 	
 	private var productID: String!
 	private let productImg: UIImageView = {
@@ -23,12 +23,27 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		img.clipsToBounds = true
 		return img
 	}()
+//	private let descriptionText: UITextView = {
+//		let label = UITextView()
+//		label.translatesAutoresizingMaskIntoConstraints = false
+//		label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+//		label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+//		label.isScrollEnabled = false // allow do not set height constraint
+//		label.textContainer.lineBreakMode = .byCharWrapping
+//		label.sizeToFit()
+//		label.textAlignment = .justified
+//		label.adjustsFontForContentSizeCategory = true
+//		return label
+//	}()
 	private let descriptionText: UILabel = {
 		let label = UILabel()
 		label.translatesAutoresizingMaskIntoConstraints = false
-		label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+		label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
 		label.textColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+		label.lineBreakMode = .byCharWrapping
 		label.numberOfLines = 0
+		label.textAlignment = .justified // need repeat after set attributed text
+		label.adjustsFontForContentSizeCategory = true
 		return label
 	}()
 	private let sizeLabel: UILabel = {
@@ -64,16 +79,21 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		ind.isHidden = true
 		return ind
 	}()
+	private let scroll: UIScrollView = {
+		let scrv = UIScrollView()
+		scrv.translatesAutoresizingMaskIntoConstraints = false
+		scrv.alwaysBounceVertical = true
+		return scrv
+	}()
 	private var purchModel: PurchModel!
 	private var skProduct: SKProduct!
 	private var mainVertStackView: UIStackView!
-	private var scroll: UIScrollView!
 	
 	
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		collectionView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+		view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
 		navigationItem.title = purchModel.title.ru
 		NotificationCenter.default.addObserver(self, selector: #selector(purchaseDidChangeStatus(notif:)),
 											   name: .purchaseDownloadingCompleted, object: nil)
@@ -87,7 +107,7 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		setContentHeight()
+		//setContentHeight()
 	}
 	
 	
@@ -133,7 +153,7 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	
 	
 	private func installLayout() {
-		collectionView.alwaysBounceVertical = true
+		view.addSubview(scroll)
 		
 		// buyButton
 		buyButton.setTitle(skProduct.localizedPrice, for: .normal)
@@ -146,7 +166,14 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		if let url = URL(string: purchModel.imageURL) {
 			productImg.sd_setImage(with: url, placeholderImage: #imageLiteral(resourceName: "image_placeholder"), options: [])
 		}
-		descriptionText.text = purchModel.descript_long.ru
+		
+		// set description text with hyphenation
+		let paragraphStyle = NSMutableParagraphStyle()
+		paragraphStyle.hyphenationFactor = 1.0
+		let hyphenAttribute = [NSAttributedString.Key.paragraphStyle : paragraphStyle]
+		let attributedString = NSMutableAttributedString(string: purchModel.descript_long.ru, attributes: hyphenAttribute)
+		descriptionText.attributedText = attributedString
+		descriptionText.textAlignment = .justified
 		
 		// size label
 		sizeLabel.text = getConvertedSize()
@@ -154,7 +181,8 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		let sizeDescriptStack = UIStackView(arrangedSubviews: [descriptionText, sizeLabel])
 		sizeDescriptStack.axis = .vertical
 		sizeDescriptStack.spacing = 15
-		sizeDescriptStack.heightAnchor.constraint(equalToConstant: 300).isActive = true
+		sizeDescriptStack.isLayoutMarginsRelativeArrangement = true
+		sizeDescriptStack.layoutMargins = .init(top: 0, left: 10, bottom: 0, right: 10)
 		
 		let bars = UIScreen.main.bounds.height - (navigationController?.navigationBar.frame.height ?? 44) - 49
 		let picWidth = min(UIScreen.main.bounds.width - 10, bars)
@@ -162,12 +190,13 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 		productImg.heightAnchor.constraint(equalTo: productImg.widthAnchor, multiplier: 1).isActive = true
 		
 		mainVertStackView = UIStackView(arrangedSubviews: [productImg, sizeDescriptStack])
+		mainVertStackView.translatesAutoresizingMaskIntoConstraints = false
 		mainVertStackView.axis = .vertical
 		mainVertStackView.spacing = 15
 		mainVertStackView.isLayoutMarginsRelativeArrangement = true
 		mainVertStackView.layoutMargins = .init(top: 5, left: 5, bottom: 15, right: 5)
 		
-		collectionView.addSubview(mainVertStackView)
+		scroll.addSubview(mainVertStackView)
 	}
 
 	
@@ -178,14 +207,15 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 			activityIndicator.centerXAnchor.constraint(equalTo: buyButton.centerXAnchor),
 			activityIndicator.centerYAnchor.constraint(equalTo: buyButton.centerYAnchor),
 			
-			descriptionText.heightAnchor.constraint(equalToConstant: 200),
+			scroll.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+			scroll.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+			scroll.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+			scroll.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 			
-			mainVertStackView.topAnchor.constraint(equalTo: collectionView.topAnchor),
-			mainVertStackView.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
-			mainVertStackView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
-			mainVertStackView.heightAnchor.constraint(equalToConstant: 1000),
-
-			sizeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -35),
+			mainVertStackView.topAnchor.constraint(equalTo: scroll.topAnchor),
+			mainVertStackView.leadingAnchor.constraint(equalTo: scroll.leadingAnchor),
+			mainVertStackView.trailingAnchor.constraint(equalTo: scroll.trailingAnchor),
+			mainVertStackView.bottomAnchor.constraint(equalTo: scroll.bottomAnchor),
 		])
 	}
 	
@@ -213,13 +243,13 @@ class PurchaseDetailController: UICollectionViewController, UICollectionViewDele
 	
 	private func setContentHeight() {
 		var contentRect = CGRect.zero
-		collectionView.subviews.forEach {
+		scroll.subviews.forEach {
 			(subview) in
 			contentRect = contentRect.union(subview.frame)
 		}
 		let blankIntervalsSumm: CGFloat = 35
 		let finalSize = CGSize(width: contentRect.width, height: contentRect.height + blankIntervalsSumm)
-		collectionView.contentSize = finalSize
+		scroll.contentSize = finalSize
 	}
 	
 	
