@@ -166,8 +166,11 @@ class PurchasesController: UIViewController {
 		filesPaths.forEach {
 			(fileURL) in
 			let fileExtension = fileURL.pathExtension.lowercased()
-			if fileExtension == "jpg" {
-				if let img = FilePathManager.shared.createImageFromURL(pathString: fileURL.path) {
+			if fileExtension == "pdf" {
+//				if let img = FilePathManager.shared.createImageFromURL(pathString: fileURL.path) {
+//					images.append(img)
+//				}
+				if let img = SUtils.drawPDFfromURL(url: fileURL) {
 					images.append(img)
 				}
 			}

@@ -374,6 +374,28 @@ struct SUtils {
 		view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
 		return UIGraphicsGetImageFromCurrentImageContext()
 	}
+	
+	
+	public static func drawPDFfromURL(url: URL) -> UIImage? {
+		guard let document = CGPDFDocument(url as CFURL) else { return nil }
+		guard let page = document.page(at: 2) else { return nil }
+		let dpi: CGFloat = 300.0 / 72.0
+		
+		let pageRect = page.getBoxRect(.mediaBox)
+		let sizeHQ = CGSize(width: pageRect.size.width * dpi, height: pageRect.size.height * dpi)
+		let renderer = UIGraphicsImageRenderer(size: sizeHQ)
+		let img = renderer.image {
+			ctx in
+			UIColor.white.set()
+			ctx.fill(CGRect(origin: .zero, size: sizeHQ))
+			
+			ctx.cgContext.translateBy(x: 0.0, y: pageRect.size.height * dpi)
+			ctx.cgContext.scaleBy(x: dpi, y: -dpi)
+			
+			ctx.cgContext.drawPDFPage(page)
+		}
+		return img
+	}
 
 	
 }
