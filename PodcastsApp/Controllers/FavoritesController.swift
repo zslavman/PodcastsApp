@@ -74,13 +74,21 @@ class FavoritesController: UICollectionViewController, SomeM {
 	}
 	
 	
-	// does not work
+	// does not work properly
 	override var shouldAutorotate: Bool {
-		return false
+		return true
 	}
 	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
 		return .portrait
 	}
+//	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+//		coordinator.animate(alongsideTransition: nil, completion:
+//			{_ in
+//				UIView.setAnimationsEnabled(true)
+//		})
+//		UIView.setAnimationsEnabled(false)
+//		super.viewWillTransition(to: size, with: coordinator)
+//	}
 	
 	
 	private func setupCollectionView() {
@@ -513,9 +521,13 @@ class AXPhotosViewControllerCustom: AXPhotosViewController, Rotatable {
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
-		if isMovingFromParent {
+		//if isMovingFromParent {
 			resetToPortrait()
-		}
+		//}
 	}
+	
+//	override func willRotate(to toInterfaceOrientation: UIInterfaceOrientation, duration: TimeInterval) {
+//		<#code#>
+//	}
 	
 }
