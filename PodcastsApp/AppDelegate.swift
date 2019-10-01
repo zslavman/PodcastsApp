@@ -9,6 +9,17 @@
 import UIKit
 import SwiftyStoreKit
 
+
+protocol Rotatable where Self: UIViewController {
+	func resetToPortrait()
+}
+extension Rotatable { // allow for VC only
+	func resetToPortrait() {
+		UIDevice.current.setValue(Int(UIInterfaceOrientation.portrait.rawValue), forKey: "orientation")
+	}
+}
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -35,6 +46,65 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		_ = SettingsBundleHelper()
 		JSONDownloadService.shared.downloadNewJSON()
 	}
+	
+	
+	// The app disables rotation for all view controllers except for a few that opt-in by
+	// conforming to the Rotatable protocol
+	func application(_ application: UIApplication,
+					 supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+		guard let _ = getTopVC(for: window?.rootViewController) as? Rotatable else {
+			return .portrait
+		}
+		return .allButUpsideDown
+	}
+	
+	
+	private func getTopVC(for rootViewController: UIViewController!) -> UIViewController? {
+		guard let rootVC = rootViewController else { return nil }
+		
+		if rootVC is UITabBarController {
+			let rootTabBarVC = rootVC as! UITabBarController
+			return getTopVC(for: rootTabBarVC.selectedViewController)
+		}
+		else if rootVC is UINavigationController {
+			let rootNavVC = rootVC as! UINavigationController
+			return getTopVC(for: rootNavVC.visibleViewController)
+		}
+		else if let rootPresentedVC = rootVC.presentedViewController {
+			return getTopVC(for: rootPresentedVC)
+		}
+		return rootViewController
+	}
+	
+	
+	
+//	func application(_ application: UIApplication,
+//					 supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+//		if let rootViewController = topVC_with_rootVC(rootViewController: window?.rootViewController) {
+//			if (rootViewController.responds(to: Selector(("canRotate")))) { // canRotate - name of method in VC
+//				// Unlock landscape view orientations for this view controller
+//				return .allButUpsideDown
+//			}
+//		}
+//		// Only allow portrait (standard behaviour)
+//		return .portrait
+//	}
+	/// every VC which have this method can changing orientation
+	//@objc func canRotate() -> Void {}
+	
+//	private func topVC_with_rootVC(rootViewController: UIViewController!) -> UIViewController? {
+//		if (rootViewController == nil) { return nil }
+//		if (rootViewController.isKind(of: UITabBarController.self)) {
+//			return topVC_with_rootVC(rootViewController: (rootViewController as! UITabBarController).selectedViewController)
+//		}
+//		else if (rootViewController.isKind(of: UINavigationController.self)) {
+//			return topVC_with_rootVC(rootViewController: (rootViewController as! UINavigationController).visibleViewController)
+//		}
+//		else if (rootViewController.presentedViewController != nil) {
+//			return topVC_with_rootVC(rootViewController: rootViewController.presentedViewController)
+//		}
+//		return rootViewController
+//	}
 	
 }
 

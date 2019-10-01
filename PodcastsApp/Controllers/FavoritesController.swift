@@ -74,6 +74,15 @@ class FavoritesController: UICollectionViewController, SomeM {
 	}
 	
 	
+	// does not work
+	override var shouldAutorotate: Bool {
+		return false
+	}
+	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+		return .portrait
+	}
+	
+	
 	private func setupCollectionView() {
 		collectionView.delegate = self
 		collectionView.dataSource = self
@@ -246,7 +255,7 @@ class FavoritesController: UICollectionViewController, SomeM {
 	
 
 	/// open AXPhotosViewController
-	private func getPreviewController(indexPath: IndexPath) -> AXPhotosViewController {
+	private func getPreviewController(indexPath: IndexPath) -> AXPhotosViewControllerCustom {
 		let cell = collectionView.cellForItem(at: indexPath) as! FavoritePodcastCell
 		let imageView = cell.imageView
 		let transitionInfo = AXTransitionInfo(interactiveDismissalEnabled: true, startingView: imageView) {
@@ -262,7 +271,7 @@ class FavoritesController: UICollectionViewController, SomeM {
 			return lastViewedCell.imageView
 		}
 		let dataSource = AXPhotosDataSource(photos: favPodcastsArr, initialPhotoIndex: indexPath.item)
-		let photosViewController = AXPhotosViewController(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
+		let photosViewController = AXPhotosViewControllerCustom(dataSource: dataSource, pagingConfig: nil, transitionInfo: transitionInfo)
 		photosViewController.delegate = self
 		
 		//bottomBar customisation
@@ -393,7 +402,7 @@ extension FavoritesController: AXPhotosViewControllerDelegate, UIViewControllerP
 	// fire on 2-nd force touch
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
 		guard viewControllerToCommit is AXPreviewingPhotosViewControllerM  else { return }
-		let previewController: AXPhotosViewController = getPreviewController(indexPath: savedIndexPath)
+		let previewController: AXPhotosViewControllerCustom = getPreviewController(indexPath: savedIndexPath)
 		present(previewController, animated: false)
 	}
 	
@@ -495,6 +504,18 @@ class AXPreviewingPhotosViewControllerM: AXPreviewingPhotosViewController {
 			(action, viewController) -> Void in
 		}
 		return [deleteAction, cancelAction] // cancelAction will be bottom
+	}
+	
+}
+
+
+class AXPhotosViewControllerCustom: AXPhotosViewController, Rotatable {
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		if isMovingFromParent {
+			resetToPortrait()
+		}
 	}
 	
 }

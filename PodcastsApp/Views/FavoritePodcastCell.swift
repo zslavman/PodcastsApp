@@ -139,7 +139,6 @@ class FavoritePodcastCell: UICollectionViewCell {
 	
 	
 	@objc private func onTouch(event: UITapGestureRecognizer) {
-		print("opa!")
 		delegate?.didSelectItemAt(indexPath: indexPath)
 	}
 	
