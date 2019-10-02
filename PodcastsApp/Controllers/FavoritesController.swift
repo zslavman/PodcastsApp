@@ -372,7 +372,8 @@ extension FavoritesController: FavoritesControllerDelegate {
 		// preview
 		if isImagePreview {
 			let previewController = getPreviewController(indexPath: indexPath)
-			present(previewController, animated: true)
+			previewController.presentAboveAll()
+			//present(previewController, animated: true)
 		}
 		// start play
 		else {
