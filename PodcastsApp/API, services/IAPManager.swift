@@ -49,6 +49,47 @@ class IAPManager {
 	private init() {
 		NotificationCenter.default.addObserver(self, selector: #selector(getAvailablePurchases), name: .gotNewJSON,
 											   object: nil)
+		setup()
+	}
+	
+	
+	private func setup() {
+		// set handler for in-app downloads
+		SwiftyStoreKit.updatedDownloadsHandler = {
+			[weak self] downloads in
+			
+			self?.queue.async(flags: .barrier) {
+				self?.downloadsPool = downloads
+				NotificationCenter.default.post(name: .purchaseDownloadsProgressUpdated, object: downloads )
+			}
+			
+			// if purchase did finish downloading it will have field "contentURL" which is location file in local storage
+			// or contentURL is not nil if downloadState == .finished
+			let finished = downloads.filter{ $0.contentURL != nil }
+			if !finished.isEmpty {
+				self?.finishDownloadPurchase(purchases: finished)
+			}
+		}
+		SwiftyStoreKit.completeTransactions {
+			(purchases) in
+			
+			for purchase in purchases {
+				switch purchase.transaction.transactionState {
+				case .purchased, .restored:
+					let downloads = purchase.transaction.downloads
+					if !downloads.isEmpty {
+						SwiftyStoreKit.start(downloads)
+					}
+					else if purchase.needsFinishTransaction {
+						// Deliver content from server, then:
+						SwiftyStoreKit.finishTransaction(purchase.transaction)
+					}
+					print("\(purchase.transaction.transactionState.debugDescription): \(purchase.productId)")
+				case .failed, .purchasing, .deferred:
+					break // do nothing
+				}
+			}
+		}
 	}
 	
 	
@@ -119,25 +160,6 @@ class IAPManager {
 	}
 	
 	
-	/// handler for in-app downloads
-	public func setDownloadsHandler() {
-		SwiftyStoreKit.updatedDownloadsHandler = {
-			[weak self] downloads in
-			
-			self?.queue.async(flags: .barrier) {
-				self?.downloadsPool = downloads
-				NotificationCenter.default.post(name: .purchaseDownloadsProgressUpdated, object: downloads )
-			}
-			
-			// if purchase did finish downloading it will have field "contentURL" which is location file in local storage
-			// or contentURL is not nil if downloadState == .finished
-			let finished = downloads.filter{ $0.contentURL != nil }
-			if !finished.isEmpty {
-				self?.finishDownloadPurchase(purchases: finished)
-			}
-		}
-	}
-	
 	
 	/// finish purchase downloading
 	private func finishDownloadPurchase(purchases: [SKDownload]) {
@@ -151,6 +173,7 @@ class IAPManager {
 				FilePathManager.shared.moveFileToDocumentsDir(tempURL: safeFileLocation, newFileName: id)
 				//TODO: convert purchase to RealmObj & save, set flag "purchased" with version of content
 				removeDownloadFromPool(id: id)
+				verifyPurchase(productID: id)
 			}
 		}
 	}
@@ -176,6 +199,47 @@ class IAPManager {
 	}
 	
 	
+	public func verifyReceipt(completion: @escaping (VerifyReceiptResult) -> Void) {
+		// sharedSecret valid - for auto-renewable purchases only
+		let appleValidator = AppleReceiptValidator(service: .production, sharedSecret: "your-shared-secret")
+		SwiftyStoreKit.verifyReceipt(using: appleValidator) {
+			(result) in
+			switch result {
+			case .success:
+				print("Verify receipt success 👍🏻")
+			case .error(let error):
+				print("Verify receipt Failed: \(error)")
+				switch error {
+				case .noReceiptData:
+					print("No receipt data. Try again")
+				case .networkError(let error):
+					print("Network error while verifying receipt: \(error)")
+				default:
+					print("Receipt verification failed: \(error)")
+				}
+			}
+			completion(result)
+		}
+	}
+	
+	
+	public func verifyPurchase(productID: String) {
+		verifyReceipt(completion: {
+			(receiptResult) in
+			if case .success(let receipt) = receiptResult {
+				let purchaseResult = SwiftyStoreKit.verifyPurchase(productId: productID, inReceipt: receipt)
+				switch purchaseResult {
+				case .purchased(let recieptItem):
+					print(recieptItem)
+					print("\(productID) is purchased")
+					//TODO: begin convert data to cards
+				case .notPurchased:
+					print("\(productID) has never been purchased")
+					//TODO: remove downloaded material, show alert
+				}
+			}
+		})
+	}
 	
 	
 }

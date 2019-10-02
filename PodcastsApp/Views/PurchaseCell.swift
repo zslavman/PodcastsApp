@@ -198,15 +198,17 @@ class PurchaseCell: UITableViewCell {
 	
 	
 	private func setActivityIndicator(isActive: Bool) {
-		if isActive {
-			buyButton.isEnabled = false
-			activityIndicator.isHidden = false
-			activityIndicator.startAnimating()
-		}
-		else {
-			buyButton.isEnabled = true
-			activityIndicator.isHidden = true
-			activityIndicator.stopAnimating()
+		DispatchQueue.main.async {
+			if isActive {
+				self.buyButton.isEnabled = false
+				self.activityIndicator.isHidden = false
+				self.activityIndicator.startAnimating()
+			}
+			else {
+				self.buyButton.isEnabled = true
+				self.activityIndicator.isHidden = true
+				self.activityIndicator.stopAnimating()
+			}
 		}
 	}
 	
