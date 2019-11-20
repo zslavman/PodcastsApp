@@ -10,10 +10,10 @@ import UIKit
 import SwiftyStoreKit
 
 
-protocol Rotatable where Self: UIViewController {
+protocol Rotatable where Self: UIViewController { // allow for VC only
 	func resetToPortrait()
 }
-extension Rotatable { // allow for VC only
+extension Rotatable {
 	func resetToPortrait() {
 		UIDevice.current.setValue(Int(UIInterfaceOrientation.portrait.rawValue), forKey: "orientation")
 	}
